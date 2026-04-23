@@ -3,7 +3,7 @@
 
 ## Integrantes del equipo
 * Mora Sawczyk - Legajo 79832 
-* Matias Moreira - Legajo ........
+* Matias Moreira - Legajo 29222
 * Francisco Gil Frias - Legajo 50070 
 
 ## Instrucciones 
