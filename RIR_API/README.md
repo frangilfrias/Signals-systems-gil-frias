@@ -9,31 +9,35 @@ API REST para procesamiento y analisis de respuestas al impulso segun la norma I
 
 ## Descripcion
 
-RIR-API es un proyecto educativo que implementa una API REST (FastAPI) con una cadena
-completa de procesamiento acustico: generacion de senales de excitacion, procesamiento
-de respuestas al impulso por bandas de octava y calculo de parametros acusticos
-(EDT, T20, T30) segun la norma ISO 3382-1.
+RIR-API es una API RESTful desarrollada en Python utilizando el framework **FastAPI**. Su objetivo principal es el cálculo de parámetros acústicos (EDT, T20, T30, T60, D50, C80) de salas a partir de Respuestas al Impulso (RI), siguiendo estrictamente los lineamientos de la norma internacional ISO 3382-1.
 
-> **API de referencia**: Explorar la [documentacion interactiva de la API de la catedra](https://rir-api.onrender.com/docs) para entender la estructura de endpoints, schemas y respuestas esperadas.
+## Integrantes del equipo
+* Mora Sawczyk - Legajo 79832 (Procesamiento de señales)
+* Matias Moreira - Legajo 29222 (Generación de señales/Docs)
+* Francisco Gil Frias - Legajo 50070 (Testing/CI) 
+
+## Branching strategy 
+Para este proyecto vamos a adoptar una estrategia en la cual vamos a desarrollar en la rama Develop para poder subir nuestros cambios en simultáneo y de paso que nos sirva como entorno de pruebas, usando así la rama MAIN para los procesos productivos.  
 
 ## Requisitos previos
 
 - Python 3.12 o superior
 - [uv](https://docs.astral.sh/uv/) (gestor de paquetes y entornos virtuales)
+- [git](https://git-scm.com/install) (herramienta para controlar versiones de código)
 
-## Instalacion
+## Instalacion (PENDIENTE)
 
 ```bash
 # Clonar el repositorio
-git clone <URL-del-fork>
-cd rir-api
+git clone https://github.com/frangilfrias/Signals-systems-gil-frias.git
+cd RIR_API
 
 # Crear entorno virtual e instalar dependencias
 uv venv
 uv pip install -e ".[dev]"
 ```
 
-## Ejecucion
+## Ejecucion (PENDIENTE!!)
 
 ```bash
 # Iniciar la API con hot-reload
@@ -50,7 +54,7 @@ La API estara disponible en `http://localhost:8000`. Documentacion interactiva e
 ## Estructura del proyecto
 
 ```
-rir-api/
+RIR_API/
 ├── app/
 │   ├── __init__.py
 │   ├── main.py                    # Punto de entrada FastAPI
@@ -79,6 +83,32 @@ rir-api/
 └── README.md
 ```
 
+## Diagrama de arquitectura
+```mermaid
+flowchart LR
+
+  subgraph Core["Capa principal"]
+    Cliente["Cliente<br/>HTTP (request)"]
+    Routers["Routers<br/>ENDPOINTS"]
+    Schemas["Schemas<br/>PYDANTIC (validación)"]
+    Services["Services<br/>LÓGICA"]
+  end
+
+  subgraph Modules["Modulos"]
+    M0["M0<br/>Armado / Estructuración"]
+    M1["M1<br/>Generación"]
+    M2["M2<br/>Procesamiento"]
+    M3["M3<br/>Análisis"]
+  end
+
+  Cliente --> Routers
+  Routers --> Services
+  Schemas -.-> Routers
+  Services --> M0
+  Services --> M1
+  Services --> M2
+  Services --> M3
+```
 ## Milestones
 
 ### M0 — Setup del entorno
