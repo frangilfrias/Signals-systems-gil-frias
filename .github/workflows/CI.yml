@@ -1,0 +1,20 @@
+name: CI Hello World
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  hello-world:
+    # Filtro para asegurar que la rama de origen (head) sea 'develop'
+    if: github.head_ref == 'develop'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Ejecutar Hola Mundo
+        run: echo "Hola Mundo - PR detectado desde develop hacia main"
+        
