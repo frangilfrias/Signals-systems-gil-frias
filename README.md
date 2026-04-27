@@ -1,13 +1,13 @@
 # RIR-API
 
-API REST para procesamiento y analisis de respuestas al impulso segun la norma ISO 3382.
+API REST para procesamiento y analisis de respuestas al impulso según la norma ISO 3382.
 
 <!-- Badges -->
 ![CI](../../actions/workflows/ci.yml/badge.svg)
 ![Python](https://img.shields.io/badge/python-3.12+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-## Descripcion
+## Descripción
 
 RIR-API es una API RESTful desarrollada en Python utilizando el framework **FastAPI**. Su objetivo principal es el cálculo de parámetros acústicos (EDT, T20, T30, T60, D50, C80) de salas a partir de Respuestas al Impulso (RI), siguiendo estrictamente los lineamientos de la norma internacional ISO 3382-1.
 
@@ -25,7 +25,7 @@ Para este proyecto vamos a adoptar una estrategia en la cual vamos a desarrollar
 - [uv](https://docs.astral.sh/uv/) (gestor de paquetes y entornos virtuales)
 - [git](https://git-scm.com/install) (herramienta para controlar versiones de código)
 
-## Instalacion (PENDIENTE)
+## Instalación 
 
 ```bash
 # Clonar el repositorio
@@ -37,7 +37,7 @@ uv venv
 uv pip install -e ".[dev]"
 ```
 
-## Ejecucion (PENDIENTE!!)
+## Ejecución
 
 ```bash
 # Iniciar la API con hot-reload
@@ -47,7 +47,7 @@ uvicorn app.main:app --reload
 python -m app.main
 ```
 
-La API estara disponible en `http://localhost:8000`. Documentacion interactiva en:
+La API estará disponible en `http://localhost:8000`. Documentación interactiva en:
 - Swagger UI: `http://localhost:8000/docs`
 - ReDoc: `http://localhost:8000/redoc`
 
