@@ -50,9 +50,9 @@ Para no tener problemas levantando la api, los comandos que sean con uvicorn hay
 
 "uv run uvicorn [...]"
 
-La API estará disponible en `http://localhost:8000`. Documentación interactiva en:
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
+La API estará disponible en `http://127.0.0.1:8000`. Documentación interactiva en:
+- Swagger UI: `http://127.0.0.1:8000/docs`
+- ReDoc: `http://127.0.0.1:8000/redoc`
 
 ## Estructura del proyecto
 
