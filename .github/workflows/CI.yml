@@ -1,4 +1,4 @@
-name: CI Hello World
+name: CI
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  hello-world:
+  pytests_git_actions:
     # Filtro para asegurar que la rama de origen (head) sea 'develop'
     if: github.head_ref == 'develop'
     runs-on: ubuntu-latest
