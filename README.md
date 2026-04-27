@@ -46,6 +46,9 @@ uvicorn app.main:app --reload
 # O usando el modulo directamente
 python -m app.main
 ```
+Para no tener problemas levantando la api, los comandos que sean con uvicorn hay que forzarlos a trabajar con el entorno virtual (venv) escribiendo:
+
+"uv run uvicorn [...]"
 
 La API estará disponible en `http://localhost:8000`. Documentación interactiva en:
 - Swagger UI: `http://localhost:8000/docs`
