@@ -17,7 +17,10 @@ RIR-API es una API RESTful desarrollada en Python utilizando el framework **Fast
 * Francisco Gil Frias - Legajo 50070 (Testing/CI) 
 
 ## Branching strategy 
-Para el presente proyecto se adopta una estrategia en la cual el desarrollo presenta efectos solamente en la rama Develop, con el objetivo de realizar las modificaciones simultáneamente y que sea útil en el entorno de pruebas, reservando la rama MAIN para los procesos productivos.  
+Para el presente proyecto se adopta una estrategia de ramas en la cual el desarrollo se integra principalmente en la rama develop, que actúa como entorno de integración y pruebas. Esta rama concentra las modificaciones de las distintas funcionalidades en desarrollo, permitiendo su validación conjunta antes de ser incorporadas a producción.
+La rama main se reserva exclusivamente para versiones estables y listas para despliegue en entorno productivo.
+A partir de develop se crean ramas de tipo feature/*, las cuales representan funcionalidades específicas asociadas a los distintos milestones del proyecto. Cada feature se desarrolla de forma aislada y, una vez completada y validada, se integra nuevamente a develop mediante un merge request o pull request.
+
 
 ## Requisitos previos
 
