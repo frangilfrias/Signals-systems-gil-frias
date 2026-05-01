@@ -91,29 +91,69 @@ RIR_API/
 
 ## Diagrama de arquitectura
 ```mermaid
-flowchart LR
+flowchart TD
+    CLIENTE["CLIENTE"]
 
-  subgraph Core["Capa principal"]
-    Cliente["Cliente<br/>HTTP (request)"]
-    Routers["Routers<br/>ENDPOINTS"]
-    Schemas["Schemas<br/>PYDANTIC (validación)"]
-    Services["Services<br/>LÓGICA"]
-  end
+    subgraph CA["Acciones del cliente"]
+        REPRODUCIR["REPRODUCIR AUDIO"]
+        GRABAR["GRABAR AUDIO"]
+        REQ["REQUIERE PROCESAMIENTO"]
+    end
 
-  subgraph Modules["Modulos"]
-    M0["M0<br/>Armado / Estructuración"]
-    M1["M1<br/>Generación"]
-    M2["M2<br/>Procesamiento"]
-    M3["M3<br/>Análisis"]
-  end
+    CLIENTE --> ROUTERS["ROUTERS"]
+    CLIENTE -.-> REPRODUCIR
 
-  Cliente --> Routers
-  Routers --> Services
-  Schemas -.-> Routers
-  Services --> M0
-  Services --> M1
-  Services --> M2
-  Services --> M3
+    subgraph SCH[.]
+        SCHEMAS["SCHEMAS (Validación de requests y responses)"]
+
+    end
+
+    ROUTERS --> SCHEMAS
+
+    ROUTERS --> EP["ENDPOINTS"]
+
+    subgraph EPS[.]
+        EP
+        subgraph GEN["Generación"]
+            BARRIDO["BARRIDO SENOIDAL"]
+            RUIDO["RUIDO ROSA"]
+        end
+        subgraph PRO[.]
+            PROCESAMIENTO["PROCESAMIENTO"]
+        end
+        subgraph ANA[.]
+            ANALISIS["ANÁLISIS"]
+        end
+        EP --> GEN
+        EP --> PRO
+        EP --> ANA
+    end
+
+    ROUTERS --> SERVICES["SERVICES"]
+
+    subgraph SVC[.]
+        SERVICES
+        subgraph SG["Generación - M1"]
+            S1["FUNCIÓN BARRIDO SENOIDAL"]
+            S2["FUNCIÓN RUIDO ROSA"]
+        end
+        subgraph SP["Procesamiento - M2"]
+            S3["CARGAR AUDIO"]
+            S4["OBTENER RI DESDE LA RESPUESTA AL BARRIDO"]
+            S5["FILTROS DE OCTAVA"]
+            S6["ESCALA LOGARÍTMICA"]
+            S7["RI SINTÉTICA"]
+        end
+        subgraph SA["Análisis - M3"]
+            S8["INTEGRAL DE SCHROEDER"]
+            S9["REGRESIÓN LINEAL"]
+            S10["PARÁMETROS ACÚSTICOS"]
+            S11["LUNDEBY"]
+        end
+        SERVICES --> SG
+        SERVICES --> SP
+        SERVICES --> SA
+    end
 ```
 ## Milestones
 
