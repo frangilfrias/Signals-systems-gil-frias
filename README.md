@@ -93,35 +93,32 @@ RIR_API/
 ```mermaid
 flowchart TD
     CLIENTE["CLIENTE"]
-
-    subgraph CA["Acciones del cliente"]
-        REPRODUCIR["REPRODUCIR AUDIO"]
-        GRABAR["GRABAR AUDIO"]
-        REQ["REQUIERE PROCESAMIENTO"]
-    end
-
     CLIENTE --> ROUTERS["ROUTERS"]
-    CLIENTE -.-> REPRODUCIR
 
-    subgraph SCH[.]
-        SCHEMAS["SCHEMAS (Validación de requests y responses)"]
+    ROUTERS --> SCHEMAS["SCHEMAS"]
 
+    subgraph SCH["."]
+        SCHEMAS
+        M1["GENERACIÓN (M1)"]
+        M2["PROCESAMIENTO (M2)"]
+        M3["ANÁLISIS (M3)"]
+        SCHEMAS --> M1
+        SCHEMAS --> M2
+        SCHEMAS --> M3
     end
-
-    ROUTERS --> SCHEMAS
 
     ROUTERS --> EP["ENDPOINTS"]
 
-    subgraph EPS[.]
+    subgraph EPS["."]
         EP
         subgraph GEN["Generación"]
-            BARRIDO["BARRIDO SENOIDAL"]
-            RUIDO["RUIDO ROSA"]
+            BARRIDO["GENERAR BARRIDO"]
+            RUIDO["GENERAR RUIDO ROSA"]
         end
-        subgraph PRO[.]
+        subgraph PRO["Procesamiento"]
             PROCESAMIENTO["PROCESAMIENTO"]
         end
-        subgraph ANA[.]
+        subgraph ANA["Análisis"]
             ANALISIS["ANÁLISIS"]
         end
         EP --> GEN
@@ -131,11 +128,13 @@ flowchart TD
 
     ROUTERS --> SERVICES["SERVICES"]
 
-    subgraph SVC[.]
+    subgraph SVC["."]
         SERVICES
         subgraph SG["Generación - M1"]
             S1["FUNCIÓN BARRIDO SENOIDAL"]
             S2["FUNCIÓN RUIDO ROSA"]
+            S_REP["REPRODUCIR AUDIO"]
+            S_GRAB["GRABAR AUDIO"]
         end
         subgraph SP["Procesamiento - M2"]
             S3["CARGAR AUDIO"]
