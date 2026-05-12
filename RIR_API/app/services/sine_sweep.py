@@ -1,16 +1,9 @@
-"""Servicio de generacion de sine sweep logaritmico.
-
-Milestone 1: Generacion de senales.
-"""
-
 import numpy as np
-
 
 def generar_sine_sweep(
     f1: float, f2: float, duracion: float, fs: int
 ) -> tuple[np.ndarray, np.ndarray]:
     """Genera un barrido senoidal logaritmico (sine sweep) y su filtro inverso.
-
     El sine sweep logaritmico es la senal de excitacion preferida para
     la medicion de respuestas al impulso segun la tecnica de Farina (2000).
 
@@ -37,4 +30,26 @@ def generar_sine_sweep(
     .. [1] Farina, A. (2000). "Simultaneous measurement of impulse response
        and distortion with a swept-sine technique."
     """
-    raise NotImplementedError("Implementar en Milestone 1")
+
+    #Genero la cantidad de muestras y el vector del eje temporal para el sweep
+    num_muestras = int(duracion*fs)
+    eje_tem = np.arange(num_muestras)/fs
+
+    #Creo un parametro para facilitar la escritura de la fórmula
+    k_param = duracion / np.log(f2/f1)
+
+    #Genero el sweep con los parámetros establecidos
+    sweep = np.sin( 2 * np.pi * f1 * k_param * (np.exp(eje_tem/k_param)-1))
+
+    #Produzco el filtro inverso
+    compensacion_temp = np.exp(-eje_tem/k_param) # Para que las bajas y altas frecuencias del filtro duren lo mismo que el sweep
+    filtro_inv = sweep[::-1] * compensacion_temp
+
+    #Normalizo ambos vectores
+    sweep = sweep / np.max(np.abs(sweep))
+    filtro_inv = filtro_inv / np.max(np.abs(filtro_inv))
+
+    return sweep , filtro_inv
+
+
+
