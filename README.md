@@ -174,6 +174,12 @@ flowchart TD
 - [ ] Implementar `reproducir_y_grabar()`.
 - [ ] Todos los tests de `test_generacion.py` deben pasar.
 
+Para probar reproducir y grabar, ejecutar: 
+cd RIR_API 
+uv run app/services/prueba_reproducir_grabar.py 
+
+Esto abrirá el micrófono por defecto (configurable en las primeras líneas). Luego de escuchar el tono, empezar a grabar. Pasados los 4 segundos el archivo se reproducirá y se guardará en RIR_API/ como un .wav 
+
 ### M2 — Procesamiento de senales
 **Fecha:** Semana 12
 
