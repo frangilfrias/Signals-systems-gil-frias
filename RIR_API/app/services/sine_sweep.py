@@ -42,14 +42,11 @@ def generar_sine_sweep(
     sweep = np.sin( 2 * np.pi * f1 * k_param * (np.exp(eje_tem/k_param)-1))
 
     #Produzco el filtro inverso
-    compensacion_temp = np.exp(-eje_tem/k_param) # Para que las bajas y altas frecuencias del filtro duren lo mismo que el sweep
+    compensacion_temp = np.exp(-eje_tem/k_param) # Compensa la distribución no uniforme de energía del sweep logarítmico
     filtro_inv = sweep[::-1] * compensacion_temp
 
     #Normalizo ambos vectores
-    sweep = sweep / np.max(np.abs(sweep))
-    filtro_inv = filtro_inv / np.max(np.abs(filtro_inv))
+    sweep /= np.max(np.abs(sweep))
+    filtro_inv /= np.max(np.abs(filtro_inv))
 
     return sweep , filtro_inv
-
-
-
