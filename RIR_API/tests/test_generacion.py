@@ -29,21 +29,24 @@ class TestGenerarRuidoRosa:
         assert np.max(np.abs(ruido)) <= 1.0
 
     def test_ruido_rosa(self):
-        """Verifica que el espectro de la señal tenga una pendiente de aproximadamente -3 dB/octava"""
-        # Generar ruido rosa con una duraciín mayor a 10 segundos con fs=44100 Hz
+        """Verifica que el espectro de la señal tenga una pendiente
+        de aproximadamente -3 dB/octava."""
+
+        # Generar ruido rosa con una duracion mayor a 10 segundos con fs=44100 Hz
         duracion = 30
         fs = 44100
         ruido = generar_ruido_rosa(duracion, fs)
+
         # Calcular la PSD usando el método de Welch
-        f, PSD = signal.welch(ruido, fs=fs, nperseg=4096)
-        # Calcular la pendiente en dB/octava entre 100 Hz y 10.0 KHz
-        mask = (f >= 100) & (f <= 10000)
-        log2f = np.log2(f[mask])
-        PSD_dB = 10 * np.log10(PSD[mask])
+        f, psd = signal.welch(ruido, fs=fs, nperseg=4096)
+
+        # Calcular la pendiente en dB/octava entre 100 Hz y 10 KHz
+        filtro = (f >= 100) & (f <= 10000)  # Aplicar filtro pasabanda
+        log2f = np.log2(f[filtro])
+        psd_db = 10 * np.log10(psd[filtro])
+
         # Verificar que la pendiente se encuentra entre -4.00 y -2.00 dB/octava
-        pendiente, ordenada = np.polyfit(log2f, PSD_dB, 1)
-        # print("Pendiente:", pendiente, "dB/octava")
-        # Test solicitado
+        pendiente, _ = np.polyfit(log2f, psd_db, 1)
         assert -4 < pendiente < -2
 
 
