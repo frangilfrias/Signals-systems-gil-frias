@@ -3,9 +3,7 @@
 Milestone 1: Generacion de senales.
 """
 
-import matplotlib.pyplot as plt
 import numpy as np
-import soundfile as sf
 
 # def generar_ruido_rosa(duracion: float, fs: int) -> np.ndarray:
 # """Genera una senal de ruido rosa de la duracion especificada.
@@ -38,26 +36,29 @@ import soundfile as sf
 # raise NotImplementedError("Implementar en Milestone 1")
 # Generar ruido blanco
 
-sr_gen = 44100
+# sr_gen = 44100
 
 
 def generar_ruido_rosa(duracion: float, fs: int) -> np.ndarray:
 
-    n_muestras = int(fs * duracion)
-
     # Generar ruido blanco (distribucion normal) de la duracion deseada.
+    n_muestras = int(fs * duracion)
     ruido_blanco = np.random.randn(n_muestras)
 
     # Normalización de ruido blanco [-1,1] (línea auxiliar para verificar funcionalidad. Eliminar)
     ruido_blanco = ruido_blanco / np.max(np.abs(ruido_blanco))
+
     # Aplicar la transformada de Fourier (np.fft.rfft)
     espectro = np.fft.rfft(ruido_blanco)
+
     # Crear vector de frecuencias (ventajas de np.fft sobre np.linspace)
     freqs = np.fft.rfftfreq(n_muestras, d=1 / fs)
+
     # Espectro de ruido blanco
-    espectro_ruido_blanco = espectro.copy()
+    # espectro_ruido_blanco = espectro.copy()
     # Dividir cada componente por sqrt(f) (omitir f=0 para evitar division por cero)
-    espectro[1:] /= np.sqrt(freqs[1:])
+    # espectro[1:] /= np.sqrt(freqs[1:])
+    espectro[1:] = espectro[1:] / np.sqrt(freqs[1:])
 
     # Aplicar la transformada inversa (np.fft.irfft)
     ruido_rosa = np.fft.irfft(espectro)
@@ -65,14 +66,33 @@ def generar_ruido_rosa(duracion: float, fs: int) -> np.ndarray:
     # Normalización de ruido_rosa  [-1,1] según el algoritmo sugerido (normalización dura)
     ruido_rosa = ruido_rosa / (np.max(np.abs(ruido_rosa)))
 
-    return ruido_rosa, freqs, espectro, espectro_ruido_blanco, ruido_blanco
+    # print(type(ruido_rosa))
+    # print(len(ruido_rosa))
+
+    return ruido_rosa
+
+
+# Generar ruido rosa con una duraciín mayor a 10 segundos con fs=44100 Hz
+# duracion = 30
+# fs = 44100
+# ruido = generar_ruido_rosa(duracion, fs)
+# Calcular la PSD usando el método de Welch
+# f, PSD = signal.welch(ruido, fs=fs, nperseg=4096)
+
+# Calcular la pendiente en dB/octava entre 100 Hz y 10.0 KHz
+# mask = (f > 0) & (f >= 100) & (f <= 10000)
+# log2f = np.log2(f[mask])
+# PSD_dB = 10 * np.log10(PSD[mask])
+# Verificar que la pendiente se encuentra entre -4.00 y -2.00 dB/octava
+# pendiente, ordenada = np.polyfit(log2f, PSD_dB, 1)
+# print("Pendiente:", pendiente, "dB/octava")
 
 
 # Parámetros
-duracion = 30
-fs = 44100
+# duracion = 30
+# fs = 44100
 # Ejecutar función
-ruido_rosa, freqs, espectro, espectro_ruido_blanco, ruido_blanco = generar_ruido_rosa(duracion, fs)
+# ruido_rosa = generar_ruido_rosa(duracion, fs)
 
 # sd.play(ruido_rosa)
 # sd.wait()
@@ -80,75 +100,75 @@ ruido_rosa, freqs, espectro, espectro_ruido_blanco, ruido_blanco = generar_ruido
 # sd.wait()
 
 # Guardar como WAV
-sf.write(r"C:\UNTREF\2026\PARTE PRÁCTICA\TP1\M1\RUIDO_ROSA.wav", ruido_rosa, fs)
-sf.write(r"C:\UNTREF\2026\PARTE PRÁCTICA\TP1\M1\RUIDO_BLANCO.wav", ruido_blanco, fs)
+# sf.write(r"C:\UNTREF\2026\PARTE PRÁCTICA\TP1\M1\RUIDO_ROSA.wav", ruido_rosa, fs)
+# sf.write(r"C:\UNTREF\2026\PARTE PRÁCTICA\TP1\M1\RUIDO_BLANCO.wav", ruido_blanco, fs)
 
 
-fig, axes = plt.subplots(2, 1, figsize=(10, 8))
+# fig, axes = plt.subplots(2, 1, figsize=(10, 8))
 
 # =========================
 # ESPECTRO RUIDO ROSA
 # =========================
 
-magnitud = np.abs(espectro)
+# magnitud = np.abs(espectro)
 
-magnitud_db = 20 * np.log10(magnitud + 1e-12)
+# magnitud_db = 20 * np.log10(magnitud + 1e-12)
 
-axes[0].semilogx(freqs, magnitud_db)
+# axes[0].semilogx(freqs, magnitud_db)
 
-axes[0].set_title("Espectro del ruido rosa")
+# axes[0].set_title("Espectro del ruido rosa")
 
-axes[0].set_xlabel("Frecuencia [Hz]")
+# axes[0].set_xlabel("Frecuencia [Hz]")
 
-axes[0].set_ylabel("Magnitud [dB]")
+# axes[0].set_ylabel("Magnitud [dB]")
 
-axes[0].grid(True)
+# axes[0].grid(True)
 
 
 # =========================
 # ESPECTRO RUIDO BLANCO
 # =========================
 
-magnitud_ruido_blanco = np.abs(espectro_ruido_blanco)
+# magnitud_ruido_blanco = np.abs(espectro_ruido_blanco)
 
-magnitud_ruido_blanco_db = 20 * np.log10(magnitud_ruido_blanco + 1e-12)
+# magnitud_ruido_blanco_db = 20 * np.log10(magnitud_ruido_blanco + 1e-12)
 
-axes[1].semilogx(freqs, magnitud_ruido_blanco_db)
+# axes[1].semilogx(freqs, magnitud_ruido_blanco_db)
 
-axes[1].set_title("Espectro del ruido blanco")
+# axes[1].set_title("Espectro del ruido blanco")
 
-axes[1].set_xlabel("Frecuencia [Hz]")
+# axes[1].set_xlabel("Frecuencia [Hz]")
 
-axes[1].set_ylabel("Magnitud [dB]")
+# axes[1].set_ylabel("Magnitud [dB]")
 
-axes[1].grid(True)
+# axes[1].grid(True)
 
 
-plt.tight_layout()
+# plt.tight_layout()
 
-plt.show()
+# plt.show()
 # sf.write("/tmp/ruido_blanco.wav", ruido, sr_gen)
 # print(f"Ruido blanco generado: {duracion} s, pico = {np.max(np.abs(ruido)):.2f}")
 
 # Visualizar
-fig_ruido_blanco, axes_ruido = plt.subplots(2, 1, figsize=(10, 5))
+# fig_ruido_blanco, axes_ruido = plt.subplots(2, 1, figsize=(10, 5))
 
 # Forma de onda (primeros 50 ms)
-muestras_r = int(0.05 * sr_gen)
-t_ruido = np.arange(muestras_r) / sr_gen * 1000
-axes_ruido[0].plot(t_ruido, ruido_blanco[:muestras_r], "gray", linewidth=0.5)
-axes_ruido[0].set_title("Ruido blanco - forma de onda (50 ms)")
-axes_ruido[0].set_xlabel("Tiempo (ms)")
-axes_ruido[0].set_ylabel("Amplitud")
-axes_ruido[0].grid(True, alpha=0.3)
+# muestras_r = int(0.05 * sr_gen)
+# t_ruido = np.arange(muestras_r) / sr_gen * 1000
+# axes_ruido[0].plot(t_ruido, ruido_blanco[:muestras_r], "gray", linewidth=0.5)
+# axes_ruido[0].set_title("Ruido blanco - forma de onda (50 ms)")
+# axes_ruido[0].set_xlabel("Tiempo (ms)")
+# axes_ruido[0].set_ylabel("Amplitud")
+# axes_ruido[0].grid(True, alpha=0.3)
 
 # Histograma (distribucion gaussiana)
-axes_ruido[1].hist(ruido_blanco, bins=100, density=True, alpha=0.7, color="steelblue")
-axes_ruido[1].set_title("Distribucion del ruido (debe ser gaussiana)")
-axes_ruido[1].set_xlabel("Amplitud")
-axes_ruido[1].set_ylabel("Densidad")
-axes_ruido[1].grid(True, alpha=0.3)
+# axes_ruido[1].hist(ruido_blanco, bins=100, density=True, alpha=0.7, color="steelblue")
+# axes_ruido[1].set_title("Distribucion del ruido (debe ser gaussiana)")
+# axes_ruido[1].set_xlabel("Amplitud")
+# axes_ruido[1].set_ylabel("Densidad")
+# axes_ruido[1].grid(True, alpha=0.3)
 
-plt.tight_layout()
+# plt.tight_layout()
 # plt.gca()
-plt.show()
+# plt.show()
