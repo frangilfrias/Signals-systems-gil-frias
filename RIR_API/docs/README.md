@@ -91,7 +91,11 @@ En la figura 1 se muestra la  respuesta de amplitud suavizada y sin suavizar de 
 *Figura 1. Respuestas en amplitud conjuntas: suavizadas (superior derecha) y sin suavizar (superior izquierda). Respuestas individuales: REW (inferior izquierda) y Python (inferior derecha).*
 ---
 
-### I.5 Conclusiones
+### I.5 Análisis
+- Por simple inspección visual de la figura 1, se observa la variación de -3 dB/octava de  la respuesta de amplitud de la señal de ruido rosa generada en lenguaje python.
+- La señal obtenida mediante la implementación de la función generar_ruido_rosa presenta la misma variación de nivel en función de la frecuencia que la señal de referencia.
 
-Se validó la señal de ruido rosa generada mediante la función `generar_ruido_rosa` desarrollada en Python.
-3. Problemas encontrados y como se resolvieron.
+### I.5 Conclusiones
+Se validó la señal de ruido rosa generada mediante la función `generar_ruido_rosa` desarrollada en Python v 3.13.12.
+
+## 3. Problemas encontrados y como se resolvieron.
