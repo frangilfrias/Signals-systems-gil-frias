@@ -4,6 +4,7 @@ Milestone 1: Generacion de senales.
 """
 
 import numpy as np
+import soundfile as sf
 
 # def generar_ruido_rosa(duracion: float, fs: int) -> np.ndarray:
 # """Genera una senal de ruido rosa de la duracion especificada.
@@ -41,38 +42,42 @@ import numpy as np
 
 def generar_ruido_rosa(duracion: float, fs: int) -> np.ndarray:
 
-    # Generar ruido blanco (distribucion normal) de la duracion deseada.
+    # Generar ruido blanco (distribución normal) de la duración deseada.
     n_muestras = int(fs * duracion)
     ruido_blanco = np.random.randn(n_muestras)
 
-    # Normalización de ruido blanco [-1,1] (línea auxiliar para verificar funcionalidad. Eliminar)
-    ruido_blanco = ruido_blanco / np.max(np.abs(ruido_blanco))
-
-    # Aplicar la transformada de Fourier (np.fft.rfft)
+    # Aplicar la transformada de Fourier
     espectro = np.fft.rfft(ruido_blanco)
 
-    # Crear vector de frecuencias (ventajas de np.fft sobre np.linspace)
+    # Crear vector de frecuencias
     freqs = np.fft.rfftfreq(n_muestras, d=1 / fs)
 
-    # Espectro de ruido blanco
-    # espectro_ruido_blanco = espectro.copy()
-    # Dividir cada componente por sqrt(f) (omitir f=0 para evitar division por cero)
-    # espectro[1:] /= np.sqrt(freqs[1:])
+    # Dividir cada componente por sqrt(f)
+    # Se omite f=0 para evitar división por cero
     espectro[1:] = espectro[1:] / np.sqrt(freqs[1:])
 
-    # Aplicar la transformada inversa (np.fft.irfft)
+    # Aplicar transformada inversa
     ruido_rosa = np.fft.irfft(espectro)
 
-    # Normalización de ruido_rosa  [-1,1] según el algoritmo sugerido (normalización dura)
-    ruido_rosa = ruido_rosa / (np.max(np.abs(ruido_rosa)))
-
-    # print(type(ruido_rosa))
-    # print(len(ruido_rosa))
+    # Normalización final [-1, 1]
+    ruido_rosa = ruido_rosa / np.max(np.abs(ruido_rosa))
 
     return ruido_rosa
 
 
-# Generar ruido rosa con una duraciín mayor a 10 segundos con fs=44100 Hz
+# Validación manual:
+# Generar ruido rosa con duración mayor a 30 segundos y fs=44100 Hz
+duracion = 30
+fs = 44100
+
+ruido_rosa = generar_ruido_rosa(duracion, fs)
+# Guardar como WAV PCM 16-bit
+sf.write(r"C:\UNTREF\2026\PARTE PRÁCTICA\TP1\M1\ruido_rosa.wav", ruido_rosa, fs, subtype="PCM_16")
+
+# sf.write(r"C:\UNTREF\2026\PARTE PRÁCTICA\TP1\M1\RUIDO_BLANCO.wav", ruido_blanco, fs, subtype="PCM_16")
+
+
+# Generar ruido rosa con una duracion mayor a 10 segundos con fs=44100 Hz
 # duracion = 30
 # fs = 44100
 # ruido = generar_ruido_rosa(duracion, fs)
