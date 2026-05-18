@@ -39,12 +39,10 @@ Cada milestone deberia documentarse brevemente en este directorio, incluyendo:
 
 1. Decisiones de diseno tomadas.
 2. Resultados de validacion (graficos, tablas comparativas).
-## Generación.
   ## Generación
+## Ruido rosa
 
-### I. Ruido rosa
-
-#### I.1 Aspectos generales
+### I.1 Aspectos generales
 
 Se validó manualmente la función de generación de ruido rosa mediante dos métodos:
 
@@ -53,9 +51,9 @@ b. Comparación con una señal de ruido rosa de referencia.
 
 ---
 
-#### I.2 Origen y formato de los archivos de audio
+### I.2 Origen y formato de los archivos de audio
 
-El archivo de audio asociado al código desarrollado en Python fue escrito mediante la función `write` de la librería `soundfile`, mientras que el archivo de referencia fue generado utilizando el software REW.
+El archivo de audio asociado al código desarrollado en Python fue escrito mediante la función `write` de la librería `soundfile`, mientras que el archivo de referencia fue generado utilizando el software Room Eq Wizard Acoustics(REW)
 
 En ambos casos se utilizó el siguiente formato de audio digital:
 
@@ -74,7 +72,7 @@ En ambos casos se utilizó el siguiente formato de audio digital:
 
 ---
 
-#### I.3 Procesamiento
+### I.3 Procesamiento
 
 Los archivos de audio fueron procesados mediante el software REW, obteniendo las correspondientes respuestas de amplitud.
 
@@ -85,15 +83,15 @@ Las respuestas fueron evaluadas:
 
 ---
 
-#### I.4 Resultados
+### I.4 Resultados
 
-En las imágenes XX e YY se muestran los resultados obtenidos para los casos de respuesta de amplitud suavizada y sin suavizar.
+En la figura 1 se muestra la  respuesta de amplitud suavizada y sin suavizar de la señal generada a través de python mediante la función generar_ruido_rosa, y la de referencia obtenida desde el software REW.
 
 ![Respuestas en amplitud conjuntas: Suavizadas (superior derecha); Sin suavizar (superior izquierda). Respuestas individuales: REW (Inferior izquierda); Python (inferior derecha)](IMÁGENES/ruido_v.png)
-
+*Figura 1. Respuestas en amplitud conjuntas: suavizadas (superior derecha) y sin suavizar (superior izquierda). Respuestas individuales: REW (inferior izquierda) y Python (inferior derecha).*
 ---
 
-#### I.5 Conclusiones
+### I.5 Conclusiones
 
 Se validó la señal de ruido rosa generada mediante la función `generar_ruido_rosa` desarrollada en Python.
 3. Problemas encontrados y como se resolvieron.
