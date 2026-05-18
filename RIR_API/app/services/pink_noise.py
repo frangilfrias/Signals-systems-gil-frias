@@ -1,48 +1,56 @@
 """Servicio de generacion de ruido rosa.
 
-Milestone 1: Generacion de senales.
-"""
+Milestone 1: Generacion de senales."""
 
 import numpy as np
-import soundfile as sf
-
-# def generar_ruido_rosa(duracion: float, fs: int) -> np.ndarray:
-# """Genera una senal de ruido rosa de la duracion especificada.
-
-# El ruido rosa tiene una densidad espectral de potencia inversamente
-#  proporcional a la frecuencia (1/f). Esto significa que cada octava
-#  contiene la misma cantidad de energia, lo cual lo hace util para
-#  mediciones acusticas.
-
-#  Algoritmo sugerido:
-#   1. Generar ruido blanco (distribucion normal) de la duracion deseada.
-#  2. Aplicar la transformada de Fourier (np.fft.rfft).
-#  3. Crear un vector de frecuencias correspondiente.
-#  4. Dividir cada componente por sqrt(f) (omitir f=0 para evitar division por cero).
-#  5. Aplicar la transformada inversa (np.fft.irfft).
-#  6. Normalizar la senal resultante al rango [-1, 1].
-
-#  Parameters
-#  ----------
-#  duracion : float
-#      Duracion de la senal en segundos.
-#  fs : int
-#      Frecuencia de muestreo en Hz.
-
-#  Returns
-# -------
-#  np.ndarray
-#      Senal de ruido rosa normalizada, de longitud ``int(duracion * fs)``.
-#  """
-# raise NotImplementedError("Implementar en Milestone 1")
-# Generar ruido blanco
-
-# sr_gen = 44100
 
 
 def generar_ruido_rosa(duracion: float, fs: int) -> np.ndarray:
+    """
+    Genera una señal de ruido rosa de la duración especificada.
 
-    # Generar ruido blanco (distribución normal) de la duración deseada.
+    El ruido rosa tiene una densidad espectral de potencia inversamente
+    proporcional a la frecuencia (1/f). Esto significa que cada octava
+    contiene la misma cantidad de energía, lo cual lo hace útil para
+    mediciones acústicas.
+
+    Algoritmo implementado
+    ----------------------
+    1. Generar ruido blanco (distribución normal) de la duración deseada.
+    2. Aplicar la transformada de Fourier (`np.fft.rfft`).
+    3. Crear un vector de frecuencias correspondiente.
+    4. Dividir cada componente por sqrt(f) (omitir f=0 para evitar división
+       por cero).
+    5. Aplicar la transformada inversa (`np.fft.irfft`).
+    6. Normalizar la señal resultante al rango [-1, 1].
+
+    Parameters
+    ----------
+    duracion : float
+        Duración de la señal en segundos.
+
+    fs : int
+        Frecuencia de muestreo en Hz.
+
+    Returns
+    -------
+    np.ndarray
+         Señal de ruido rosa normalizada, de longitud
+        ``int(duracion * fs)``.
+    """
+    # Validación de tipo (runtime) de entrada 
+    if not isinstance(duracion, float):
+        raise TypeError(f"duracion debe ser numérica (float). Tipo recibido: {type(duracion).__name__}, valor: {duracion}")
+    if not isinstance(fs, int):
+        raise TypeError(f"fs debe ser numérica (int). Tipo recibido: {type(fs).__name__}, valor: {fs}")
+    
+    # Validación de valores de entrada
+    fs_validas = {44100, 48000, 88200, 96000, 176400, 192000, 352800, 384000, 705600, 768000}
+
+    if fs not in fs_validas:
+        raise ValueError(f"fs invalida: {fs}. Valores permitidos: {fs_validas}")
+
+    # Generar ruido blanco (distribución normal) de la duración deseada
     n_muestras = int(fs * duracion)
     ruido_blanco = np.random.randn(n_muestras)
 
@@ -59,121 +67,15 @@ def generar_ruido_rosa(duracion: float, fs: int) -> np.ndarray:
     # Aplicar transformada inversa
     ruido_rosa = np.fft.irfft(espectro)
 
-    # Normalización final [-1, 1]
+    # Normalización [-1, 1]
     ruido_rosa = ruido_rosa / np.max(np.abs(ruido_rosa))
 
     return ruido_rosa
 
-
-# Validación manual:
-# Generar ruido rosa con duración mayor a 30 segundos y fs=44100 Hz
-duracion = 30
-fs = 44100
+    
+fs = 192000
+duracion = 30.0
 
 ruido_rosa = generar_ruido_rosa(duracion, fs)
-# Guardar como WAV PCM 16-bit
-sf.write(r"C:\UNTREF\2026\PARTE PRÁCTICA\TP1\M1\ruido_rosa.wav", ruido_rosa, fs, subtype="PCM_16")
 
-# sf.write(r"C:\UNTREF\2026\PARTE PRÁCTICA\TP1\M1\RUIDO_BLANCO.wav", ruido_blanco, fs, subtype="PCM_16")
-
-
-# Generar ruido rosa con una duracion mayor a 10 segundos con fs=44100 Hz
-# duracion = 30
-# fs = 44100
-# ruido = generar_ruido_rosa(duracion, fs)
-# Calcular la PSD usando el método de Welch
-# f, PSD = signal.welch(ruido, fs=fs, nperseg=4096)
-
-# Calcular la pendiente en dB/octava entre 100 Hz y 10.0 KHz
-# mask = (f > 0) & (f >= 100) & (f <= 10000)
-# log2f = np.log2(f[mask])
-# PSD_dB = 10 * np.log10(PSD[mask])
-# Verificar que la pendiente se encuentra entre -4.00 y -2.00 dB/octava
-# pendiente, ordenada = np.polyfit(log2f, PSD_dB, 1)
-# print("Pendiente:", pendiente, "dB/octava")
-
-
-# Parámetros
-# duracion = 30
-# fs = 44100
-# Ejecutar función
-# ruido_rosa = generar_ruido_rosa(duracion, fs)
-
-# sd.play(ruido_rosa)
-# sd.wait()
-# sd.play(ruido_blanco)
-# sd.wait()
-
-# Guardar como WAV
-# sf.write(r"C:\UNTREF\2026\PARTE PRÁCTICA\TP1\M1\RUIDO_ROSA.wav", ruido_rosa, fs)
-# sf.write(r"C:\UNTREF\2026\PARTE PRÁCTICA\TP1\M1\RUIDO_BLANCO.wav", ruido_blanco, fs)
-
-
-# fig, axes = plt.subplots(2, 1, figsize=(10, 8))
-
-# =========================
-# ESPECTRO RUIDO ROSA
-# =========================
-
-# magnitud = np.abs(espectro)
-
-# magnitud_db = 20 * np.log10(magnitud + 1e-12)
-
-# axes[0].semilogx(freqs, magnitud_db)
-
-# axes[0].set_title("Espectro del ruido rosa")
-
-# axes[0].set_xlabel("Frecuencia [Hz]")
-
-# axes[0].set_ylabel("Magnitud [dB]")
-
-# axes[0].grid(True)
-
-
-# =========================
-# ESPECTRO RUIDO BLANCO
-# =========================
-
-# magnitud_ruido_blanco = np.abs(espectro_ruido_blanco)
-
-# magnitud_ruido_blanco_db = 20 * np.log10(magnitud_ruido_blanco + 1e-12)
-
-# axes[1].semilogx(freqs, magnitud_ruido_blanco_db)
-
-# axes[1].set_title("Espectro del ruido blanco")
-
-# axes[1].set_xlabel("Frecuencia [Hz]")
-
-# axes[1].set_ylabel("Magnitud [dB]")
-
-# axes[1].grid(True)
-
-
-# plt.tight_layout()
-
-# plt.show()
-# sf.write("/tmp/ruido_blanco.wav", ruido, sr_gen)
-# print(f"Ruido blanco generado: {duracion} s, pico = {np.max(np.abs(ruido)):.2f}")
-
-# Visualizar
-# fig_ruido_blanco, axes_ruido = plt.subplots(2, 1, figsize=(10, 5))
-
-# Forma de onda (primeros 50 ms)
-# muestras_r = int(0.05 * sr_gen)
-# t_ruido = np.arange(muestras_r) / sr_gen * 1000
-# axes_ruido[0].plot(t_ruido, ruido_blanco[:muestras_r], "gray", linewidth=0.5)
-# axes_ruido[0].set_title("Ruido blanco - forma de onda (50 ms)")
-# axes_ruido[0].set_xlabel("Tiempo (ms)")
-# axes_ruido[0].set_ylabel("Amplitud")
-# axes_ruido[0].grid(True, alpha=0.3)
-
-# Histograma (distribucion gaussiana)
-# axes_ruido[1].hist(ruido_blanco, bins=100, density=True, alpha=0.7, color="steelblue")
-# axes_ruido[1].set_title("Distribucion del ruido (debe ser gaussiana)")
-# axes_ruido[1].set_xlabel("Amplitud")
-# axes_ruido[1].set_ylabel("Densidad")
-# axes_ruido[1].grid(True, alpha=0.3)
-
-# plt.tight_layout()
-# plt.gca()
-# plt.show()
+print(ruido_rosa)

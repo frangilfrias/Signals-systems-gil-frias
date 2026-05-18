@@ -70,6 +70,8 @@ En ambos casos se utilizó el siguiente formato de audio digital:
 - Codificación:
   PCM
 
+- Duración: 30.0 s
+
 ---
 
 ### I.3 Procesamiento
@@ -95,7 +97,7 @@ En la figura 1 se muestra la  respuesta de amplitud suavizada y sin suavizar de 
 - Por simple inspección visual de la figura 1, se observa la variación de -3 dB/octava de  la respuesta de amplitud de la señal de ruido rosa generada en lenguaje python.
 - La señal obtenida mediante la implementación de la función generar_ruido_rosa presenta la misma variación de nivel en función de la frecuencia que la señal de referencia.
 
-### I.5 Conclusiones
+### I.5 Conclusión
 Se validó la señal de ruido rosa generada mediante la función `generar_ruido_rosa` desarrollada en Python v 3.13.12.
 
 ## 3. Problemas encontrados y como se resolvieron.
