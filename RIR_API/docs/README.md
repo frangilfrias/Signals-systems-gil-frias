@@ -53,7 +53,7 @@ b. Comparación con una señal de ruido rosa de referencia.
 
 ### I.2 Origen y formato de los archivos de audio
 
-El archivo de audio asociado al código desarrollado en Python fue escrito mediante la función `write` de la librería `soundfile`, mientras que el archivo de referencia fue generado utilizando el software Room Eq Wizard Acoustics(REW)
+El archivo de audio asociado al código desarrollado en Python v 3.13.12, ha sido escrito mediante la función `write` de la librería `soundfile`, mientras que el archivo de referencia fue generado utilizando el software Room Eq Wizard Acoustics v 5.1.3(REW)
 
 En ambos casos se utilizó el siguiente formato de audio digital:
 
