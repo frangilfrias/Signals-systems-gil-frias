@@ -107,3 +107,7 @@ def generar_sine_sweep(
     filtro_inv /= np.max(np.abs(filtro_inv))
 
     return sweep , filtro_inv
+
+
+
+
