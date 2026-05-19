@@ -31,25 +31,6 @@ def generar_sine_sweep(
        and distortion with a swept-sine technique."
     """
 
-    #Genero la cantidad de muestras y el vector del eje temporal para el sweep
-    num_muestras = int(duracion*fs)
-    eje_tem = np.arange(num_muestras)/fs
-
-    #Creo un parametro para facilitar la escritura de la fórmula
-    k_param = duracion / np.log(f2/f1)
-
-    #Genero el sweep con los parámetros establecidos
-    sweep = np.sin( 2 * np.pi * f1 * k_param * (np.exp(eje_tem/k_param)-1))
-
-    #Produzco el filtro inverso
-    compensacion_temp = np.exp(-eje_tem/k_param) # Para que las bajas y altas frecuencias del filtro duren lo mismo que el sweep
-    filtro_inv = sweep[::-1] * compensacion_temp
-
-    #Normalizo ambos vectores
-    sweep = sweep / np.max(np.abs(sweep))
-    filtro_inv = filtro_inv / np.max(np.abs(filtro_inv))
-
-    return sweep , filtro_inv
 
 
 
