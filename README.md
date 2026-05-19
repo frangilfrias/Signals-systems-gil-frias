@@ -17,7 +17,10 @@ RIR-API es una API RESTful desarrollada en Python utilizando el framework **Fast
 * Francisco Gil Frias - Legajo 50070 (Testing/CI) 
 
 ## Branching strategy 
-Para el presente proyecto se adopta una estrategia en la cual el desarrollo presenta efectos solamente en la rama Develop, con el objetivo de realizar las modificaciones simultáneamente y que sea útil en el entorno de pruebas, reservando la rama MAIN para los procesos productivos.  
+Para el presente proyecto se adopta una estrategia de ramas en la cual el desarrollo se integra principalmente en la rama develop, que actúa como entorno de integración y pruebas. Esta rama concentra las modificaciones de las distintas funcionalidades en desarrollo, permitiendo su validación conjunta antes de ser incorporadas a producción.
+La rama main se reserva exclusivamente para versiones estables y listas para despliegue en entorno productivo.
+A partir de develop se crean ramas de tipo feature/*, las cuales representan funcionalidades específicas asociadas a los distintos milestones del proyecto. Cada feature se desarrolla de forma aislada y, una vez completada y validada, se integra nuevamente a develop mediante un merge request o pull request.
+
 
 ## Requisitos previos
 
@@ -88,29 +91,68 @@ RIR_API/
 
 ## Diagrama de arquitectura
 ```mermaid
-flowchart LR
+flowchart TD
+    CLIENTE["CLIENTE"]
+    CLIENTE --> ROUTERS["ROUTERS"]
 
-  subgraph Core["Capa principal"]
-    Cliente["Cliente<br/>HTTP (request)"]
-    Routers["Routers<br/>ENDPOINTS"]
-    Schemas["Schemas<br/>PYDANTIC (validación)"]
-    Services["Services<br/>LÓGICA"]
-  end
+    ROUTERS --> SCHEMAS["SCHEMAS"]
 
-  subgraph Modules["Modulos"]
-    M0["M0<br/>Armado / Estructuración"]
-    M1["M1<br/>Generación"]
-    M2["M2<br/>Procesamiento"]
-    M3["M3<br/>Análisis"]
-  end
+    subgraph SCH["."]
+        SCHEMAS
+        M1["GENERACIÓN (M1)"]
+        M2["PROCESAMIENTO (M2)"]
+        M3["ANÁLISIS (M3)"]
+        SCHEMAS --> M1
+        SCHEMAS --> M2
+        SCHEMAS --> M3
+    end
 
-  Cliente --> Routers
-  Routers --> Services
-  Schemas -.-> Routers
-  Services --> M0
-  Services --> M1
-  Services --> M2
-  Services --> M3
+    ROUTERS --> EP["ENDPOINTS"]
+
+    subgraph EPS["."]
+        EP
+        subgraph GEN["Generación"]
+            BARRIDO["GENERAR BARRIDO"]
+            RUIDO["GENERAR RUIDO ROSA"]
+        end
+        subgraph PRO["Procesamiento"]
+            PROCESAMIENTO["PROCESAMIENTO"]
+        end
+        subgraph ANA["Análisis"]
+            ANALISIS["ANÁLISIS"]
+        end
+        EP --> GEN
+        EP --> PRO
+        EP --> ANA
+    end
+
+    ROUTERS --> SERVICES["SERVICES"]
+
+    subgraph SVC["."]
+        SERVICES
+        subgraph SG["Generación - M1"]
+            S1["FUNCIÓN BARRIDO SENOIDAL"]
+            S2["FUNCIÓN RUIDO ROSA"]
+            S_REP["REPRODUCIR AUDIO"]
+            S_GRAB["GRABAR AUDIO"]
+        end
+        subgraph SP["Procesamiento - M2"]
+            S3["CARGAR AUDIO"]
+            S4["OBTENER RI DESDE LA RESPUESTA AL BARRIDO"]
+            S5["FILTROS DE OCTAVA"]
+            S6["ESCALA LOGARÍTMICA"]
+            S7["RI SINTÉTICA"]
+        end
+        subgraph SA["Análisis - M3"]
+            S8["INTEGRAL DE SCHROEDER"]
+            S9["REGRESIÓN LINEAL"]
+            S10["PARÁMETROS ACÚSTICOS"]
+            S11["LUNDEBY"]
+        end
+        SERVICES --> SG
+        SERVICES --> SP
+        SERVICES --> SA
+    end
 ```
 ## Milestones
 
@@ -131,6 +173,26 @@ flowchart LR
 - [ ] Implementar `generar_sine_sweep()` en `app/services/sine_sweep.py`.
 - [ ] Implementar `reproducir_y_grabar()`.
 - [ ] Todos los tests de `test_generacion.py` deben pasar.
+
+```bash
+# Para probar reproducir y grabar (una vez instaladas las dependencias) ejecutar: 
+cd RIR_API 
+uv run app/services/prueba_reproducir_grabar.py 
+```
+Esto abrirá el micrófono por defecto del usuario para que una vez que escuche el tono pueda empezar a grabar. Pasados los 4 segundos el archivo se reproducirá y se guardará en RIR_API/ como un .wav. El usuario puede optar por modificar su dispositivo por default de la siguiente manera: 
+
+```bash
+# Para conocer el dispositivo que está utilizando por default:  
+import sounddevice as sd
+print(sd.default.device) 
+```
+En caso de que el usuario opte por otro método de entrada y salida: 
+```bash
+# Para conocer el dispositivo que está utilizando por default:  
+import sounddevice as sd
+print(sd.query_devices())
+sd.default.device = (input_id, output_id)  
+```
 
 ### M2 — Procesamiento de senales
 **Fecha:** Semana 12
