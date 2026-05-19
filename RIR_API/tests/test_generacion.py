@@ -33,7 +33,7 @@ class TestGenerarRuidoRosa:
         de aproximadamente -3 dB/octava."""
 
         # Generar ruido rosa con una duracion mayor a 10 segundos con fs=44100 Hz
-        duracion = 30
+        duracion = 30.0
         fs = 44100
         ruido = generar_ruido_rosa(duracion, fs)
 

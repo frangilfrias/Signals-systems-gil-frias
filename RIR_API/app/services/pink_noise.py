@@ -38,6 +38,11 @@ def generar_ruido_rosa(duracion: float, fs: int) -> np.ndarray:
          Señal de ruido rosa normalizada, de longitud
         ``int(duracion * fs)``.
     """
+    # Definición de constantes
+    fs_validas = {44100, 48000, 88200, 96000, 176400, 192000, 352800, 384000, 705600, 768000}
+    n_min = 1024
+    n_max = 92_160_000
+
     # Validación de tipo (runtime) de las variables de entrada
     if not isinstance(duracion, float):
         raise TypeError(
@@ -47,7 +52,7 @@ def generar_ruido_rosa(duracion: float, fs: int) -> np.ndarray:
         raise TypeError(f"fs debe ser int.Tipo recibido: {type(fs).__name__}, valor: {fs}")
 
     # Validación de los valores correspondientes a las variables de entrada
-    fs_validas = {44100, 48000, 88200, 96000, 176400, 192000, 352800, 384000, 705600, 768000}
+
     if fs not in fs_validas:
         raise ValueError(f"fs invalida: {fs}. Valores permitidos: {fs_validas}")
     if duracion <= 0:
@@ -58,7 +63,7 @@ def generar_ruido_rosa(duracion: float, fs: int) -> np.ndarray:
 
     # Validación de valores extremos según la cantidad de muestras
     # (duración mínima para fs=44100 Hz=23.30 ms; duración máxima para fs=768000=120.0 s)
-    if n_muestras < 1024 or n_muestras > 92_160_000:
+    if n_muestras < n_min or n_muestras > n_max:
         raise ValueError(
             "La cantidad de muestras se ubica fuera del rango(1024 <= n <= 92_160_000)."
         )
@@ -72,6 +77,8 @@ def generar_ruido_rosa(duracion: float, fs: int) -> np.ndarray:
 
     # Dividir cada componente por sqrt(f)
     # Se omite f=0 para evitar división por cero
+    # Se incluye f_min para evitar divisiones por números en el entorno de cero
+
     espectro[1:] = espectro[1:] / np.sqrt(freqs[1:])
 
     # Aplicar la transformada inversa
