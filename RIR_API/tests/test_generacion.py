@@ -4,6 +4,7 @@ import numpy as np
 import pytest
 from scipy.signal import spectrogram
 from scipy.signal import fftconvolve
+import scipy.signal as signal
 
 from app.services.pink_noise import generar_ruido_rosa
 from app.services.sine_sweep import generar_sine_sweep
@@ -29,6 +30,27 @@ class TestGenerarRuidoRosa:
         """Verifica que la senal esta normalizada entre -1 y 1."""
         ruido = generar_ruido_rosa(1.0, 44100)
         assert np.max(np.abs(ruido)) <= 1.0
+
+    def test_ruido_rosa(self):
+        """Verifica que el espectro de la señal tenga una pendiente
+        de aproximadamente -3 dB/octava."""
+
+        # Generar ruido rosa con una duracion mayor a 10 segundos con fs=44100 Hz
+        duracion = 30.0
+        fs = 44100
+        ruido = generar_ruido_rosa(duracion, fs)
+
+        # Calcular la PSD usando el método de Welch
+        f, psd = signal.welch(ruido, fs=fs, nperseg=4096)
+
+        # Calcular la pendiente en dB/octava entre 100 Hz y 10 KHz
+        filtro = (f >= 100) & (f <= 10000)  # Aplicar filtro pasabanda
+        log2f = np.log2(f[filtro])
+        psd_db = 10 * np.log10(psd[filtro])
+
+        # Verificar que la pendiente se encuentra entre -4.00 y -2.00 dB/octava
+        pendiente, _ = np.polyfit(log2f, psd_db, 1)
+        assert -4 < pendiente < -2
 
 
 class TestGenerarSineSweep:
