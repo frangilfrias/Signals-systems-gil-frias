@@ -28,3 +28,70 @@ sd.default.device = (input_id, output_id)
 
 
 
+## Decisiones de diseno tomadas.
+## Generación de ruido rosa
+Se tomó la decisión de realizar el diseño a través  del método espectral (algoritmo sugerido en pink_noise.py) en lugar del de Voss McCartney, el cual se encuentra especificado en el issue #10.
+
+## Resultados de validacion (graficos, tablas comparativas).
+  ## Generación
+### Ruido rosa
+
+### I.1 Aspectos generales
+
+Se validó manualmente la función de generación de ruido rosa mediante dos métodos:
+
+a. Inspección visual.  
+b. Comparación con una señal de ruido rosa de referencia.
+
+---
+
+### I.2 Origen y formato de los archivos de audio
+
+El archivo de audio asociado al código desarrollado en Python v 3.13.12, ha sido escrito mediante la función `write` de la librería `soundfile`, mientras que el archivo de referencia fue generado utilizando el software Room Eq Wizard Acoustics v 5.1.3(REW)
+
+En ambos casos se utilizó el siguiente formato de audio digital:
+
+- Frecuencia de muestreo:
+  
+  f_s = 44.1 kHz
+  
+
+- Profundidad de bits:
+  
+  N = 16 bits
+  
+
+- Codificación:
+  PCM
+
+- Duración: 30.0 s
+
+---
+
+### I.3 Procesamiento
+
+Los archivos de audio fueron procesados mediante el software REW, obteniendo las correspondientes respuestas de amplitud.
+
+Las respuestas fueron evaluadas:
+
+- Sin suavizado
+- Mediante suavizado por bandas de octava.
+
+---
+
+### I.4 Resultados
+
+En la figura 1 se muestra la  respuesta de amplitud suavizada y sin suavizar de la señal generada a través de python mediante la función generar_ruido_rosa, y la de referencia obtenida desde el software REW.
+
+![Respuestas en amplitud conjuntas: Suavizadas (superior derecha); Sin suavizar (superior izquierda). Respuestas individuales: REW (Inferior izquierda); Python (inferior derecha)](IMÁGENES/ruido_v.png)
+*Figura 1. Respuestas en amplitud conjuntas: suavizadas (superior derecha) y sin suavizar (superior izquierda). Respuestas individuales: REW (inferior izquierda) y Python (inferior derecha).*
+---
+
+### I.5 Análisis
+- Por simple inspección visual de la figura 1, se observa la variación de -3 dB/octava de  la respuesta de amplitud de la señal de ruido rosa generada en lenguaje python.
+- La señal obtenida mediante la implementación de la función generar_ruido_rosa presenta la misma densidad espectral de potencia que la señal de referencia.
+
+### I.5 Conclusión
+Se validó la señal de ruido rosa generada mediante la función `generar_ruido_rosa` desarrollada en Python v 3.13.12.
+
+## 3. Problemas encontrados y como se resolvieron.
