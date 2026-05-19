@@ -37,10 +37,13 @@ para entender la estructura de endpoints, schemas y respuestas esperadas.
 
 Cada milestone deberia documentarse brevemente en este directorio, incluyendo:
 
-1. Decisiones de diseno tomadas.
-2. Resultados de validacion (graficos, tablas comparativas).
+## Decisiones de diseno tomadas.
+## Generación de ruido rosa
+Se tomó la decisión de realizar el diseño a través  del método espectral (algoritmo sugerido en pink_noise.py) en lugar del de Voss McCartney, el cual se encuentra especificado en el issue #10.
+
+## Resultados de validacion (graficos, tablas comparativas).
   ## Generación
-## Ruido rosa
+### Ruido rosa
 
 ### I.1 Aspectos generales
 
@@ -95,7 +98,7 @@ En la figura 1 se muestra la  respuesta de amplitud suavizada y sin suavizar de 
 
 ### I.5 Análisis
 - Por simple inspección visual de la figura 1, se observa la variación de -3 dB/octava de  la respuesta de amplitud de la señal de ruido rosa generada en lenguaje python.
-- La señal obtenida mediante la implementación de la función generar_ruido_rosa presenta la misma variación de nivel en función de la frecuencia que la señal de referencia.
+- La señal obtenida mediante la implementación de la función generar_ruido_rosa presenta la misma densidad espectral de potencia que la señal de referencia.
 
 ### I.5 Conclusión
 Se validó la señal de ruido rosa generada mediante la función `generar_ruido_rosa` desarrollada en Python v 3.13.12.
