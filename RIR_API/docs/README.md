@@ -92,7 +92,8 @@ En la figura 1 se muestra la  respuesta de amplitud suavizada y sin suavizar de 
 ### I.5 Conclusión
 Se validó la señal de ruido rosa generada mediante la función `generar_ruido_rosa` desarrollada en Python v 3.13.12.
 
-## Decisiones de diseño
+## Decisiones de diseño 
+## Generación de Sine Sweep
 
 El método para la generación del sine sweep fue dado por la fórmula matemática:
 
