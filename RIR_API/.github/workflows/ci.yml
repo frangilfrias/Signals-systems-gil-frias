@@ -22,6 +22,9 @@ jobs:
       - name: Instalar uv
         uses: astral-sh/setup-uv@v4
 
+      - name: Install PortAudio
+        run: sudo apt-get update && sudo apt-get install -y portaudio19-dev
+
       - name: Instalar dependencias del proyecto
         run: |
           uv venv
@@ -30,9 +33,6 @@ jobs:
       - name: Ejecutar linter (ruff)
         run: |
           uv run ruff check src/ tests/
-
-      - name: Install PortAudio
-        run: sudo apt-get update && sudo apt-get install -y portaudio19-dev
           
       - name: Ejecutar tests (pytest)
         run: |
