@@ -137,16 +137,17 @@ flowchart LR
 cd RIR_API 
 uv run app/services/prueba_reproducir_grabar.py 
 ```
-Esto abrirá el micrófono por defecto del usuario para que una vez que escuche el tono pueda empezar a grabar. Pasados los 4 segundos el archivo se reproducirá y se guardará en RIR_API/ como un .wav. El usuario puede optar por modificar su dispositivo por default de la siguiente manera: 
+Esto abrirá el micrófono por defecto del usuario para que una vez que escuche el tono pueda empezar a grabar. Para conocer el micrófono por default, el usuario puede utilizar: 
 
 ```bash
-# Para conocer el dispositivo que está utilizando por default:  
-import sounddevice as sd
-print(sd.default.device) 
+# Para probar conocer el dispositivo por default: 
+uv run app/services/listar_dispositivos.py
 ```
-En caso de que el usuario opte por otro método de entrada y salida: 
+
+Pasados los 4 segundos el archivo se reproducirá y se guardará en RIR_API/ como un .wav. El usuario puede optar por modificar su dispositivo por default dentro de *listar_dispositivos* de la siguiente manera: 
+
 ```bash
-# Para conocer el dispositivo que está utilizando por default:  
+# Para cambiar su dispositivo por default:  
 import sounddevice as sd
 print(sd.query_devices())
 sd.default.device = (input_id, output_id)  
