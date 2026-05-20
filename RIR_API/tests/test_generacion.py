@@ -2,6 +2,9 @@
 
 import numpy as np
 import pytest
+from scipy.signal import spectrogram
+from scipy.signal import fftconvolve
+import scipy.signal as signal
 
 from app.services.pink_noise import generar_ruido_rosa
 from app.services.sine_sweep import generar_sine_sweep
@@ -28,6 +31,27 @@ class TestGenerarRuidoRosa:
         ruido = generar_ruido_rosa(1.0, 44100)
         assert np.max(np.abs(ruido)) <= 1.0
 
+    def test_ruido_rosa(self):
+        """Verifica que el espectro de la señal tenga una pendiente
+        de aproximadamente -3 dB/octava."""
+
+        # Generar ruido rosa con una duracion mayor a 10 segundos con fs=44100 Hz
+        duracion = 30.0
+        fs = 44100
+        ruido = generar_ruido_rosa(duracion, fs)
+
+        # Calcular la PSD usando el método de Welch
+        f, psd = signal.welch(ruido, fs=fs, nperseg=4096)
+
+        # Calcular la pendiente en dB/octava entre 100 Hz y 10 KHz
+        filtro = (f >= 100) & (f <= 10000)  # Aplicar filtro pasabanda
+        log2f = np.log2(f[filtro])
+        psd_db = 10 * np.log10(psd[filtro])
+
+        # Verificar que la pendiente se encuentra entre -4.00 y -2.00 dB/octava
+        pendiente, _ = np.polyfit(log2f, psd_db, 1)
+        assert -4 < pendiente < -2
+
 
 class TestGenerarSineSweep:
     """Tests para la funcion generar_sine_sweep."""
@@ -48,3 +72,64 @@ class TestGenerarSineSweep:
         expected_length = int(duracion * fs)
         assert len(sweep) == expected_length
         assert len(filtro_inv) == expected_length
+
+    def test_sine_sweep_rango_frecuencias(self):
+        """
+        Verificar que el sine sweep cubre el rango de frecuencias
+        especificado de f1 a f2 de manera correcta.
+        """
+        sweep, filtroinv = generar_sine_sweep(20, 20000, 5.0, 44100)
+        frecuencias, tiempos, Sxx = spectrogram(sweep,fs=44100)
+
+        ### Analizo si hay energia significativa en las frecuencias inicial y final
+        #Busco los indices  en los 20 y 20000Hz
+        idx_f1 = np.argmin(np.abs(frecuencias - 20))
+        idx_f2 = np.argmin(np.abs(frecuencias - 20000))
+
+        #Mido la energía de dichos puntos
+        energia_f1 = np.max(Sxx[idx_f1])
+        energia_f2 = np.max(Sxx[idx_f2])
+
+        assert energia_f1 > 1e-10, ("No se detectó energía significativa cerca de la frecuencia inicial (20 Hz)")
+        assert energia_f2 > 1e-10, ("No se detectó energía significativa cerca de la frecuencia final (20000 Hz)")
+
+        ### Analizo si el crecimiento de la frecuencia instantanea es monotona
+        #Busco frecuencia con mayor energia
+        indices_maximos = np.argmax(Sxx, axis=0)
+        frecuencia_inst = frecuencias[indices_maximos]
+
+        #Verifico que vaya creciendo con una tolerancia de 5 Hz
+        diferencias = np.diff(frecuencia_inst)
+        porcentaje_creciente = np.mean(diferencias >= 0)
+
+        assert porcentaje_creciente > 0.9, ("La frecuencia instantánea no presenta crecimiento monotónico suficiente")
+
+    def test_sine_sweep_convolucion_impulso(self):
+        """
+        Verificar que la convolucion del sweep con su filtro inverso
+        produce una aproximacion a un impulso.
+        """
+        #Genero la señal, el filtro y hago la convolucion
+        sweep, filtro = generar_sine_sweep(20, 20000, 1.0, 44100)
+        respuesta = fftconvolve(sweep, filtro,mode = "full")
+
+        #Busco la posicion del pico maximo 
+        idx_pico = np.argmax(np.abs(respuesta))
+        pico = np.abs(respuesta[idx_pico])
+
+        #Excluyo la ventana
+        ventana = 100
+        resto = np.concatenate([
+            respuesta[:idx_pico - ventana],
+            respuesta[idx_pico + ventana:]
+            ])
+
+        #Mido la energia promedio del resto
+        energia_promedio_resto = np.mean(np.abs(resto))
+
+        #Comparo el pico con el resto
+        relacion_db = 20 * np.log10(
+            pico / energia_promedio_resto
+        )
+
+        assert relacion_db > 40, ("La relación pico/resto es insuficiente: ")
