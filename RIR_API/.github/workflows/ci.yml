@@ -23,7 +23,8 @@ jobs:
         uses: astral-sh/setup-uv@v4
 
       - name: Install PortAudio
-        run: sudo apt-get update && sudo apt-get install -y portaudio19-dev
+        run: |
+          sudo apt-get update && sudo apt-get install -y portaudio19-dev
 
       - name: Instalar dependencias del proyecto
         run: |
