@@ -174,6 +174,27 @@ flowchart TD
 - [ ] Implementar `reproducir_y_grabar()`.
 - [ ] Todos los tests de `test_generacion.py` deben pasar.
 
+```bash
+# Para probar reproducir y grabar (una vez instaladas las dependencias) ejecutar: 
+cd RIR_API 
+uv run app/services/prueba_reproducir_grabar.py 
+```
+Esto abrirá el micrófono por defecto del usuario para que una vez que escuche el tono pueda empezar a grabar. Para conocer el micrófono por default, el usuario puede utilizar: 
+
+```bash
+# Para probar conocer el dispositivo por default: 
+uv run app/services/listar_dispositivos.py
+```
+
+Pasados los 4 segundos el archivo se reproducirá y se guardará en RIR_API/ como un .wav. El usuario puede optar por modificar su dispositivo por default dentro de *listar_dispositivos* de la siguiente manera: 
+
+```bash
+# Para cambiar su dispositivo por default:  
+import sounddevice as sd
+print(sd.query_devices())
+sd.default.device = (input_id, output_id)  
+```
+
 ### M2 — Procesamiento de senales
 **Fecha:** Semana 12
 
