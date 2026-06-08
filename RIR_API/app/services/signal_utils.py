@@ -4,7 +4,7 @@ Milestone 2: Procesamiento de la respuesta al impulso.
 """
 
 import numpy as np
-
+from scipy.signal import fftconvolve
 
 def cargar_audio(ruta: str) -> tuple[np.ndarray, int]:
     """Carga un archivo de audio y retorna la senal y la frecuencia de muestreo.
@@ -68,7 +68,35 @@ def obtener_ri_desde_sweep(
     np.ndarray
         Respuesta al impulso estimada, normalizada.
     """
-    raise NotImplementedError("Implementar en Milestone 2")
+    # Validación de datos
+    if len(grabacion) == 0:
+        raise ValueError("grabacion no puede estar vacia")
+
+    if len(filtro_inverso) == 0:
+        raise ValueError("filtro_inverso no puede estar vacio")
+    
+    # Obtengo la rta al impulso convolucionando la señal grabada con el filtro inverso
+    ri = fftconvolve(
+        grabacion,
+        filtro_inverso,
+        mode="full"
+    )
+
+    # Busco la posición del valor pico absoluto = llegada directa de la señal
+    idx_pico = np.argmax(np.abs(ri))
+
+    #Establezco un margen para el recorte, y recorto la señal
+    margen = 100
+    inicio = max(0,idx_pico - margen)
+    ri = ri[inicio:]
+    
+    # Busco la máxima amplitud de mi señal para normalizarla
+    pico = np.max(np.abs(ri))
+
+    if pico > 0:
+        ri = ri / pico
+
+    return ri
 
 
 def a_escala_log(signal: np.ndarray) -> np.ndarray:
