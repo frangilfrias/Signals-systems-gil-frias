@@ -3,85 +3,48 @@
 Milestone 2: Procesamiento de la respuesta al impulso.
 """
 
+from pathlib import Path
+
 import numpy as np
+import soundfile as sf
 
 
-def cargar_audio(ruta: str) -> tuple[np.ndarray, int]:
-    """Carga un archivo de audio y retorna la senal y la frecuencia de muestreo.
+def cargar_audio(ruta: str | Path) -> tuple[np.ndarray, int]:
+    """
+    Carga un archivo de audio WAV o FLAC.
 
     Parameters
     ----------
-    ruta : str
-        Ruta al archivo de audio a cargar.
+    ruta : str | Path
+        Ruta al archivo de audio.
 
     Returns
     -------
-    signal : np.ndarray
-        Senal de audio como array 1D (mono).
-    fs : int
-        Frecuencia de muestreo del archivo en Hz.
+    tuple[np.ndarray, int]
+        Tupla con (senal, frecuencia_de_muestreo).
+        La senal se devuelve como float64 normalizada entre -1 y 1.
+        Si el audio es estereo, shape = (n_muestras, n_canales).
 
     Raises
     ------
     FileNotFoundError
-        Si el archivo especificado no existe.
+        Si el archivo no existe.
+    ValueError
+        Si el formato no es soportado (solo WAV o FLAC).
     """
-    raise NotImplementedError("Implementar en Milestone 2")
+    ruta = Path(ruta)
 
+    if not ruta.exists():
+        raise FileNotFoundError(f"No se encontro el archivo: {ruta}")
 
-def sintetizar_ri(
-    t60_por_banda: dict[float, float], fs: int, duracion: float
-) -> np.ndarray:
-    """Sintetiza una respuesta al impulso artificial a partir de valores T60 por banda.
+    extension = ruta.suffix.lower()
+    if extension not in (".wav", ".flac"):
+        raise ValueError(f"Formato '{extension}' no soportado. Usar WAV o FLAC.")
 
-    Parameters
-    ----------
-    t60_por_banda : dict[float, float]
-        Diccionario {frecuencia_central_Hz: T60_segundos}.
-    fs : int
-        Frecuencia de muestreo en Hz.
-    duracion : float
-        Duracion de la respuesta al impulso en segundos.
+    senal, sample_rate = sf.read(ruta, dtype="float64")
 
-    Returns
-    -------
-    np.ndarray
-        Respuesta al impulso sintetizada (array 1D).
-    """
-    raise NotImplementedError("Implementar en Milestone 2")
+    maximo = np.max(np.abs(senal))
+    if maximo > 0:
+        senal = senal / maximo
 
-
-def obtener_ri_desde_sweep(
-    grabacion: np.ndarray, filtro_inverso: np.ndarray
-) -> np.ndarray:
-    """Obtiene la respuesta al impulso mediante deconvolucion de un sine sweep.
-
-    Parameters
-    ----------
-    grabacion : np.ndarray
-        Senal grabada que contiene la respuesta de la sala al sweep.
-    filtro_inverso : np.ndarray
-        Filtro inverso del sweep utilizado.
-
-    Returns
-    -------
-    np.ndarray
-        Respuesta al impulso estimada, normalizada.
-    """
-    raise NotImplementedError("Implementar en Milestone 2")
-
-
-def a_escala_log(signal: np.ndarray) -> np.ndarray:
-    """Convierte una senal a escala logaritmica (dB) normalizada.
-
-    Parameters
-    ----------
-    signal : np.ndarray
-        Senal de entrada (array 1D).
-
-    Returns
-    -------
-    np.ndarray
-        Senal en escala logaritmica (dB), normalizada a 0 dB en el maximo.
-    """
-    raise NotImplementedError("Implementar en Milestone 2")
+    return senal, sample_rate
