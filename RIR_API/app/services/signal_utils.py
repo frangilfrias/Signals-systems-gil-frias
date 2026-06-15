@@ -29,9 +29,7 @@ def cargar_audio(ruta: str) -> tuple[np.ndarray, int]:
     raise NotImplementedError("Implementar en Milestone 2")
 
 
-def sintetizar_ri(
-    t60_por_banda: dict[float, float], fs: int, duracion: float
-) -> np.ndarray:
+def sintetizar_ri(t60_por_banda: dict[float, float], fs: int, duracion: float) -> np.ndarray:
     """Sintetiza una respuesta al impulso artificial a partir de valores T60 por banda.
 
     Parameters
@@ -48,12 +46,49 @@ def sintetizar_ri(
     np.ndarray
         Respuesta al impulso sintetizada (array 1D).
     """
-    raise NotImplementedError("Implementar en Milestone 2")
+
+    n = int(fs * duracion)
+    t = np.linspace(0, duracion, n, endpoint=False)
+
+    rir_total = np.zeros(n)
+    EPS = 1e-12
+
+    for fc, t60 in t60_por_banda.items():
+        print(f"Procesando banda {fc} Hz")
+        if t60 <= 0:
+            continue
+
+        # a) ruido blanco POR BANDA (correcto según consigna)
+        ruido = np.random.randn(n)
+
+        # b) filtrado en banda de octava
+        ruido_banda = filtro_octava(
+            signal=ruido,
+            fc=fc,
+            fs=fs,
+            orden=4,
+        )
+        # c) Normalización del rudio filtrado por cada banda
+        ruido_banda_rms = np.sqrt(np.mean(ruido_banda**2))
+
+        ruido_banda_norm = ruido_banda / (ruido_banda_rms + EPS)
+
+        # d) envolvente exponencial según T60
+        alpha = 6.91 / t60
+        envolvente = np.exp(-alpha * t)
+
+        banda = ruido_banda_norm * envolvente
+
+        # suma de contribuciones
+        rir_total += banda
+
+        # d) normalización final
+    rir_total /= np.max(np.abs(rir_total)) + EPS
+
+    return rir_total
 
 
-def obtener_ri_desde_sweep(
-    grabacion: np.ndarray, filtro_inverso: np.ndarray
-) -> np.ndarray:
+def obtener_ri_desde_sweep(grabacion: np.ndarray, filtro_inverso: np.ndarray) -> np.ndarray:
     """Obtiene la respuesta al impulso mediante deconvolucion de un sine sweep.
 
     Parameters
