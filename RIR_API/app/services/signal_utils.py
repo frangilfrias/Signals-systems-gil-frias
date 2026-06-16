@@ -5,6 +5,8 @@ Milestone 2: Procesamiento de la respuesta al impulso.
 
 import numpy as np
 
+from app.services.filter import filtro_octava
+
 
 def cargar_audio(ruta: str) -> tuple[np.ndarray, int]:
     """Carga un archivo de audio y retorna la senal y la frecuencia de muestreo.

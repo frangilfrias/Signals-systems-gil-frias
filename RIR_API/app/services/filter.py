@@ -7,7 +7,10 @@ import numpy as np
 
 
 def filtro_octava(
-    signal: np.ndarray, fc: float, fs: int, orden: int = 4
+    signal: np.ndarray,
+    fc: float,
+    fs: int,
+    orden: int = 4,
 ) -> np.ndarray:
     """Aplica un filtro pasabanda de una octava centrado en ``fc``.
 
