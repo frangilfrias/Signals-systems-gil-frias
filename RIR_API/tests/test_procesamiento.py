@@ -2,10 +2,13 @@
 
 import numpy as np
 import pytest
+from scipy.signal import fftconvolve
+
+from app.services.sine_sweep import generar_sine_sweep
 from scipy import signal as sig
 import soundfile as sf
 
-from app.services.signal_utils import a_escala_log, cargar_audio, sintetizar_ri
+from app.services.signal_utils import a_escala_log, cargar_audio, sintetizar_ri, obtener_ri_desde_sweep
 from app.services.filter import filtro_octava
 
 @pytest.fixture
@@ -202,6 +205,7 @@ class TestFiltroOctava:
         assert np.isclose(gain_fc, 0.0, atol=0.5)
         assert np.isclose(gain_low, -3.0, atol=1.0)
         assert np.isclose(gain_high, -3.0, atol=1.0)
+        
 class TestSintetizarRI:
     """Tests para la funcion sintetizar_ri"""
 
@@ -270,6 +274,61 @@ class TestSintetizarRI:
         t60_estimado = -60 / pendiente
 
         assert np.isfinite(t60_estimado)
-
+        
         # tolerancia del 10 %
         assert abs(t60_estimado - t60_objetivo) < 0.1 * t60_objetivo
+
+
+class TestObtenerRiDesdeSweep:
+    def test_obtener_ri_pico(self):
+        """
+        Verificar que la RI obtenida por deconvolucion tiene
+        un pico principal claramente identificable.
+        """
+
+        fs = 48000
+
+        # Sweep + filtro de prueba
+        sweep, filtro_inverso = generar_sine_sweep(
+            f1=20,
+            f2=20000,
+            duracion=2.0,
+            fs=fs,
+        )
+
+        # RI artificial simple, con reflexiones
+        ri_original = np.zeros(2048)
+        ri_original[0] = 1.0
+        ri_original[300] = 0.5
+        ri_original[700] = 0.25
+
+        # Simular grabacion
+        grabacion = fftconvolve(
+            sweep,
+            ri_original,
+            mode="full",
+        )
+
+        # Recuperar RI
+        ri_recuperada = obtener_ri_desde_sweep(
+            grabacion,
+            filtro_inverso,
+        )
+
+        # Re-alineo las señales utilizando el pico como referencia
+        idx = np.argmax(np.abs(ri_recuperada))
+        ri_recuperada = ri_recuperada[idx:]
+
+        # Igualar longitudes para comparar
+        n = min(len(ri_original), len(ri_recuperada))
+
+        ri_original = ri_original[:n]
+        ri_recuperada = ri_recuperada[:n]
+
+        # Correlacion normalizada
+        correlacion = np.corrcoef(
+            ri_original,
+            ri_recuperada,
+        )[0, 1]
+
+        assert correlacion > 0.9
