@@ -64,3 +64,8 @@ Thumbs.db
 
 # Datos de medicion
 data/
+
+# Gráficos y borradores
+AUXILIAR/
+# Validacion_pipeline
+scripts/
