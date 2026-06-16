@@ -6,6 +6,7 @@ from scipy import signal as sig
 import soundfile as sf
 
 from app.services.signal_utils import a_escala_log, cargar_audio, sintetizar_ri
+from app.services.filter import filtro_octava
 
 @pytest.fixture
 def wav_mono(tmp_path):
