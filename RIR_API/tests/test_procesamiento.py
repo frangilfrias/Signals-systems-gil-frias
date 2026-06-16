@@ -60,59 +60,49 @@ class TestSintetizarRI:
         Verificar que el decaimiento por banda corresponde
         aproximadamente al T60 especificado.
         """
+        fs = 44100
+        duracion = 3.0
 
-    import numpy as np
+        fc = 1000
+        t60_objetivo = 2.0
 
+        rir = sintetizar_ri(
+            t60_por_banda={fc: t60_objetivo},
+            fs=fs,
+            duracion=duracion,
+        )
 
-def test_sintetizar_ri_decaimiento(self):
-    """
-    Verificar que el decaimiento por banda corresponde
-    aproximadamente al T60 especificado.
-    """
+        # Filtrado en la banda analizada
+        rir_banda = filtro_octava(
+            signal=rir,
+            fc=fc,
+            fs=fs,
+            orden=4,
+        )
 
-    fs = 44100
-    duracion = 3.0
+        # Integración inversa de Schroeder
+        energia = rir_banda**2
+        schroeder = np.cumsum(energia[::-1])[::-1]
 
-    fc = 1000
-    t60_objetivo = 2.0
+        schroeder_db = 10 * np.log10(schroeder + 1e-12)
+        schroeder_db -= schroeder_db[0]
 
-    rir = sintetizar_ri(
-        t60_por_banda={fc: t60_objetivo},
-        fs=fs,
-        duracion=duracion,
-    )
+        t = np.arange(len(schroeder_db)) / fs
 
-    # Filtrado en la banda analizada
-    rir_banda = filtro_octava(
-        signal=rir,
-        fc=fc,
-        fs=fs,
-        orden=4,
-    )
+        # Región típica para estimación T30
+        mask = (schroeder_db <= -5) & (schroeder_db >= -35)
 
-    # Integración inversa de Schroeder
-    energia = rir_banda**2
-    schroeder = np.cumsum(energia[::-1])[::-1]
+        assert np.sum(mask) > 100
 
-    schroeder_db = 10 * np.log10(schroeder + 1e-12)
-    schroeder_db -= schroeder_db[0]
+        pendiente, ordenada = np.polyfit(
+            t[mask],
+            schroeder_db[mask],
+            1,
+        )
 
-    t = np.arange(len(schroeder_db)) / fs
+        t60_estimado = -60 / pendiente
 
-    # Región típica para estimación T30
-    mask = (schroeder_db <= -5) & (schroeder_db >= -35)
+        assert np.isfinite(t60_estimado)
 
-    assert np.sum(mask) > 100
-
-    pendiente, ordenada = np.polyfit(
-        t[mask],
-        schroeder_db[mask],
-        1,
-    )
-
-    t60_estimado = -60 / pendiente
-
-    assert np.isfinite(t60_estimado)
-
-    # tolerancia del 20 %
-    assert abs(t60_estimado - t60_objetivo) < 0.1 * t60_objetivo
+        # tolerancia del 20 %
+        assert abs(t60_estimado - t60_objetivo) < 0.1 * t60_objetivo
