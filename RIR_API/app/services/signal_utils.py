@@ -5,18 +5,14 @@ Milestone 2: Procesamiento de la respuesta al impulso.
 
 import numpy as np
 import soundfile as sf
-
+from pathlib import Path
 from app.services.filter import filtro_octava
 
 
-def cargar_audio(ruta: str) -> tuple[np.ndarray, int]:
-    """Carga un archivo de audio y retorna la senal y la frecuencia de muestreo.
-from pathlib import Path
-
-
-
-
 def a_escala_log(signal: np.ndarray) -> np.ndarray:
+    """safe = np.where(signal == 0, np.finfo(float).eps, np.abs(signal))
+    resultado = 20 * np.log10(safe / np.max(safe))
+    return np.maximum(resultado, -120.0)
     """
     raise NotImplementedError("Implementar en Milestone 2")
 
@@ -80,9 +76,9 @@ def sintetizar_ri(t60_por_banda: dict[float, float], fs: int, duracion: float) -
 
 def obtener_ri_desde_sweep(grabacion: np.ndarray, filtro_inverso: np.ndarray) -> np.ndarray:
     """Obtiene la respuesta al impulso mediante deconvolucion de un sine sweep.
-    safe = np.where(signal == 0, np.finfo(float).eps, np.abs(signal))
-    resultado = 20 * np.log10(safe / np.max(safe))
-    return np.maximum(resultado, -120.0)
+     """
+
+
 def cargar_audio(ruta: str | Path) -> tuple[np.ndarray, int]:
     """
     Carga un archivo de audio WAV o FLAC.
