@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+from scipy import signal as sig
 
 from app.services.signal_utils import a_escala_log, cargar_audio, sintetizar_ri
 
@@ -35,6 +36,96 @@ class TestAEscalaLog:
         assert isinstance(db, np.ndarray)
 
 
+# Función global para los Test de los filtros de octava
+def _design_sos(fc, fs, orden):
+    """Replica exacta del diseño IEC usado en filtro_octava."""
+
+    f_low = fc / np.sqrt(2)
+    f_high = fc * np.sqrt(2)
+
+    return sig.butter(
+        orden,
+        [f_low, f_high],
+        btype="bandpass",
+        fs=fs,
+        output="sos",
+    )
+
+
+class TestFiltroOctava:
+    """Tests para la funcion filtro_octava."""
+
+    def test_filtro_octava_frecuencia_central(self):
+        """Verificar que el filtro pasa correctamente la frecuencia central."""
+
+        fs = 48000
+        fc = 1000
+        orden = 4
+
+        sos = _design_sos(fc, fs, orden)
+
+        w, h = sig.sosfreqz(sos, worN=4096, fs=fs)
+
+        # índice
+        w = np.asarray(w, dtype=float)
+        idx_fc = np.argmin((w - fc) ** 2)
+
+        gain_fc = 20 * np.log10(np.abs(h[idx_fc]) + 1e-12)
+
+        assert np.isclose(gain_fc, 0.0, atol=0.5), f"Ganancia en fc incorrecta: {gain_fc:.2f} dB"
+
+    def test_filtro_octava_atenuacion(self):
+        """Verificar atenuacion fuera de la banda de paso"""
+
+        fs = 48000
+        fc = 1000
+        orden = 4
+
+        sos = _design_sos(fc, fs, orden)
+
+        w, h = sig.sosfreqz(sos, worN=4096, fs=fs)
+
+        f1 = fc / 2
+        f2 = 2 * fc
+        w = np.asarray(w, dtype=float)
+        idx_f1 = np.argmin((w - f1) ** 2)
+        idx_f2 = np.argmin((w - f2) ** 2)
+
+        gain_f1 = 20 * np.log10(np.abs(h[idx_f1]) + 1e-12)
+        gain_f2 = 20 * np.log10(np.abs(h[idx_f2]) + 1e-12)
+
+        assert gain_f1 < -20, f"Atenuación insuficiente fc/2: {gain_f1:.2f} dB"
+        assert gain_f2 < -20, f"Atenuación insuficiente 2fc: {gain_f2:.2f} dB"
+
+    def test_filtro_octava_respuesta_frecuencia(self):
+        """Verificar que la respuesta cumple -3 dB en frecuencias de corte."""
+
+        fs = 48000
+        fc = 1000
+        orden = 4
+
+        sos = _design_sos(fc, fs, orden)
+
+        w, h = sig.sosfreqz(sos, worN=4096, fs=fs)
+
+        mag_db = 20 * np.log10(np.abs(h) + 1e-12)
+
+        w = np.asarray(w, dtype=float)
+        idx_fc = np.argmin((w - fc) ** 2)
+        gain_fc = mag_db[idx_fc]
+
+        f_low = fc / np.sqrt(2)
+        f_high = fc * np.sqrt(2)
+
+        idx_low = np.argmin((w - f_low) ** 2)
+        idx_high = np.argmin((w - f_high) ** 2)
+
+        gain_low = mag_db[idx_low]
+        gain_high = mag_db[idx_high]
+
+        assert np.isclose(gain_fc, 0.0, atol=0.5)
+        assert np.isclose(gain_low, -3.0, atol=1.0)
+        assert np.isclose(gain_high, -3.0, atol=1.0)
 class TestSintetizarRI:
     """Tests para la funcion sintetizar_ri"""
 
