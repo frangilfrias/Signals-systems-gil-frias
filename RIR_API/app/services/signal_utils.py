@@ -60,31 +60,31 @@ def sintetizar_ri(t60_por_banda: dict[float, float], fs: int, duracion: float) -
         if t60 <= 0:
             continue
 
-        # a) ruido blanco POR BANDA (correcto según consigna)
+        # Ruido blanco por banda de octava
         ruido = np.random.randn(n)
 
-        # b) filtrado en banda de octava
+        # Filtrado en banda de octava
         ruido_banda = filtro_octava(
             signal=ruido,
             fc=fc,
             fs=fs,
             orden=4,
         )
-        # c) Normalización del rudio filtrado por cada banda
+        # Normalización del rudio filtrado por cada banda
         ruido_banda_rms = np.sqrt(np.mean(ruido_banda**2))
 
         ruido_banda_norm = ruido_banda / (ruido_banda_rms + EPS)
 
-        # d) envolvente exponencial según T60
+        # Envolvente exponencial según T60
         alpha = 6.91 / t60
         envolvente = np.exp(-alpha * t)
 
         banda = ruido_banda_norm * envolvente
 
-        # suma de contribuciones
+        # Suma de contribuciones
         rir_total += banda
 
-        # d) normalización final
+        # Normalización final
     rir_total /= np.max(np.abs(rir_total)) + EPS
 
     return rir_total
