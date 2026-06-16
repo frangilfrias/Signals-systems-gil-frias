@@ -104,5 +104,5 @@ class TestSintetizarRI:
 
         assert np.isfinite(t60_estimado)
 
-        # tolerancia del 20 %
+        # tolerancia del 10 %
         assert abs(t60_estimado - t60_objetivo) < 0.1 * t60_objetivo
