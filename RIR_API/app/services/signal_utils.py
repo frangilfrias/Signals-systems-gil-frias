@@ -56,7 +56,6 @@ def sintetizar_ri(t60_por_banda: dict[float, float], fs: int, duracion: float) -
     eps = 1e-12
 
     for fc, t60 in t60_por_banda.items():
-        print(f"Procesando banda {fc} Hz")
         if t60 <= 0:
             continue
 
