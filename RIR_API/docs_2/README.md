@@ -13,7 +13,11 @@ bidireccional (forward-backward) de manera de obtener una respuesta de fase igua
 de paso.
 - La validación se observa en la siguiente figura en la cual se ha procesado la respuesta al impulso de
 tres salas, para obtener el tiempo de reverberación. El procesamiento se ha realizado mediante dos
-programas (REW acoustics y Precisión máxima) con el objetivo de comparar los datos obtenidos con
-el código propuesto (Grupo 1). Por otra parte se han incluido los valores de T60 publicados en la fuente
-desde la cual se han extraido los audios de las RI (https://www.openair.hosted.york.ac.uk/)
+programas (REW acoustics y  Máxima Precisión(RIR-API CÁTEDRA)) con el objetivo de comparar los datos obtenidos con
+el código propuesto (Grupo 1).\
+Por otra parte se han incluido los valores de T60 publicados en la fuente
+desde la cual se han extraido los audios de las RI (https://www.openair.hosted.york.ac.uk/).\
+Para los casos de las RI correspondientes a los recintos "ELEVEDEN HALL" y "HAMILTON MAUSSULEUM", 
+no se han podido obtener los datos del T30 desde la RIR-API CÁTEDRA, ya que se han arrojado 
+los errores "Request failed with status code 500" y "timeout of 60000ms exceeded" respectivamente.
 ![FILTROS_DE_OCTAVA](IMÁGENES/RI.png)
