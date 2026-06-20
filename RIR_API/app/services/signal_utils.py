@@ -53,7 +53,7 @@ def sintetizar_ri(t60_por_banda: dict[float, float], fs: int, duracion: float) -
     t = np.linspace(0, duracion, n, endpoint=False)
 
     rir_total = np.zeros(n)
-    EPS = 1e-12
+    eps = 1e-12
 
     for fc, t60 in t60_por_banda.items():
         print(f"Procesando banda {fc} Hz")
@@ -73,7 +73,7 @@ def sintetizar_ri(t60_por_banda: dict[float, float], fs: int, duracion: float) -
         # Normalización del rudio filtrado por cada banda
         ruido_banda_rms = np.sqrt(np.mean(ruido_banda**2))
 
-        ruido_banda_norm = ruido_banda / (ruido_banda_rms + EPS)
+        ruido_banda_norm = ruido_banda / (ruido_banda_rms + eps)
 
         # Envolvente exponencial según T60
         alpha = 6.91 / t60
@@ -85,7 +85,7 @@ def sintetizar_ri(t60_por_banda: dict[float, float], fs: int, duracion: float) -
         rir_total += banda
 
         # Normalización final
-    rir_total /= np.max(np.abs(rir_total)) + EPS
+    rir_total /= np.max(np.abs(rir_total)) + eps
 
     return rir_total
 
