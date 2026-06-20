@@ -1,10 +1,8 @@
 """Tests para los servicios de generacion de senales (Milestone 1)."""
 
 import numpy as np
-import pytest
-from scipy.signal import spectrogram
-from scipy.signal import fftconvolve
 import scipy.signal as signal
+from scipy.signal import fftconvolve, spectrogram
 
 from app.services.pink_noise import generar_ruido_rosa
 from app.services.sine_sweep import generar_sine_sweep
@@ -113,7 +111,7 @@ class TestGenerarSineSweep:
         sweep, filtro = generar_sine_sweep(20, 20000, 1.0, 44100)
         respuesta = fftconvolve(sweep, filtro,mode = "full")
 
-        #Busco la posicion del pico maximo 
+        #Busco la posicion del pico maximo
         idx_pico = np.argmax(np.abs(respuesta))
         pico = np.abs(respuesta[idx_pico])
 

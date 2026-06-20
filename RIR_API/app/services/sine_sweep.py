@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def generar_sine_sweep(
     f1: float, f2: float, duracion: float, fs: int
 ) -> tuple[np.ndarray, np.ndarray]:
