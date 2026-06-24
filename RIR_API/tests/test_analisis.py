@@ -41,12 +41,6 @@ class TestIntegralSchroeder:
         edc = integral_schroeder(ri)
         assert np.all(np.diff(edc) <= 0)
 
-    import numpy as np
-
-
-class TestIntegralSchroeder:
-    """Tests para la función integral_schroeder."""
-
     def test_schroeder_ri_sintetizada(self):
         """
         Para una RI sintetizada con T60 conocido,
