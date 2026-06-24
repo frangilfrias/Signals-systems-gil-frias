@@ -42,7 +42,7 @@ class TestIntegralSchroeder:
         assert np.all(np.diff(edc) <= 0)
 
 
-class TestSuavizarSenal:
+class TestSuavizarSignal:
     """Tests para la función suavizar_signal."""
 
     def test_suavizar_hilbert_envolvente(self):
