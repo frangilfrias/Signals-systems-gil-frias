@@ -30,13 +30,20 @@ def suavizar_signal(
         Señal suavizada.
     """
 
-    # Verificar que la señal de entrada sea un vector unidimensional.
-    # La función no admite señales multicanal ni matrices.
-    if signal.ndim != 1:
-        raise ValueError("signal debe ser un vector unidimensional.")
+    # Convertir la entrada a ndarray de tipo float
+    signal = np.asarray(signal, dtype=float)
 
-    # Caso 1: obtener la envolvente de amplitud mediante
-    # la transformada de Hilbert.
+    # Si la señal es 2D (por ejemplo, audio estéreo),
+    # convertirla a un vector 1D
+    if signal.ndim == 2:
+        signal = signal.flatten()
+
+    # Verificar que la entrada sea un vector
+    if signal.ndim != 1:
+        raise ValueError("ri debe ser un array unidimensional o bidimensional.")
+
+    elif signal.ndim != 1:
+        raise ValueError("signal debe ser un vector 1D o matriz 2D.")
     if ventana == "hilbert":
         # Convertir la señal a tipo float para asegurar
         # compatibilidad con las operaciones numéricas.
