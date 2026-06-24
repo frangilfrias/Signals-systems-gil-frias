@@ -42,7 +42,32 @@ def integral_schroeder(ri: np.ndarray) -> np.ndarray:
     .. [1] Schroeder, M. R. (1965). "New method of measuring reverberation
        time." The Journal of the Acoustical Society of America.
     """
-    raise NotImplementedError("Implementar en Milestone 3")
+    # Convertir la entrada a ndarray de tipo float
+    ri = np.asarray(ri, dtype=float)
+
+    # Si la señal es 2D (por ejemplo, audio estéreo),
+    # convertirla a un vector 1D
+    if ri.ndim == 2:
+        ri = ri.flatten()
+
+    # Verificar que la entrada sea un vector
+    if ri.ndim != 1:
+        raise ValueError("ri debe ser un array unidimensional o bidimensional.")
+
+    # Energía total de la respuesta al impulso
+    energia_total = np.sum(ri**2)
+
+    # Evitar división por cero
+    if energia_total == 0:
+        raise ValueError("La respuesta al impulso tiene energía nula.")
+
+    # Energía acumulada inversa (desde cada muestra hasta el final)
+    energia_acumulada = np.cumsum(ri[::-1] ** 2)[::-1]
+
+    # Curva de decaimiento energético normalizada
+    edc = energia_acumulada / energia_total
+
+    return edc
 
 
 def regresion_lineal(x: np.ndarray, y: np.ndarray) -> tuple[float, float]:
