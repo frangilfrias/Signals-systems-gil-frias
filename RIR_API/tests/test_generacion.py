@@ -133,3 +133,39 @@ class TestGenerarSineSweep:
         )
 
         assert relacion_db > 40, ("La relación pico/resto es insuficiente: ")
+
+    def test_f1_tipo_invalido(self):
+        with pytest.raises(TypeError):
+            generar_sine_sweep("20", 20000, 5, 48000)
+
+    def test_f2_tipo_invalido(self):
+        with pytest.raises(TypeError):
+            generar_sine_sweep(20, "20000", 5, 48000)
+
+    def test_duracion_tipo_invalido(self):
+        with pytest.raises(TypeError):
+            generar_sine_sweep(20, 20000, "5", 48000)
+
+    def test_fs_tipo_invalido(self):
+        with pytest.raises(TypeError):
+            generar_sine_sweep(20, 20000, 5, 48000.0)
+
+    def test_f1_negativa(self):
+        with pytest.raises(ValueError):
+            generar_sine_sweep(-20, 20000, 5, 48000)
+
+    def test_f2_negativa(self):
+        with pytest.raises(ValueError):
+            generar_sine_sweep(20, -20000, 5, 48000)
+
+    def test_f1_mayor_que_f2(self):
+        with pytest.raises(ValueError):
+            generar_sine_sweep(20000, 20, 5, 48000)
+
+    def test_duracion_negativa(self):
+        with pytest.raises(ValueError):
+            generar_sine_sweep(20, 20000, -5, 48000)
+
+    def test_fs_invalida(self):
+        with pytest.raises(ValueError):
+            generar_sine_sweep(20, 20000, 5, 22050)
