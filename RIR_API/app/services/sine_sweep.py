@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def generar_sine_sweep(
     f1: float, f2: float, duracion: float, fs: int
 ) -> tuple[np.ndarray, np.ndarray]:
@@ -30,11 +31,22 @@ def generar_sine_sweep(
     .. [1] Farina, A. (2000). "Simultaneous measurement of impulse response
        and distortion with a swept-sine technique."
     """
-    ###Validación de datos:
+    # Validación de datos:
 
-    fs_validas = [44100, 48000, 88200, 96000, 176400, 192000, 352800, 384000, 705600, 768000]
+    fs_validas = [
+        44100,
+        48000,
+        88200,
+        96000,
+        176400,
+        192000,
+        352800,
+        384000,
+        705600,
+        768000
+    ]
 
-    #Validación de tipo
+    # Validación de tipo
 
     if not isinstance(f1, (int, float)):
         raise TypeError(
@@ -60,7 +72,7 @@ def generar_sine_sweep(
             f"Tipo recibido: {type(fs).__name__}, valor: {fs}"
         )
 
-    #Validación de valor
+    # Validación de valor
 
     if f1 <= 0:
         raise ValueError(
@@ -88,26 +100,22 @@ def generar_sine_sweep(
             f"Valores permitidos: {fs_validas}"
         )
 
-    #Genero la cantidad de muestras y el vector del eje temporal para el sweep
+    # Genero la cantidad de muestras y el vector del eje temporal para el sweep
     num_muestras = int(duracion*fs)
     eje_tem = np.arange(num_muestras)/fs
 
-    #Creo un parametro para facilitar la escritura de la fórmula
+    # Creo un parametro para facilitar la escritura de la fórmula
     k_param = duracion / np.log(f2/f1)
 
-    #Genero el sweep con los parámetros establecidos
-    sweep = np.sin( 2 * np.pi * f1 * k_param * (np.exp(eje_tem/k_param)-1))
+    # Genero el sweep con los parámetros establecidos
+    sweep = np.sin(2 * np.pi * f1 * k_param * (np.exp(eje_tem/k_param)-1))
 
-    #Produzco el filtro inverso
-    compensacion_temp = np.exp(-eje_tem/k_param) # Compensa la distribución no uniforme de energía del sweep logarítmico
+    # Produzco el filtro inverso
+    compensacion_temp = np.exp(-eje_tem / k_param)
     filtro_inv = sweep[::-1] * compensacion_temp
 
-    #Normalizo ambos vectores
+    # Normalizo ambos vectores
     sweep /= np.max(np.abs(sweep))
     filtro_inv /= np.max(np.abs(filtro_inv))
 
-    return sweep , filtro_inv
-
-
-
-
+    return sweep, filtro_inv
