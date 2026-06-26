@@ -45,24 +45,59 @@ def integral_schroeder(ri: np.ndarray) -> np.ndarray:
     raise NotImplementedError("Implementar en Milestone 3")
 
 
-def regresion_lineal(x: np.ndarray, y: np.ndarray) -> tuple[float, float]:
-    """Calcula la regresion lineal por minimos cuadrados.
+def regresion_lineal(x: np.ndarray, y: np.ndarray) -> tuple[float, float, float]:
+    """
+    Calcula la regresion lineal por minimos cuadrados.
 
     Parameters
     ----------
     x : np.ndarray
-        Variable independiente (array 1D).
+        Variable independiente (tipicamente tiempo en segundos).
     y : np.ndarray
-        Variable dependiente (array 1D).
+        Variable dependiente (tipicamente curva de Schroeder en dB).
 
     Returns
     -------
-    pendiente : float
-        Pendiente de la recta ajustada (m).
-    ordenada : float
-        Ordenada al origen de la recta ajustada (b).
+    tuple[float, float, float]
+        (pendiente, ordenada_al_origen, r_cuadrado)
+        pendiente en dB/s, ordenada en dB, coeficiente de determinacion.
+
+    Raises
+    ------
+    ValueError
+        Si los arrays tienen distinto largo o menos de 2 puntos.
     """
-    raise NotImplementedError("Implementar en Milestone 3")
+    x = np.asarray(x, dtype=np.float64)
+    y = np.asarray(y, dtype=np.float64)
+
+    if len(x) != len(y):
+        raise ValueError(f"x e y deben tener el mismo largo. Got len(x)={len(x)}, len(y)={len(y)}")
+    if len(x) < 2:
+        raise ValueError("Se necesitan al menos 2 puntos para la regresion.")
+
+    N = len(x)
+
+    sum_x = np.sum(x)
+    sum_y = np.sum(y)
+    sum_xy = np.sum(x * y)
+    sum_x2 = np.sum(x**2)
+
+    denominador = N * sum_x2 - sum_x**2
+
+    if denominador == 0:
+        raise ValueError("Los valores de x son constantes, no se puede ajustar una recta.")
+
+    m = (N * sum_xy - sum_x * sum_y) / denominador
+    b = (sum_y - m * sum_x) / N
+
+    y_pred = m * x + b
+    y_media = np.mean(y)
+    ss_res = np.sum((y - y_pred) ** 2)
+    ss_tot = np.sum((y - y_media) ** 2)
+
+    r_cuadrado = 1.0 - (ss_res / ss_tot) if ss_tot > 0 else 1.0
+
+    return float(m), float(b), float(r_cuadrado)
 
 
 def calcular_parametros_acusticos(ri: np.ndarray, fs: int) -> dict:
