@@ -4,24 +4,80 @@ Milestone 3: Analisis de parametros acusticos.
 """
 
 import numpy as np
+import scipy.signal
 
 
-def suavizar_signal(signal: np.ndarray, ventana: int) -> np.ndarray:
-    """Aplica un suavizado por media movil a la senal.
+def suavizar_signal(
+    signal: np.ndarray,
+    ventana: int | str = "hilbert",
+) -> np.ndarray:
+    """
+    Suaviza una señal para reducir fluctuaciones del ruido.
 
     Parameters
     ----------
     signal : np.ndarray
-        Senal de entrada (array 1D).
-    ventana : int
-        Tamano de la ventana de suavizado en muestras.
+        Señal de entrada (típicamente una RI filtrada por banda).
+
+    ventana : int | str
+        Si es int: tamaño de la ventana para media móvil (en muestras).
+        Si es "hilbert": utiliza la envolvente obtenida mediante
+        la transformada de Hilbert.
 
     Returns
     -------
     np.ndarray
-        Senal suavizada, de la misma longitud que ``signal``.
+        Señal suavizada.
     """
-    raise NotImplementedError("Implementar en Milestone 3")
+
+    # Convertir la entrada a ndarray de tipo float
+    signal = np.asarray(signal, dtype=float)
+
+    # Si la señal es 2D (por ejemplo, audio estéreo),
+    # convertirla a un vector 1D
+    if signal.ndim == 2:
+        signal = signal.flatten()
+
+    # Verificar que la entrada sea un vector
+    if signal.ndim != 1:
+        raise ValueError("ri debe ser un array unidimensional o bidimensional.")
+
+    elif signal.ndim != 1:
+        raise ValueError("signal debe ser un vector 1D o matriz 2D.")
+    if ventana == "hilbert":
+        # Convertir la señal a tipo float para asegurar
+        # compatibilidad con las operaciones numéricas.
+        signal = np.asarray(signal, dtype=float)
+
+        # Señal analítica compleja asociada a la señal real.
+        analitica = scipy.signal.hilbert(signal)
+
+        # Envolvente de amplitud calculada como el módulo
+        # de la señal analítica.
+        return np.abs(analitica)
+
+    # Caso 2: suavizado mediante un filtro de media móvil.
+    if isinstance(ventana, int):
+        # Verificar que el tamaño de la ventana sea válido.
+        if ventana < 1:
+            raise ValueError(
+                "El tamaño de la ventana debe ser un entero positivo.",
+            )
+
+        # Kernel de media móvil normalizado para preservar
+        # el valor medio de la señal.
+        kernel = np.ones(ventana, dtype=float) / ventana
+
+        # Convolución de la señal con el kernel.
+        # mode="same" garantiza que la salida tenga
+        # la misma longitud que la señal de entrada.
+        return np.convolve(signal, kernel, mode="same")
+
+    # Si se llega a este punto, el parámetro 'ventana'
+    # no tiene un formato admitido.
+    raise ValueError(
+        "ventana debe ser un entero positivo o la cadena 'hilbert'.",
+    )
 
 
 def integral_schroeder(ri: np.ndarray) -> np.ndarray:

@@ -1,9 +1,8 @@
 """Tests para los servicios de analisis de parametros acusticos (Milestone 3)."""
 
 import numpy as np
-import pytest
 
-from app.services.acoustic_parameters import integral_schroeder, regresion_lineal
+from app.services.acoustic_parameters import integral_schroeder, regresion_lineal, suavizar_signal
 
 
 class TestRegresionLineal:
@@ -98,3 +97,39 @@ class TestIntegralSchroeder:
         ri = np.random.randn(1000)
         edc = integral_schroeder(ri)
         assert np.all(np.diff(edc) <= 0)
+
+
+class TestSuavizarSignal:
+    """Tests para la función suavizar_signal."""
+
+    def test_suavizar_hilbert_envolvente(self):
+        """
+        La envolvente obtenida mediante Hilbert debe ser no negativa.
+        """
+        fs = 1000
+
+        # Señal senoidal modulada en amplitud
+        t = np.arange(fs) / fs
+        signal = (1 + 0.5 * np.sin(2 * np.pi * 2 * t)) * np.sin(
+            2 * np.pi * 50 * t,
+        )
+
+        envolvente = suavizar_signal(signal, "hilbert")
+
+        # La envolvente es el módulo de una señal compleja,
+        # por lo que nunca debe ser negativa.
+        assert np.all(envolvente >= 0)
+
+        # La longitud debe preservarse.
+        assert envolvente.shape == signal.shape
+
+    def test_suavizar_media_movil_longitud(self):
+        """
+        La salida de la media móvil debe tener
+        la misma longitud que la entrada.
+        """
+        signal = np.random.randn(48000)
+
+        suavizada = suavizar_signal(signal, 100)
+
+        assert suavizada.shape == signal.shape
