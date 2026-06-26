@@ -30,30 +30,35 @@ def a_escala_log(signal: np.ndarray) -> np.ndarray:
     return np.maximum(resultado, -120.0)
 
 
-def sintetizar_ri(t60_por_banda: dict[float, float], fs: int, duracion: float) -> np.ndarray:
-    """Sintetiza una respuesta al impulso artificial a partir de valores T60 por banda.
-    Convierte una senal a escala logaritmica normalizada (dB).
+def sintetizar_ri(
+        t60_por_banda: dict[float, float],
+        fs: int, duracion: float
+) -> np.ndarray:
+    """Sintetiza una respuesta al impulso artificial
+    a partir de valores T60 por banda.
 
     Parameters
     ----------
-    signal : np.ndarray
-        Senal de entrada (valores lineales).
+    t60_por_banda : dict[float, float]
+        Diccionario {frecuencia_central_Hz: T60_segundos}.
+    fs : int
+        Frecuencia de muestreo en Hz.
+    duracion : float
+        Duracion de la respuesta al impulso en segundos.
 
     Returns
     -------
     np.ndarray
-        Senal en decibeles, normalizada respecto al valor maximo.
-        El maximo queda en 0 dB. Piso de ruido en -120 dB.
+        Respuesta al impulso sintetizada (array 1D).
     """
 
     n = int(fs * duracion)
     t = np.linspace(0, duracion, n, endpoint=False)
 
     rir_total = np.zeros(n)
-    EPS = 1e-12
+    eps = 1e-12
 
     for fc, t60 in t60_por_banda.items():
-        print(f"Procesando banda {fc} Hz")
         if t60 <= 0:
             continue
 
@@ -70,7 +75,7 @@ def sintetizar_ri(t60_por_banda: dict[float, float], fs: int, duracion: float) -
         # Normalización del rudio filtrado por cada banda
         ruido_banda_rms = np.sqrt(np.mean(ruido_banda**2))
 
-        ruido_banda_norm = ruido_banda / (ruido_banda_rms + EPS)
+        ruido_banda_norm = ruido_banda / (ruido_banda_rms + eps)
 
         # Envolvente exponencial según T60
         alpha = 6.91 / t60
@@ -82,7 +87,7 @@ def sintetizar_ri(t60_por_banda: dict[float, float], fs: int, duracion: float) -
         rir_total += banda
 
         # Normalización final
-    rir_total /= np.max(np.abs(rir_total)) + EPS
+    rir_total /= np.max(np.abs(rir_total)) + eps
 
     return rir_total
 
