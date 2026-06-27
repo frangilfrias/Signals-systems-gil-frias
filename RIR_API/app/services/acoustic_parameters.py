@@ -112,4 +112,70 @@ def metodo_lundeby(ri: np.ndarray, fs: int) -> int:
     .. [1] Lundeby, A. et al. (1995). "Uncertainties of measurements in
        room acoustics." Acta Acustica.
     """
-    raise NotImplementedError("Implementar en Milestone 3 (opcional)")
+    ri = np.asarray(ri, dtype=float)
+
+    if ri.ndim != 1:
+        raise ValueError("RI debe ser 1D.")
+
+    if len(ri) < 10:
+        return len(ri) - 1
+
+    # Energía y curva de Schroeder
+
+    energia = ri ** 2
+    energia = np.maximum(energia, np.finfo(float).eps)
+
+    edc = np.cumsum(energia[::-1])[::-1]
+    edc = edc / np.max(edc)
+
+    edc_db = 10 * np.log10(edc)
+
+    t = np.arange(len(ri)) / fs
+
+    # Estimación inicial de ruido (últimos 10%)
+
+    n = len(ri)
+    n_ruido = max(int(0.1 * n), 10)
+
+    ruido_db = 10 * np.log10(np.mean(energia[-n_ruido:]))
+
+    indice_trunc = int(0.5 * n)
+
+    # Iteraciones Lundeby
+
+    for _ in range(5):
+
+        nivel_corte = ruido_db + 10
+
+        idx = np.where(edc_db <= nivel_corte)[0]
+
+        if len(idx) == 0:
+            break
+
+        indice_trunc = idx[0]
+
+        if indice_trunc < 5:
+            break
+
+        # regresión hasta el punto de cruce
+        m, b = np.polyfit(t[:indice_trunc], edc_db[:indice_trunc], 1)
+
+        # estimación de la curva
+        fit = m * t + b
+
+        residuo = edc_db - fit
+
+        ruido_db = np.mean(residuo[-n_ruido:])
+
+    # Cruce final con el nivel de ruido
+
+    fit_final = m * t + b
+
+    diff = fit_final - ruido_db
+
+    cruces = np.where(diff <= 0)[0]
+
+    if len(cruces) == 0:
+        return len(ri) - 1
+
+    return int(cruces[0])
