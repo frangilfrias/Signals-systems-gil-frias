@@ -4,6 +4,8 @@ Milestone 3: Analisis de parametros acusticos.
 """
 
 import numpy as np
+from app.services.filter import filtro_octava
+from app.services.signal_utils import a_escala_log
 import scipy.signal
 
 
@@ -181,8 +183,8 @@ def regresion_lineal(x: np.ndarray, y: np.ndarray) -> tuple[float, float, float]
     return float(m), float(b), float(r_cuadrado)
 
 
-def calcular_parametros_acusticos(ri: np.ndarray, fs: int) -> dict:
-    """Calcula los parametros acusticos de una sala a partir de su RI.
+def calcular_parametros_acusticos(ri: np.ndarray, fs: int) -> dict[str, dict[float, float]]:
+    """Calcula los parametros acusticos de una sala a partir de su RI para cada banda de octava.
 
     Parameters
     ----------
@@ -193,7 +195,7 @@ def calcular_parametros_acusticos(ri: np.ndarray, fs: int) -> dict:
 
     Returns
     -------
-    dict
+    dict[str, dict[float, float]]
         Diccionario con los parametros acusticos por banda.
 
     References
@@ -201,7 +203,108 @@ def calcular_parametros_acusticos(ri: np.ndarray, fs: int) -> dict:
     .. [1] ISO 3382-1:2009. "Acoustics -- Measurement of room acoustic
        parameters -- Part 1: Performance spaces."
     """
-    raise NotImplementedError("Implementar en Milestone 3")
+    ri = np.asarray(ri, dtype=float)
+
+    if ri.ndim != 1:
+        raise ValueError("La respuesta al impulso debe ser un vector unidimensional.")
+
+    if fs <= 0:
+        raise ValueError("La frecuencia de muestreo debe ser mayor que cero.")
+
+    # Bandas de octava normalizadas
+    bandas = [125, 250, 500, 1000, 2000, 4000, 8000]
+
+    parametros = {
+        "EDT": {},
+        "T10": {},
+        "T20": {},
+        "T30": {},
+        "T60": {},
+        "D50": {},
+        "C80": {},
+    }
+
+    for fc in bandas:
+
+        # Filtrado por banda de octava
+        ri_filtrada = filtro_octava(
+            signal=ri,
+            fc=fc,
+            fs=fs,
+        )
+
+        # Curva de Schroeder
+        edc = integral_schroeder(ri_filtrada)
+        edc_db = a_escala_log(edc)
+        tiempo = np.arange(len(ri_filtrada)) / fs
+
+        # Función auxiliar para EDT, T10, T20 y T30, para no escribir el mismo procedimiento
+        # en todos los casos, simplemente toma los límites de cada parámetros y hace el cálculo.
+
+
+        def calcular_rt(db_inicio: float, db_fin: float) -> float:
+
+            indice_inicio = np.argmin(np.abs(edc_db - db_inicio))
+            indice_fin = np.argmin(np.abs(edc_db - db_fin))
+
+            if indice_fin <= indice_inicio:
+                return np.nan
+
+            pendiente, _, _ = regresion_lineal(
+                tiempo[indice_inicio:indice_fin + 1],
+                edc_db[indice_inicio:indice_fin + 1],
+            )
+
+            if pendiente >= 0:
+                return np.nan
+
+            return -60.0 / pendiente
+
+        # Tiempos de reverberación
+        edt = calcular_rt(0, -10)
+        t10 = calcular_rt(-5, -15)
+        t20 = calcular_rt(-5, -25)
+        t30 = calcular_rt(-5, -35)
+
+        # ISO 3382: normalmente se reporta T30 como T60
+        t60 = t30 if not np.isnan(t30) else t20
+
+        # Energía
+        energia = ri_filtrada ** 2
+        energia_total = np.sum(energia)
+
+        if energia_total == 0:
+            d50 = np.nan
+            c80 = np.nan
+        else:
+
+            # D50
+            n50 = min(int(round(0.050 * fs)), len(energia))
+            energia_50 = np.sum(energia[:n50])
+            d50 = 100 * energia_50 / energia_total
+
+            # C80
+            n80 = min(int(round(0.080 * fs)), len(energia))
+            energia_80 = np.sum(energia[:n80])
+            energia_tardia = np.sum(energia[n80:])
+
+            c80 = (
+                np.inf 
+                if energia_tardia <= 0
+                else 10 * np.log10(energia_80 / energia_tardia)
+            )
+        # Guardar resultados
+
+
+        parametros["EDT"][fc] = float(edt)
+        parametros["T10"][fc] = float(t10)
+        parametros["T20"][fc] = float(t20)
+        parametros["T30"][fc] = float(t30)
+        parametros["T60"][fc] = float(t60)
+        parametros["D50"][fc] = float(d50)
+        parametros["C80"][fc] = float(c80)
+
+    return parametros
 
 
 def metodo_lundeby(ri: np.ndarray, fs: int) -> int:
