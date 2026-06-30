@@ -307,7 +307,10 @@ def calcular_parametros_acusticos(ri: np.ndarray, fs: int) -> dict[str, dict[flo
     return parametros
 
 
-def metodo_lundeby(ri: np.ndarray, fs: int) -> int:
+def metodo_lundeby(
+    ri: np.ndarray,
+    fs: int,
+) -> tuple[int, float]:
     """Estima el punto de truncamiento de la RI (metodo de Lundeby).
 
     Parameters
@@ -319,8 +322,8 @@ def metodo_lundeby(ri: np.ndarray, fs: int) -> int:
 
     Returns
     -------
-    int
-        Indice de la muestra donde se estima el punto de truncamiento.
+    tuple[int, float]
+    (indice_truncamiento, nivel_ruido_dB)
 
     Notes
     -----
@@ -331,4 +334,71 @@ def metodo_lundeby(ri: np.ndarray, fs: int) -> int:
     .. [1] Lundeby, A. et al. (1995). "Uncertainties of measurements in
        room acoustics." Acta Acustica.
     """
-    raise NotImplementedError("Implementar en Milestone 3 (opcional)")
+    ri = np.asarray(ri, dtype=float)
+
+    if ri.ndim != 1:
+        raise ValueError("RI debe ser 1D.")
+
+    if len(ri) < 10:
+        return len(ri) - 1, float("nan")
+
+    # Energía y curva de Schroeder
+
+    energia = ri ** 2
+    energia = np.maximum(energia, np.finfo(float).eps)
+
+    edc = integral_schroeder(ri)
+
+    edc_db = 10 * np.log10(edc)
+
+    t = np.arange(len(ri)) / fs
+
+    # Estimación inicial de ruido (últimos 10%)
+
+    n = len(ri)
+    n_ruido = max(int(0.1 * n), 10)
+
+    ruido_db = 10 * np.log10(np.mean(energia[-n_ruido:]))
+
+    indice_trunc = int(0.5 * n)
+
+    m = 0.0
+    b = edc_db[0]
+
+    # Iteraciones Lundeby
+    for _ in range(5):
+
+        nivel_corte = ruido_db + 10
+
+        idx = np.where(edc_db <= nivel_corte)[0]
+
+        if len(idx) == 0:
+            break
+
+        indice_trunc = idx[0]
+
+        if indice_trunc < 5:
+            break
+
+        # regresión hasta el punto de cruce
+        m, b, _ = regresion_lineal(t[:indice_trunc], edc_db[:indice_trunc])
+
+        # estimación de la curva
+        fit = m * t + b
+
+        residuo = edc_db - fit
+
+        ruido_db = np.mean(residuo[-n_ruido:])
+
+    # Cruce final con el nivel de ruido
+
+    fit_final = m * t + b
+
+    diff = fit_final - ruido_db
+
+    cruces = np.where(diff <= 0)[0]
+
+    if len(cruces) == 0:
+        return len(ri) - 1, float(ruido_db)
+
+    return int(cruces[0]), float(ruido_db)

@@ -5,6 +5,7 @@ import numpy as np
 from app.services.acoustic_parameters import (
     integral_schroeder,
     regresion_lineal,
+    metodo_lundeby,
     suavizar_signal,
     calcular_parametros_acusticos
 )
@@ -161,7 +162,6 @@ class TestIntegralSchroeder:
             atol=1e-12,
         )
 
-
 class TestCalcularParametrosAcusticos:
     """Tests para la función calcular_parametros_acusticos."""
 
@@ -273,3 +273,54 @@ class TestSuavizarSignal:
         suavizada = suavizar_signal(signal, 100)
 
         assert suavizada.shape == signal.shape
+
+class TestMetodoLundeby:
+    """Tests para la función metodo_lundeby"""
+    def test_lundeby_basico(self):
+        fs = 48000
+
+        # RI simple exponencial + ruido pequeño
+        t = np.arange(fs) / fs
+        ri = np.exp(-3 * t)
+
+        idx = metodo_lundeby(ri, fs)
+
+        # debe estar dentro de la señal
+        assert 0 < idx < len(ri)
+
+    def test_lundeby_ruido_valido(self):
+        fs = 48000
+
+        ri = np.zeros(fs)
+        ri[0] = 1
+        ri += 0.001 * np.random.randn(fs)
+
+        idx = metodo_lundeby(ri, fs)
+
+        assert isinstance(idx, int)
+        assert 0 <= idx < len(ri)
+
+    def test_lundeby_sin_senal(self):
+        fs = 48000
+
+        ri = 0.0001 * np.random.randn(fs)
+
+        idx = metodo_lundeby(ri, fs)
+
+        # debería devolver algo válido (no romperse)
+        assert isinstance(idx, int)
+        assert 0 <= idx < len(ri)
+
+    def test_lundeby_estabilidad(self):
+        fs = 48000
+
+        np.random.seed(0)
+        ri1 = np.random.randn(fs) * np.exp(-3*np.arange(fs)/fs)
+
+        np.random.seed(0)
+        ri2 = np.random.randn(fs) * np.exp(-3*np.arange(fs)/fs)
+
+        idx1 = metodo_lundeby(ri1, fs)
+        idx2 = metodo_lundeby(ri2, fs)
+
+        assert abs(idx1 - idx2) < 10
