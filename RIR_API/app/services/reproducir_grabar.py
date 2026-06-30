@@ -1,6 +1,5 @@
 import numpy as np
 import sounddevice as sd
-from scipy.io.wavfile import write
 
 
 def reproducir_y_grabar(
@@ -25,7 +24,6 @@ def reproducir_y_grabar(
     np.ndarray
         Señal grabada.
     """
-
     try:
         sd.query_devices()
     except Exception as e:
@@ -49,10 +47,6 @@ def reproducir_y_grabar(
         signal_out = np.vstack([signal_out, np.zeros((padding, n_channels))])
 
     grabacion = sd.playrec(signal_out, samplerate=fs, channels=n_channels)
-
     sd.wait()
-    sd.play(grabacion, fs)
-    sd.wait()
-    write("grabacion.wav", fs, grabacion)
 
     return grabacion

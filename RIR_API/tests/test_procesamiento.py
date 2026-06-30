@@ -205,7 +205,7 @@ class TestFiltroOctava:
         assert np.isclose(gain_fc, 0.0, atol=0.5)
         assert np.isclose(gain_low, -3.0, atol=1.0)
         assert np.isclose(gain_high, -3.0, atol=1.0)
-        
+
 class TestSintetizarRI:
     """Tests para la funcion sintetizar_ri"""
 
@@ -274,7 +274,7 @@ class TestSintetizarRI:
         t60_estimado = -60 / pendiente
 
         assert np.isfinite(t60_estimado)
-        
+
         # tolerancia del 10 %
         assert abs(t60_estimado - t60_objetivo) < 0.1 * t60_objetivo
 
