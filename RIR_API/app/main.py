@@ -9,12 +9,17 @@ Uso:
 import io
 from datetime import UTC, datetime
 
+import numpy as np
 import soundfile as sf
-from fastapi import FastAPI
+from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.responses import HTMLResponse, StreamingResponse
 
 from app.routers import health
+from app.services.acoustic_parameters import calcular_parametros_acusticos, integral_schroeder
+from app.services.filter import filtro_octava
 from app.services.pink_noise import generar_ruido_rosa
+from app.services.signal_utils import a_escala_log, sintetizar_ri
+from app.services.sine_sweep import generar_sine_sweep
 
 app = FastAPI(
     title="RIR-API",
@@ -144,6 +149,278 @@ async def pink_noise(duracion: float = 1.0, fs: int = 44100):
         media_type="audio/wav",
         headers={"Content-Disposition": "attachment; filename=pink_noise.wav"},
     )
+
+
+@app.post("/api/v1/signals/sine-sweep")
+async def sine_sweep(
+    f1: float = 20,
+    f2: float = 20000,
+    duracion: float = 5.0,
+    fs: int = 44100,
+):
+    sweep, _ = generar_sine_sweep(f1, f2, duracion, fs)
+
+    buffer = io.BytesIO()
+    sf.write(buffer, sweep, fs, format="WAV")
+    buffer.seek(0)
+
+    return StreamingResponse(
+        buffer,
+        media_type="audio/wav",
+        headers={"Content-Disposition": "attachment; filename=sine_sweep.wav"},
+    )
+
+
+@app.post("/api/v1/signals/synthetic-ir")
+async def synthetic_ir(
+    fs: int = 44100,
+    duracion: float = 3.0,
+):
+    """
+    Genera una respuesta al impulso sintética a partir de
+    tiempos de reverberación por banda.
+    """
+
+    t60_por_banda = {
+        125: 1.2,
+        250: 1.1,
+        500: 1.0,
+        1000: 0.9,
+        2000: 0.8,
+        4000: 0.7,
+    }
+
+    rir = sintetizar_ri(
+        t60_por_banda=t60_por_banda,
+        fs=fs,
+        duracion=duracion,
+    )
+
+    buffer = io.BytesIO()
+    sf.write(buffer, rir, fs, format="WAV")
+    buffer.seek(0)
+
+    return StreamingResponse(
+        buffer,
+        media_type="audio/wav",
+        headers={"Content-Disposition": "attachment; filename=synthetic_ir.wav"},
+    )
+
+
+@app.post("/api/v1/filters/band")
+async def filtro_banda(
+    archivo: UploadFile = File(...),
+    fc: float = 1000.0,
+    orden: int = 4,
+):
+    """
+    Filtra un archivo de audio mediante un filtro pasabanda de octava.
+    """
+
+    # Leer el archivo recibido
+    datos = await archivo.read()
+
+    buffer = io.BytesIO(datos)
+
+    signal, fs = sf.read(buffer, dtype="float64")
+
+    # Si es estéreo -> convertir a mono
+    if signal.ndim > 1:
+        signal = np.mean(signal, axis=1)
+
+    # Aplicar filtro
+    filtrada = filtro_octava(
+        signal=signal,
+        fc=fc,
+        fs=fs,
+        orden=orden,
+    )
+
+    # Guardar resultado en memoria
+    salida = io.BytesIO()
+
+    sf.write(
+        salida,
+        filtrada,
+        fs,
+        format="WAV",
+    )
+
+    salida.seek(0)
+
+    return StreamingResponse(
+        salida,
+        media_type="audio/wav",
+        headers={"Content-Disposition": f"attachment; filename=band_{int(fc)}Hz.wav"},
+    )
+
+
+@app.get("/api/v1/filters/frequencies")
+async def frecuencias_centrales():
+    """
+    Devuelve las frecuencias centrales de las bandas de octava soportadas.
+    """
+
+    return {
+        "frequencies_hz": [
+            31.5,
+            63,
+            125,
+            250,
+            500,
+            1000,
+            2000,
+            4000,
+            8000,
+            16000,
+        ]
+    }
+
+
+@app.post("/api/v1/acoustics/parameters")
+async def acoustic_parameters(file: UploadFile = File(...)):
+    """
+    Calcula los parámetros acústicos de una respuesta al impulso.
+    """
+
+    if not file.filename.lower().endswith((".wav", ".flac")):
+        raise HTTPException(
+            status_code=400,
+            detail="Solo se aceptan archivos WAV o FLAC.",
+        )
+
+    try:
+        signal, fs = sf.read(file.file)
+
+        # Si es estéreo → convertir a mono
+        if signal.ndim == 2:
+            signal = signal.mean(axis=1)
+
+        parametros = calcular_parametros_acusticos(signal, fs)
+
+        return {
+            "sample_rate": fs,
+            "parameters": parametros,
+        }
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=str(e),
+        )
+
+
+@app.post("/api/v1/acoustics/parameters/by-bands")
+async def acoustic_parameters_by_bands(file: UploadFile = File(...)):
+    """
+    Calcula los parámetros acústicos agrupados por banda de octava.
+    """
+
+    if not file.filename.lower().endswith((".wav", ".flac")):
+        raise HTTPException(
+            status_code=400,
+            detail="Solo se aceptan archivos WAV o FLAC.",
+        )
+
+    try:
+        signal, fs = sf.read(file.file)
+
+        if signal.ndim == 2:
+            signal = signal.mean(axis=1)
+
+        parametros = calcular_parametros_acusticos(signal, fs)
+
+        bandas = {}
+
+        for parametro, valores in parametros.items():
+            for fc, valor in valores.items():
+                bandas.setdefault(fc, {})
+                bandas[fc][parametro] = valor
+
+        return {
+            "sample_rate": fs,
+            "bands": bandas,
+        }
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=str(e),
+        )
+
+
+@app.post("/api/v1/analysis/impulse-response")
+async def analizar_respuesta_impulso(file: UploadFile = File(...)):
+    """
+    Realiza un análisis completo de una respuesta al impulso.
+    """
+
+    if not file.filename.lower().endswith((".wav", ".flac")):
+        raise HTTPException(
+            status_code=400,
+            detail="Solo se aceptan archivos WAV o FLAC.",
+        )
+
+    try:
+        signal, fs = sf.read(file.file)
+
+        # Convertir a mono si corresponde
+        if signal.ndim == 2:
+            signal = signal.mean(axis=1)
+
+        # Curva de Schroeder
+        edc = integral_schroeder(signal)
+        edc_db = a_escala_log(edc)
+
+        # Parámetros acústicos
+        parametros = calcular_parametros_acusticos(signal, fs)
+
+        return {
+            "sample_rate": fs,
+            "samples": len(signal),
+            "duration": len(signal) / fs,
+            "schroeder_curve": edc_db.tolist(),
+            "acoustic_parameters": parametros,
+        }
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=str(e),
+        )
+
+
+@app.post("/api/v1/utils/schroeder")
+async def schroeder(file: UploadFile = File(...)):
+    """
+    Calcula la Integral de Schroeder de una respuesta al impulso.
+    """
+
+    if not file.filename.lower().endswith((".wav", ".flac")):
+        raise HTTPException(
+            status_code=400,
+            detail="Solo se aceptan archivos WAV o FLAC.",
+        )
+
+    try:
+        signal, fs = sf.read(file.file)
+
+        if signal.ndim == 2:
+            signal = signal.mean(axis=1)
+
+        edc = integral_schroeder(signal)
+
+        return {
+            "sample_rate": fs,
+            "samples": len(signal),
+            "schroeder": edc.tolist(),
+        }
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=str(e),
+        )
 
 
 if __name__ == "__main__":
