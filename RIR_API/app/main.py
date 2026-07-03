@@ -11,11 +11,11 @@ from datetime import UTC, datetime
 
 import numpy as np
 import soundfile as sf
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, HTTPException, UploadFile, Query
 from fastapi.responses import HTMLResponse, StreamingResponse
 
 from app.routers import health
-from app.services.acoustic_parameters import calcular_parametros_acusticos, integral_schroeder
+from app.services.acoustic_parameters import calcular_parametros_acusticos, integral_schroeder, suavizar_signal
 from app.services.filter import filtro_octava
 from app.services.pink_noise import generar_ruido_rosa
 from app.services.signal_utils import a_escala_log, sintetizar_ri
@@ -422,6 +422,65 @@ async def schroeder(file: UploadFile = File(...)):
             detail=str(e),
         )
 
+
+@app.post("/api/v1/utils/smoothing")
+async def smoothing(
+    file: UploadFile = File(...),
+    method: str = Query(default="hilbert"),
+    window_ms: int = Query(default=10, ge=1, le=100),
+):
+
+    """
+    Aplica suavizado a una señal de audio.
+
+    Métodos disponibles:
+    - hilbert
+    - moving_average (media móvil)
+    """
+
+    if not file.filename.lower().endswith((".wav", ".flac")):
+        raise HTTPException(
+            status_code=400,
+            detail="Solo se aceptan archivos WAV o FLAC.",
+        )
+
+    try:
+        signal, fs = sf.read(file.file)
+
+        # Convertir estéreo a mono
+        if signal.ndim == 2:
+            signal = signal.mean(axis=1)
+
+        # Elegir método
+        if method == "hilbert":
+            smoothed = suavizar_signal(signal, "hilbert")
+            window_samples = None
+
+        elif method == "moving_average":
+            window_samples = max(1, int(window_ms * fs / 1000))
+            smoothed = suavizar_signal(signal, window_samples)
+        else:
+            raise HTTPException(
+                status_code=400,
+                detail = "Método inválido. Opciones: 'hilbert' o 'moving_average'.",
+            )
+
+        return {
+            "method": method,
+            "window_ms": window_ms,
+            "num_samples": len(smoothed),
+            "file_path": file.filename,
+            "signal": smoothed.tolist(),
+        }
+
+    except HTTPException:
+        raise
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=str(e),
+        )
 
 if __name__ == "__main__":
     import uvicorn
