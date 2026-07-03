@@ -482,6 +482,43 @@ async def smoothing(
             detail=str(e),
         )
 
+
+@app.post("/api/v1/utils/log-scale")
+async def log_scale(file: UploadFile = File(...)):
+    """
+    Convierte una señal a escala logarítmica (dB).
+    """
+
+    if not file.filename.lower().endswith((".wav", ".flac")):
+        raise HTTPException(
+            status_code=400,
+            detail="Solo se aceptan archivos WAV o FLAC.",
+        )
+
+    try:
+        signal, fs = sf.read(file.file)
+
+        # Convertir a mono si el archivo es estéreo
+        if signal.ndim == 2:
+            signal = signal.mean(axis=1)
+
+        signal_db = a_escala_log(signal)
+
+        return {
+            "num_samples": len(signal_db),
+            "min_db": float(signal_db.min()),
+            "max_db": float(signal_db.max()),
+            "file_path": file.filename,
+            "signal_db": signal_db.tolist(),
+        }
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=str(e),
+        )
+
+
 if __name__ == "__main__":
     import uvicorn
 
