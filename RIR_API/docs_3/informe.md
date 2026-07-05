@@ -26,9 +26,9 @@ El análisis acústico de salas mediante la norma ISO 3382 permite caracterizar 
 
     3.1 Arquitecura
 
-        En la figura 3.1 se observa el esquema del diseño de arquitectura del proyecto.
+        En la figura 1 se observa el esquema del diseño de arquitectura del proyecto.
 
- ![Imagen 3.1. Diagrama de arquitectura](IMAGENES/ARQUITECTURA.jpg)
+ ![Imagen 1 Diagrama de arquitectura](IMAGENES/ARQUITECTURA.png)
 
              Figura 3.1. Diagrama de arquitectura
         
