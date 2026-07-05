@@ -34,6 +34,4 @@ jobs:
         working-directory: ./RIR_API
         run: pytest tests/
 
-        name: CI
-
 
