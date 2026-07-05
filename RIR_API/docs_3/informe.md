@@ -1,7 +1,8 @@
 ---
-title: "Desarrollo de software para el cálculo de parámetros acústicos ISO 3382"
-author: ""
-date: ""
+Título: "Desarrollo de software para el cálculo de parámetros acústicos ISO 3382"
+Asignatura: Señales y Sistemas, Ingeniería de Sonido
+Autores: "Mora Sawczyc, Francisco Gil Frías, Matías Moreira"
+Fecha: "07/07/2026"
 ---
 
 # Desarrollo de software para el cálculo de parámetros acústicos ISO 3382
@@ -10,104 +11,51 @@ date: ""
 
 ## Resumen
 
-Este documento presenta el desarrollo de un software orientado al cálculo de parámetros acústicos según la norma ISO 3382. El objetivo principal es automatizar el análisis de respuestas impulsivas (IR) para la obtención de métricas acústicas como tiempo de reverberación, claridad, definición y otros indicadores relevantes en acústica arquitectónica.
+Este documento presenta el desarrollo de un software orientado al cálculo de parámetros acústicos según la norma ISO 3382. El objetivo principal es automatizar el análisis de respuestas impulsivas de recintos para la obtención de parámetros acústicos a través de la generación de un barrido senoidal como señal de excitación, y el procesamiento de la respuesta a través del correspondeinte filtro inverso. Por otra parte se ha diseñado un generador de ruido rosa y un banco de filtros de octava según la norma IEC 61260:2014.
 
-**Keywords:** ISO 3382, IR, acústica, respuesta impulsiva, procesamiento digital de señales
+**Keywords:** ISO 3382, acústica, respuesta impulsiva,IR, procesamiento digital de señales, DSP
 
 ---
 
-## 1. Introducción
+## 1. Introducción y objetivos
 
 El análisis acústico de salas mediante la norma ISO 3382 permite caracterizar el comportamiento sonoro de espacios cerrados a partir de la respuesta impulsiva. Este trabajo aborda el desarrollo de un software capaz de procesar señales acústicas y extraer parámetros objetivos de calidad sonora.
 
----
+## 2. Marco teórico
+## 3. Desarrollo experimental
 
-## 2. Estructura de trabajo
+    3.1 Arquitecura
 
-El sistema de software se organiza en módulos:
+        En la figura 3.1 se observa el esquema del diseño de arquitectura del proyecto.
 
-- Adquisición de respuesta impulsiva (IR)
-- Preprocesamiento de señal
-- Cálculo de parámetros ISO 3382
-- Visualización de resultados
-- Exportación de reportes
+ ![Imagen 3.1. Diagrama de arquitectura](IMAGENES/ARQUITECTURA.png)
 
-La arquitectura modular permite escalabilidad y mantenimiento eficiente del código.
+             Figura 3.1. Diagrama de arquitectura
+        
+        3.2 Diseño
 
----
+        3.3 Funciones
+            Generación de señales
+            Reproducción y grabación
+            Cargar audio
+            Sintetizar RI
+            Obtener RI desde sweep
+            Filtro de octava
+            Convertir a escala logarítmica
+            Suavizar señal
+            Integral de Schroeder
+            Regresión lineal
+            Calcular parámetros acústicos
+            RIR_API
 
-## 3. Estilo de escritura
-
-El código desarrollado sigue estándares de programación orientada a claridad, reutilización y documentación. Se prioriza:
-
-- Nombres descriptivos de variables
-- Modularización de funciones
-- Comentarios técnicos
-- Compatibilidad con Python científico (NumPy, SciPy)
-
----
-
-## 4. Subsecciones
-
-El análisis se divide en etapas:
-
-### 4.1 Adquisición de señal
-Obtención de la respuesta impulsiva mediante excitación controlada o grabación en campo.
-
-### 4.2 Filtrado y preprocesamiento
-Eliminación de ruido y normalización de la señal.
-
-### 4.3 Cálculo de métricas
-Aplicación de integrales energéticas para obtener parámetros ISO 3382.
-
----
-
-## 5. Figuras y tablas
-
-Las figuras representan:
-
-- Respuesta impulsiva en el dominio temporal
-- Curvas de decaimiento energético
-- Comparación de parámetros acústicos
-
-Las tablas resumen resultados numéricos por banda de frecuencia.
-
----
-
-## 6. Ecuaciones
-
-La base del análisis se fundamenta en el decaimiento energético:
-
-\[
-E(t) = \int_t^{\infty} p^2(\tau)\, d\tau
-\]
-
-El tiempo de reverberación T30 se calcula a partir de la pendiente de la curva de decaimiento:
-
-\[
-T_{30} = -\frac{60}{\Delta L / \Delta t}
-\]
-
----
-
-## 7. Errores comunes a evitar
-
-- Uso de ventanas de análisis incorrectas
-- Saturación de la señal de entrada
-- Mala calibración del sistema de medición
-- Interpretación incorrecta de la curva de Schroeder
-
----
-
-## 8. Conclusiones
-
-El desarrollo de software basado en ISO 3382 permite automatizar el análisis acústico con alta precisión. La implementación modular facilita su extensión a futuros estándares y mejoras en el procesamiento de señal.
-
----
+## 4. Resultados
+    4.1 Gráficos
+    4.2 Tablas
+    4.3 Validación
+## 5. Conclusiones
 
 ## Referencias
 
 - ISO 3382-1: Acoustics — Measurement of room acoustic parameters
-- ISO 3382-2: Reverberation time in ordinary rooms
-- Kuttruff, H. *Room Acoustics*
-- Pierce, A. *Acoustics: An Introduction to Its Physical Principles*
+- IEC 60621-1:2014: Electroacoustics – Octave-band and fractional-octave-band filters –Part 1: Specifications
+- Fariña: Acá va el papper del sweep (incluir en la sección del marco teórico)
