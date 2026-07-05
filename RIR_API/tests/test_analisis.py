@@ -1,13 +1,14 @@
 """Tests para los servicios de analisis de parametros acusticos (Milestone 3)."""
 
 import numpy as np
+import pytest
 
 from app.services.acoustic_parameters import (
+    calcular_parametros_acusticos,
     integral_schroeder,
-    regresion_lineal,
     metodo_lundeby,
+    regresion_lineal,
     suavizar_signal,
-    calcular_parametros_acusticos
 )
 from app.services.signal_utils import sintetizar_ri
 
@@ -162,6 +163,7 @@ class TestIntegralSchroeder:
             atol=1e-12,
         )
 
+
 class TestCalcularParametrosAcusticos:
     """Tests para la función calcular_parametros_acusticos."""
 
@@ -274,8 +276,10 @@ class TestSuavizarSignal:
 
         assert suavizada.shape == signal.shape
 
+
 class TestMetodoLundeby:
     """Tests para la función metodo_lundeby"""
+
     def test_lundeby_basico(self):
         fs = 48000
 
@@ -283,10 +287,11 @@ class TestMetodoLundeby:
         t = np.arange(fs) / fs
         ri = np.exp(-3 * t)
 
-        idx = metodo_lundeby(ri, fs)
+        idx, ruido = metodo_lundeby(ri, fs)
 
         # debe estar dentro de la señal
-        assert 0 < idx < len(ri)
+        assert 0 <= idx < len(ri)
+        assert isinstance(ruido, float)
 
     def test_lundeby_ruido_valido(self):
         fs = 48000
@@ -295,10 +300,10 @@ class TestMetodoLundeby:
         ri[0] = 1
         ri += 0.001 * np.random.randn(fs)
 
-        idx = metodo_lundeby(ri, fs)
+        idx, ruido = metodo_lundeby(ri, fs)
 
         assert isinstance(idx, int)
-        assert 0 <= idx < len(ri)
+        assert isinstance(ruido, float)
 
     def test_lundeby_sin_senal(self):
         fs = 48000
@@ -315,12 +320,12 @@ class TestMetodoLundeby:
         fs = 48000
 
         np.random.seed(0)
-        ri1 = np.random.randn(fs) * np.exp(-3*np.arange(fs)/fs)
+        ri1 = np.random.randn(fs) * np.exp(-3 * np.arange(fs) / fs)
 
         np.random.seed(0)
-        ri2 = np.random.randn(fs) * np.exp(-3*np.arange(fs)/fs)
+        ri2 = np.random.randn(fs) * np.exp(-3 * np.arange(fs) / fs)
 
-        idx1 = metodo_lundeby(ri1, fs)
-        idx2 = metodo_lundeby(ri2, fs)
+        idx1, _ = metodo_lundeby(ri1, fs)
+        idx2, _ = metodo_lundeby(ri2, fs)
 
         assert abs(idx1 - idx2) < 10

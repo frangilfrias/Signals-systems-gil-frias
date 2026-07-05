@@ -11,11 +11,15 @@ from datetime import UTC, datetime
 
 import numpy as np
 import soundfile as sf
-from fastapi import FastAPI, File, HTTPException, UploadFile, Query
+from fastapi import FastAPI, File, HTTPException, Query, UploadFile
 from fastapi.responses import HTMLResponse, StreamingResponse
 
 from app.routers import health
-from app.services.acoustic_parameters import calcular_parametros_acusticos, integral_schroeder, suavizar_signal
+from app.services.acoustic_parameters import (
+    calcular_parametros_acusticos,
+    integral_schroeder,
+    suavizar_signal,
+)
 from app.services.filter import filtro_octava
 from app.services.pink_noise import generar_ruido_rosa
 from app.services.signal_utils import a_escala_log, sintetizar_ri
@@ -379,7 +383,8 @@ async def analizar_respuesta_impulso(file: UploadFile = File(...)):
             "sample_rate": fs,
             "samples": len(signal),
             "duration": len(signal) / fs,
-            "schroeder_curve": edc_db.tolist(),
+            "schroeder_points": len(edc_db),
+            "schroeder_preview": edc_db[:200].tolist(),
             "acoustic_parameters": parametros,
         }
 
@@ -413,7 +418,8 @@ async def schroeder(file: UploadFile = File(...)):
         return {
             "sample_rate": fs,
             "samples": len(signal),
-            "schroeder": edc.tolist(),
+            "schroeder_points": len(edc),
+            "schroeder_preview": edc[:200].tolist(),
         }
 
     except Exception as e:
@@ -429,7 +435,6 @@ async def smoothing(
     method: str = Query(default="hilbert"),
     window_ms: int = Query(default=10, ge=1, le=100),
 ):
-
     """
     Aplica suavizado a una señal de audio.
 
@@ -462,7 +467,7 @@ async def smoothing(
         else:
             raise HTTPException(
                 status_code=400,
-                detail = "Método inválido. Opciones: 'hilbert' o 'moving_average'.",
+                detail="Método inválido. Opciones: 'hilbert' o 'moving_average'.",
             )
 
         return {
@@ -470,7 +475,7 @@ async def smoothing(
             "window_ms": window_ms,
             "num_samples": len(smoothed),
             "file_path": file.filename,
-            "signal": smoothed.tolist(),
+            "signal_preview": smoothed[:200].tolist(),
         }
 
     except HTTPException:
@@ -509,7 +514,7 @@ async def log_scale(file: UploadFile = File(...)):
             "min_db": float(signal_db.min()),
             "max_db": float(signal_db.max()),
             "file_path": file.filename,
-            "signal_db": signal_db.tolist(),
+            "signal_db_preview": signal_db[:200].tolist(),
         }
 
     except Exception as e:
