@@ -4,9 +4,10 @@ Milestone 3: Analisis de parametros acusticos.
 """
 
 import numpy as np
+import scipy.signal
+
 from app.services.filter import filtro_octava
 from app.services.signal_utils import a_escala_log
-import scipy.signal
 
 
 def suavizar_signal(
@@ -225,7 +226,6 @@ def calcular_parametros_acusticos(ri: np.ndarray, fs: int) -> dict[str, dict[flo
     }
 
     for fc in bandas:
-
         # Filtrado por banda de octava
         ri_filtrada = filtro_octava(
             signal=ri,
@@ -241,7 +241,6 @@ def calcular_parametros_acusticos(ri: np.ndarray, fs: int) -> dict[str, dict[flo
         # Función auxiliar para EDT, T10, T20 y T30, para no escribir el mismo procedimiento
         # en todos los casos, simplemente toma los límites de cada parámetros y hace el cálculo.
 
-
         def calcular_rt(db_inicio: float, db_fin: float) -> float:
 
             indice_inicio = np.argmin(np.abs(edc_db - db_inicio))
@@ -251,8 +250,8 @@ def calcular_parametros_acusticos(ri: np.ndarray, fs: int) -> dict[str, dict[flo
                 return np.nan
 
             pendiente, _, _ = regresion_lineal(
-                tiempo[indice_inicio:indice_fin + 1],
-                edc_db[indice_inicio:indice_fin + 1],
+                tiempo[indice_inicio : indice_fin + 1],
+                edc_db[indice_inicio : indice_fin + 1],
             )
 
             if pendiente >= 0:
@@ -270,14 +269,13 @@ def calcular_parametros_acusticos(ri: np.ndarray, fs: int) -> dict[str, dict[flo
         t60 = t30 if not np.isnan(t30) else t20
 
         # Energía
-        energia = ri_filtrada ** 2
+        energia = ri_filtrada**2
         energia_total = np.sum(energia)
 
         if energia_total == 0:
             d50 = np.nan
             c80 = np.nan
         else:
-
             # D50
             n50 = min(int(round(0.050 * fs)), len(energia))
             energia_50 = np.sum(energia[:n50])
@@ -288,13 +286,8 @@ def calcular_parametros_acusticos(ri: np.ndarray, fs: int) -> dict[str, dict[flo
             energia_80 = np.sum(energia[:n80])
             energia_tardia = np.sum(energia[n80:])
 
-            c80 = (
-                np.inf 
-                if energia_tardia <= 0
-                else 10 * np.log10(energia_80 / energia_tardia)
-            )
+            c80 = np.inf if energia_tardia <= 0 else 10 * np.log10(energia_80 / energia_tardia)
         # Guardar resultados
-
 
         parametros["EDT"][fc] = float(edt)
         parametros["T10"][fc] = float(t10)
@@ -344,7 +337,7 @@ def metodo_lundeby(
 
     # Energía y curva de Schroeder
 
-    energia = ri ** 2
+    energia = ri**2
     energia = np.maximum(energia, np.finfo(float).eps)
 
     edc = integral_schroeder(ri)
@@ -367,7 +360,6 @@ def metodo_lundeby(
 
     # Iteraciones Lundeby
     for _ in range(5):
-
         nivel_corte = ruido_db + 10
 
         idx = np.where(edc_db <= nivel_corte)[0]
