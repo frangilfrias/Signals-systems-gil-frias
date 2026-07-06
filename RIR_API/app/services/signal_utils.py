@@ -159,7 +159,9 @@ def cargar_audio(ruta: str | Path) -> tuple[np.ndarray, int]:
 
     extension = ruta.suffix.lower()
     if extension not in (".wav", ".flac"):
-        raise ValueError(f"Formato '{extension}' no soportado. Usar WAV o FLAC.")
+        raise ValueError(
+            f"Formato '{extension}' no soportado. Usar WAV o FLAC."
+        )
 
     senal, sample_rate = sf.read(ruta, dtype="float64")
 

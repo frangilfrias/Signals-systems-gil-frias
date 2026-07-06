@@ -8,8 +8,14 @@ from app.services.sine_sweep import generar_sine_sweep
 from scipy import signal as sig
 import soundfile as sf
 
-from app.services.signal_utils import a_escala_log, cargar_audio, sintetizar_ri, obtener_ri_desde_sweep
+from app.services.signal_utils import (
+    a_escala_log,
+    cargar_audio,
+    sintetizar_ri,
+    obtener_ri_desde_sweep
+)
 from app.services.filter import filtro_octava
+
 
 @pytest.fixture
 def wav_mono(tmp_path):
@@ -34,6 +40,7 @@ def archivo_invalido(tmp_path):
     ruta = tmp_path / "audio.mp3"
     ruta.write_bytes(b"datos falsos")
     return ruta
+
 
 class TestCargarAudio:
     """Tests para la funcion cargar_audio."""
@@ -76,6 +83,7 @@ class TestCargarAudio:
     def test_devuelve_float64(self, wav_mono):
         senal, _ = cargar_audio(wav_mono)
         assert senal.dtype == np.float64
+
 
 class TestAEscalaLog:
     """Tests para la funcion a_escala_log."""
@@ -151,7 +159,11 @@ class TestFiltroOctava:
 
         gain_fc = 20 * np.log10(np.abs(h[idx_fc]) + 1e-12)
 
-        assert np.isclose(gain_fc, 0.0, atol=0.5), f"Ganancia en fc incorrecta: {gain_fc:.2f} dB"
+        assert np.isclose(
+            gain_fc,
+            0.0,
+            atol=0.5
+        ), f"Ganancia en fc incorrecta: {gain_fc:.2f} dB"
 
     def test_filtro_octava_atenuacion(self):
         """Verificar atenuacion fuera de la banda de paso"""
@@ -205,6 +217,7 @@ class TestFiltroOctava:
         assert np.isclose(gain_fc, 0.0, atol=0.5)
         assert np.isclose(gain_low, -3.0, atol=1.0)
         assert np.isclose(gain_high, -3.0, atol=1.0)
+
 
 class TestSintetizarRI:
     """Tests para la funcion sintetizar_ri"""

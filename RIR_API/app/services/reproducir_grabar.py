@@ -3,7 +3,10 @@ import sounddevice as sd
 
 
 def reproducir_y_grabar(
-    signal: np.ndarray, fs: int, duracion_grabacion: float, preroll: float = 0.7
+    signal: np.ndarray,
+    fs: int,
+    duracion_grabacion: float,
+    preroll: float = 0.7
 ) -> np.ndarray:
     """
     Reproduce una señal y graba simultáneamente en modo full-duplex.

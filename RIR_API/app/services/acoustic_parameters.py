@@ -42,7 +42,7 @@ def suavizar_signal(
 
     # Verificar que la entrada sea un vector
     if signal.ndim != 1:
-        raise ValueError("ri debe ser un array unidimensional o bidimensional.")
+        raise ValueError("ri debe ser un array unidimensional/bidimensional.")
 
     elif signal.ndim != 1:
         raise ValueError("signal debe ser un vector 1D o matriz 2D.")
@@ -110,7 +110,7 @@ def integral_schroeder(ri: np.ndarray) -> np.ndarray:
 
     # Verificar que la entrada sea un vector
     if ri.ndim != 1:
-        raise ValueError("ri debe ser un array unidimensional o bidimensional.")
+        raise ValueError("ri debe ser un array unidimensional/bidimensional.")
 
     # Energía total de la respuesta al impulso
     energia_total = np.sum(ri**2)
@@ -128,7 +128,10 @@ def integral_schroeder(ri: np.ndarray) -> np.ndarray:
     return edc
 
 
-def regresion_lineal(x: np.ndarray, y: np.ndarray) -> tuple[float, float, float]:
+def regresion_lineal(
+        x: np.ndarray,
+        y: np.ndarray
+) -> tuple[float, float, float]:
     """
     Calcula la regresion lineal por minimos cuadrados.
 
@@ -154,7 +157,8 @@ def regresion_lineal(x: np.ndarray, y: np.ndarray) -> tuple[float, float, float]
     y = np.asarray(y, dtype=np.float64)
 
     if len(x) != len(y):
-        raise ValueError(f"x e y deben tener el mismo largo. Got len(x)={len(x)}, len(y)={len(y)}")
+        raise ValueError(f"x e y deben tener el mismo largo."
+                         f"Recibido: len(x)={len(x)}, len(y)={len(y)}")
     if len(x) < 2:
         raise ValueError("Se necesitan al menos 2 puntos para la regresion.")
 
@@ -168,7 +172,9 @@ def regresion_lineal(x: np.ndarray, y: np.ndarray) -> tuple[float, float, float]
     denominador = N * sum_x2 - sum_x**2
 
     if denominador == 0:
-        raise ValueError("Los valores de x son constantes, no se puede ajustar una recta.")
+        raise ValueError(
+            "Los valores de x son constantes, no se puede ajustar una recta."
+        )
 
     m = (N * sum_xy - sum_x * sum_y) / denominador
     b = (sum_y - m * sum_x) / N
@@ -183,8 +189,12 @@ def regresion_lineal(x: np.ndarray, y: np.ndarray) -> tuple[float, float, float]
     return float(m), float(b), float(r_cuadrado)
 
 
-def calcular_parametros_acusticos(ri: np.ndarray, fs: int) -> dict[str, dict[float, float]]:
-    """Calcula los parametros acusticos de una sala a partir de su RI para cada banda de octava.
+def calcular_parametros_acusticos(
+        ri: np.ndarray,
+        fs: int
+) -> dict[str, dict[float, float]]:
+    """Calcula los parametros acusticos de una sala
+    a partir de su RI para cada banda de octava.
 
     Parameters
     ----------
@@ -206,7 +216,7 @@ def calcular_parametros_acusticos(ri: np.ndarray, fs: int) -> dict[str, dict[flo
     ri = np.asarray(ri, dtype=float)
 
     if ri.ndim != 1:
-        raise ValueError("La respuesta al impulso debe ser un vector unidimensional.")
+        raise ValueError("La respuesta al impulso debe ser un vector 1D.")
 
     if fs <= 0:
         raise ValueError("La frecuencia de muestreo debe ser mayor que cero.")
@@ -238,8 +248,8 @@ def calcular_parametros_acusticos(ri: np.ndarray, fs: int) -> dict[str, dict[flo
         edc_db = 10 * np.log10(np.maximum(edc, eps))
         tiempo = np.arange(len(ri_filtrada)) / fs
 
-        # Función auxiliar para EDT, T10, T20 y T30, para no escribir el mismo procedimiento
-        # en todos los casos, simplemente toma los límites de cada parámetros y hace el cálculo.
+        # Función auxiliar para EDT, T10, T20 y T30
+        # en todos los casos, toma los límites de cada parámetros y calcula.
 
         def calcular_rt(db_inicio: float, db_fin: float) -> float:
 
@@ -250,8 +260,8 @@ def calcular_parametros_acusticos(ri: np.ndarray, fs: int) -> dict[str, dict[flo
                 return np.nan
 
             pendiente, _, _ = regresion_lineal(
-                tiempo[indice_inicio : indice_fin + 1],
-                edc_db[indice_inicio : indice_fin + 1],
+                tiempo[indice_inicio: indice_fin + 1],
+                edc_db[indice_inicio: indice_fin + 1],
             )
 
             if pendiente >= 0:
@@ -286,7 +296,11 @@ def calcular_parametros_acusticos(ri: np.ndarray, fs: int) -> dict[str, dict[flo
             energia_80 = np.sum(energia[:n80])
             energia_tardia = np.sum(energia[n80:])
 
-            c80 = np.inf if energia_tardia <= 0 else 10 * np.log10(energia_80 / energia_tardia)
+            c80 = (
+                np.inf
+                if energia_tardia <= 0
+                else 10 * np.log10(energia_80 / energia_tardia)
+            )
         # Guardar resultados
 
         parametros["EDT"][fc] = float(edt)
