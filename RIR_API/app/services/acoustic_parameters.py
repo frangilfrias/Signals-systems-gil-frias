@@ -7,7 +7,6 @@ import numpy as np
 import scipy.signal
 
 from app.services.filter import filtro_octava
-from app.services.signal_utils import a_escala_log
 
 
 def suavizar_signal(
@@ -123,7 +122,7 @@ def integral_schroeder(ri: np.ndarray) -> np.ndarray:
     # Energía acumulada inversa (desde cada muestra hasta el final)
     energia_acumulada = np.cumsum(ri[::-1] ** 2)[::-1]
 
-    # Curva de decaimiento energético normalizada
+    # Curva de decaimiento energético normalizada (entre 0 y 1)
     edc = energia_acumulada / energia_total
 
     return edc
@@ -235,7 +234,8 @@ def calcular_parametros_acusticos(ri: np.ndarray, fs: int) -> dict[str, dict[flo
 
         # Curva de Schroeder
         edc = integral_schroeder(ri_filtrada)
-        edc_db = a_escala_log(edc)
+        eps = np.finfo(float).eps
+        edc_db = 10 * np.log10(np.maximum(edc, eps))
         tiempo = np.arange(len(ri_filtrada)) / fs
 
         # Función auxiliar para EDT, T10, T20 y T30, para no escribir el mismo procedimiento
@@ -341,8 +341,8 @@ def metodo_lundeby(
     energia = np.maximum(energia, np.finfo(float).eps)
 
     edc = integral_schroeder(ri)
-
-    edc_db = 10 * np.log10(edc)
+    eps = np.finfo(float).eps
+    edc_db = 10 * np.log10(np.maximum(edc, eps))
 
     t = np.arange(len(ri)) / fs
 
