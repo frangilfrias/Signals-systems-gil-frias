@@ -4,9 +4,9 @@ Milestone 3: Analisis de parametros acusticos.
 """
 
 import numpy as np
-from app.services.filter import filtro_octava
-from app.services.signal_utils import a_escala_log
 import scipy.signal
+
+from app.services.filter import filtro_octava
 
 
 def suavizar_signal(
@@ -122,7 +122,7 @@ def integral_schroeder(ri: np.ndarray) -> np.ndarray:
     # Energía acumulada inversa (desde cada muestra hasta el final)
     energia_acumulada = np.cumsum(ri[::-1] ** 2)[::-1]
 
-    # Curva de decaimiento energético normalizada
+    # Curva de decaimiento energético normalizada (entre 0 y 1)
     edc = energia_acumulada / energia_total
 
     return edc
@@ -225,7 +225,6 @@ def calcular_parametros_acusticos(ri: np.ndarray, fs: int) -> dict[str, dict[flo
     }
 
     for fc in bandas:
-
         # Filtrado por banda de octava
         ri_filtrada = filtro_octava(
             signal=ri,
@@ -235,12 +234,12 @@ def calcular_parametros_acusticos(ri: np.ndarray, fs: int) -> dict[str, dict[flo
 
         # Curva de Schroeder
         edc = integral_schroeder(ri_filtrada)
-        edc_db = a_escala_log(edc)
+        eps = np.finfo(float).eps
+        edc_db = 10 * np.log10(np.maximum(edc, eps))
         tiempo = np.arange(len(ri_filtrada)) / fs
 
         # Función auxiliar para EDT, T10, T20 y T30, para no escribir el mismo procedimiento
         # en todos los casos, simplemente toma los límites de cada parámetros y hace el cálculo.
-
 
         def calcular_rt(db_inicio: float, db_fin: float) -> float:
 
@@ -251,8 +250,8 @@ def calcular_parametros_acusticos(ri: np.ndarray, fs: int) -> dict[str, dict[flo
                 return np.nan
 
             pendiente, _, _ = regresion_lineal(
-                tiempo[indice_inicio:indice_fin + 1],
-                edc_db[indice_inicio:indice_fin + 1],
+                tiempo[indice_inicio : indice_fin + 1],
+                edc_db[indice_inicio : indice_fin + 1],
             )
 
             if pendiente >= 0:
@@ -270,14 +269,13 @@ def calcular_parametros_acusticos(ri: np.ndarray, fs: int) -> dict[str, dict[flo
         t60 = t30 if not np.isnan(t30) else t20
 
         # Energía
-        energia = ri_filtrada ** 2
+        energia = ri_filtrada**2
         energia_total = np.sum(energia)
 
         if energia_total == 0:
             d50 = np.nan
             c80 = np.nan
         else:
-
             # D50
             n50 = min(int(round(0.050 * fs)), len(energia))
             energia_50 = np.sum(energia[:n50])
@@ -288,13 +286,8 @@ def calcular_parametros_acusticos(ri: np.ndarray, fs: int) -> dict[str, dict[flo
             energia_80 = np.sum(energia[:n80])
             energia_tardia = np.sum(energia[n80:])
 
-            c80 = (
-                np.inf 
-                if energia_tardia <= 0
-                else 10 * np.log10(energia_80 / energia_tardia)
-            )
+            c80 = np.inf if energia_tardia <= 0 else 10 * np.log10(energia_80 / energia_tardia)
         # Guardar resultados
-
 
         parametros["EDT"][fc] = float(edt)
         parametros["T10"][fc] = float(t10)

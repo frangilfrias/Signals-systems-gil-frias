@@ -50,8 +50,10 @@ select = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]
 
 [dependency-groups]
 dev = [
+    "httpx>=0.28.1",
     "pytest-cov>=7.1.0",
 ]
