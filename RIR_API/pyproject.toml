@@ -1,12 +1,14 @@
 [project]
 name = "rir-api"
-version = "0.1.0"
+version = "1.0.0"
 description = "API REST para procesamiento y analisis de respuestas al impulso segun ISO 3382"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.12"
 authors = [
-    { name = "Estudiante", email = "estudiante@example.com" },
+    { name = "Francisco Gil Frias", email = "gil50070@estudiantes.untref.edu.ar" },
+    { name = "Matias Moreira", email = "matmore83@hotmail.com" },
+    { name = "Mora Sawczyk", email = "morasawczyk@gmail.com" },
 ]
 dependencies = [
     "fastapi",
