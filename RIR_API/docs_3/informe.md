@@ -1,7 +1,7 @@
 ---
 Título: "Desarrollo de un software para el cálculo de parámetros acústicos según la norma ISO 3382"
 Asignatura: Señales y Sistemas, Ingeniería de Sonido
-Autores: "Mora Sawczyc, Francisco Gil Frías, Matías Moreira"
+Autores: "Mora Sawczyk, Francisco Gil Frías, Matías Moreira"
 Fecha: "07/07/2026"
 ---
 
@@ -52,6 +52,9 @@ Endpoints
 
 ### 4.3 Funciones
 #### Generación de señales: 
+*Pink noise*: 
+
+*Sine sweep*: Con el objetivo de caracterizar completamente un sistema, la API implementa la generación de un barrido de senoidal logarítmico (sine sweep). Esta función genera tanto la señal de excitación como su filtro invers, necesario para su procesamiento posterior para recuperar la respuesta al impulso, a partir de la cual es posible calcular los distintos parámetros acústicos implementados en la API.
 
 #### Reproducción y grabación: 
 La función de reproducción y grabación permite reproducir una señal de audio a través del sistema de salida seleccionado mientras registra simultáneamente la respuesta capturada por un dispositivo de entrada. Su objetivo es obtener una grabación sincronizada de la señal emitida para posteriormente analizar la respuesta impulsiva (RIR) del recinto.
@@ -63,9 +66,10 @@ La función de carga de audio permite importar un archivo de sonido almacenado e
 
 Su propósito es obtener la señal digital y su frecuencia de muestreo, independientemente del origen del archivo, permitiendo trabajar posteriormente con filtros, cálculos energéticos y parámetros acústicos. Además, valida que el archivo exista y que el formato sea compatible con el procesamiento.
 
-#### Sintetizar RI: 
-
 #### Obtener RI desde sweep:
+La función de obtención de la respuesta al impulso permite recuperar la caracterización de un sistema a partir de la "deconvolusión" de la grabación de la respuesta del sistema al sine sweep y su filtro inverso, de esta manera elimina el efecto de la señal de excitación. 
+
+Esta respuesta constituye la entrada para las etapas posteriores de procesamiento, permitiendo calcular los parámetros acústicos de acuerdo con la metodología implementada en la API.
 
 #### Filtro de octava:
 
@@ -84,6 +88,12 @@ La función de regresión lineal calcula la recta que mejor aproxima un conjunto
 Como resultado devuelve la pendiente, la ordenada al origen y el coeficiente de determinación (R²), el cual permite evaluar la calidad del ajuste realizado.
 
 #### Calcular parámetros acústicos:
+La función de cálculo de parámetros acústicos permite obtener los principales indicadores utilizados para caracterizar el comportamiento acústico de un recinto a partir de su respuesta al impulso.
+
+Su propósito es calcular automáticamente los parámetros T10, T20, T30, T60, EDT, C80 y D50. Para ello, utiliza la curva de decaimiento energético obtenida mediante la integral de Schroeder y aplica una regresión lineal sobre los intervalos establecidos por la norma para estimar los distintos tiempos de reverberación. Los parámetros obtenidos constituyen el resultado final del análisis realizado por la API.
+
+#### Método lundeby
+La función implementa el método de Lundeby para estimar automáticamente el punto de truncamiento de una respuesta al impulso. A partir de este punto es posible separar el decaimiento útil del ruido de fondo, mejorando la precisión de los cálculos posteriores de la curva de decaimiento energético y de los parámetros acústicos.
 
 #### RIR_API:
 La API desarrollada expone mediante servicios HTTP las principales funcionalidades implementadas durante el proyecto, permitiendo ejecutar los algoritmos de procesamiento acústico sin necesidad de acceder directamente al código fuente.
@@ -95,6 +105,9 @@ Entre los servicios disponibles se encuentran operaciones sobre señales, filtro
 ### 4.4 Tests
 
 #### Generación de señales: 
+***Pink noise***:
+
+***Sine sweep***: Los tests verifican que la función genere correctamente el sine sweep y su filtro inverso; ambas señales tengan la longitud esperada; el barrido cubra el rango de frecuencias especificado; la frecuencia instantánea aumente de forma monótona; la convolución entre el sine sweep y su filtro inverso produzca una aproximación a un impulso; y se manejen correctamente parámetros inválidos, tanto de tipo como de valor.
 
 #### Reproducción y grabación: 
 Los tests verifican que la función complete correctamente el proceso de reproducción y grabación; la señal obtenida tenga la longitud esperada; la frecuencia de muestreo utilizada sea la indicada; el tipo de dato devuelto sea el correcto;
@@ -106,6 +119,7 @@ Los tests verifican que el archivo pueda abrirse correctamente; la señal cargad
 #### Sintetizar RI: 
 
 #### Obtener RI desde sweep:
+Los tests verifican que la deconvolución entre la grabación del sine sweep y su filtro inverso permita recuperar correctamente la respuesta al impulso; el pico principal de la respuesta obtenida sea claramente identificable; la respuesta recuperada conserve una alta similitud con una respuesta al impulso sintetizada; y el proceso de obtención de la RI produzca resultados consistentes para su posterior análisis acústico.
 
 #### Filtro de octava:
 
@@ -122,10 +136,13 @@ Los tests verifican que la pendiente calculada sea correcta; la ordenada al orig
 se detecten correctamente casos degenerados o inválidos.
 
 #### Calcular parámetros acústicos:
+Los tests verifican que los parámetros acústicos se calculen correctamente a partir de una respuesta al impulso sintetizada; el valor estimado de T30 sea consistente con el tiempo de reverberación utilizado para generar la señal; el parámetro D50 se encuentre dentro del rango físico esperado; y C80 presente valores coherentes para respuestas al impulso con la energía concentrada al comienzo.
+
+#### Método lundeby
+Los tests verifican que la función estime correctamente el punto de truncamiento de una respuesta al impulso; el índice obtenido se encuentre dentro de los límites de la señal; el algoritmo responda correctamente tanto para respuestas con decaimiento exponencial como para señales dominadas por ruido; y los resultados sean estables al procesar señales equivalentes.
 
 #### RIR_API:
 Los tests de la API verifican que cada endpoint responda correctamente a solicitudes válidas; los códigos de estado HTTP sean los esperados; las respuestas contengan la estructura JSON correcta; se validen adecuadamente los parámetros recibidos; se gestionen correctamente solicitudes inválidas o incompletas; los resultados devueltos coincidan con los obtenidos por las funciones internas del sistema.
-
             
 ## 5. Resultados
 ### 5.1 Gráficos
