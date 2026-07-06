@@ -28,76 +28,76 @@ La combinación de una biblioteca especializada para el procesamiento digital de
 El software desarrollado automatiza el flujo completo de análisis acústico, desde la generación de la señal de excitación hasta la obtención de los principales parámetros definidos en [1], entre ellos EDT,T20 ,T30,D50 y C80, calculados por bandas de octava mediante filtros conformes a la norma IEC 61260-1 [2].
 
 ## 2 Objetivos
-    2.1 Generales
+### 2.1 Generales
 
-    2.2 Particulares
+### 2.2 Particulares
 
 
 ## 3. Marco teórico
 ## 4. Desarrollo 
 
-    4.1 Arquitecura
+### 4.1 Arquitecura
 
-    En la figura 1 se observa el esquema del diseño de arquitectura del proyecto.
+En la figura 1 se observa el esquema del diseño de arquitectura del proyecto.
 
  ![Imagen 1 Diagrama de arquitectura](IMAGENES/ARQUITECTURA.png)
 
-    4.2 Diseño
-        Cliente
-        Routers
-        Schemas
-        Servirces
-        Endpoints
+### 4.2 Diseño
+Cliente
+Routers
+Schemas
+Servirces
+Endpoints
 
 
-    4.3 Funciones
-        Generación de señales
-        Reproducción y grabación
-        Cargar audio
-        Sintetizar RI
-        Obtener RI desde sweep
-        Filtro de octava
-        Convertir a escala logarítmica
-        Suavizar señal
-        Integral de Schroeder
-        Regresión lineal
-        Calcular parámetros acústicos
-        RIR_API
-    4.4 Tests
+### 4.3 Funciones
+Generación de señales
+Reproducción y grabación
+Cargar audio
+Sintetizar RI
+Obtener RI desde sweep
+Filtro de octava
+Convertir a escala logarítmica
+Suavizar señal
+Integral de Schroeder
+Regresión lineal
+Calcular parámetros acústicos
+RIR_API
+### 4.4 Tests
             
 ## 5. Resultados
-    5.1 Gráficos
-    5.2 Tablas
-    5.3 Validación
+### 5.1 Gráficos
+### 5.2 Tablas
+### 5.3 Validación
 ## 6. Conclusiones
-    Se ha desarrollado el software RIR-API en lenguaje python capaz de generar la señal de excitación, registrar la respuesta del recinto, procesarla y otorgar los parámetros acústicos EDT, T20, T30, D50 y C80 por bandas de octava cumpliendo con las recomendaciones dadas en las normas ISO 3381-1 e IEC 60621-1.
+Se ha desarrollado el software RIR-API en lenguaje python capaz de generar la señal de excitación, registrar la respuesta del recinto, procesarla y otorgar los parámetros acústicos EDT, T20, T30, D50 y C80 por bandas de octava cumpliendo con las recomendaciones dadas en las normas ISO 3381-1 e IEC 60621-1.
 
 ## 7. Adversidades, confesiones y desafíos
 
-    7.1 Adversidades
-        El escaso o nulo conocimiento previo tanto del lenguaje de programación utilizado como de los sistemas asociados configuraron la mayor proporción de tiempo destinado al desarrollo del proyecto, restando una pequeña parte para el cumplimiento de los objetivos técnicos vinculados al análisis conceptual del procesamiento de señales.
+### 7.1 Adversidades
+El escaso o nulo conocimiento previo tanto del lenguaje de programación utilizado como de los sistemas asociados configuraron la mayor proporción de tiempo destinado al desarrollo del proyecto, restando una pequeña parte para el cumplimiento de los objetivos técnicos vinculados al análisis conceptual del procesamiento de señales.
         
-    7.2 Confesiones
-        Debido a las razones expuestas en 7.1, se ha recurrido sistemáticamente al vivecoding. 
+### 7.2 Confesiones
+Debido a las razones expuestas en 7.1, se ha recurrido sistemáticamente al vivecoding. 
 
-    7.3 Desafíos
-        Comprender en profundidad y adquirir agilidad en la implementación de las buenas prácticas vinculadas a la programación y al procesamiento digital de señales.
+### 7.3 Desafíos
+Comprender en profundidad y adquirir agilidad en la implementación de las buenas prácticas vinculadas a la programación y al procesamiento digital de señales.
 
 
 
 
 ## 8. Trabajo futuro
-    8.1 RI sintética
+### 8.1 RI sintética
 
-    8.2 Filtros
-    8.3 Parámetros
-    8.4 Front end
+### 8.2 Filtros
+### 8.3 Parámetros
+### 8.4 Front end
 
 
 ## Referencias
 
-    [1] ISO 3382-1:2009: Acoustics — Measurement of room acoustic       parametersPart 1: Spaces for music, speech and communication. (2009).
+[1] ISO 3382-1:2009: Acoustics — Measurement of room acoustic       parametersPart 1: Spaces for music, speech and communication. (2009).
 
-    [2]IEC 60621-1:2014: Electroacoustics – Octave-band and fractional-octave-band filters –Part 1: Specifications. (2014).
+[2]IEC 60621-1:2014: Electroacoustics – Octave-band and fractional-octave-band filters –Part 1: Specifications. (2014).
 
-    [3]Fariña, A. . Simultaneous measurement of impulse response and distortion with a swept-sine technique. 108th AES Convention.(2000).
+[3]Fariña, A. . Simultaneous measurement of impulse response and distortion with a swept-sine technique. 108th AES Convention.(2000).
