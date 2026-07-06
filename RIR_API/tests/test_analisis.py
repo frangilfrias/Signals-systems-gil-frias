@@ -1,4 +1,4 @@
-"""Tests para los servicios de analisis de parametros acusticos (Milestone 3)."""
+"""Tests para los servicios de analisis de parametros acusticos (M 3)."""
 
 import numpy as np
 import pytest
