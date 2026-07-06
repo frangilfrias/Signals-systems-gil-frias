@@ -37,6 +37,7 @@ app = FastAPI(
 # Routers
 app.include_router(health.router)
 
+
 @app.get("/", response_class=HTMLResponse)
 async def root():
     """Página de inicio de la API."""
