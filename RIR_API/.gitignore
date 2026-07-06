@@ -69,3 +69,6 @@ data/
 AUXILIAR/
 # Validacion_pipeline + audios
 scripts/
+
+# Desarrollo local
+local/

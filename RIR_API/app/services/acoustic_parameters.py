@@ -337,60 +337,91 @@ def metodo_lundeby(
 
     # Energía y curva de Schroeder
 
-    energia = ri**2
-    energia = np.maximum(energia, np.finfo(float).eps)
-
     edc = integral_schroeder(ri)
-    eps = np.finfo(float).eps
-    edc_db = 10 * np.log10(np.maximum(edc, eps))
+    edc_db = 10 * np.log10(np.maximum(edc, np.finfo(float).eps))
+
+    energia = ri ** 2
 
     t = np.arange(len(ri)) / fs
 
+    # Promedio por intervalos de 10 ms
+
+    ventana = max(int(0.01 * fs), 1)
+
+    n_bloques = len(edc_db) // ventana
+
+    edc_media = np.array([
+        np.mean(edc_db[i * ventana:(i + 1) * ventana])
+        for i in range(n_bloques)
+    ])
+
+    t_media = np.array([
+        np.mean(t[i * ventana:(i + 1) * ventana])
+        for i in range(n_bloques)
+    ])
+
     # Estimación inicial de ruido (últimos 10%)
 
-    n = len(ri)
-    n_ruido = max(int(0.1 * n), 10)
+    n_ruido = max(int(0.1 * len(energia)), 10)
 
-    ruido_db = 10 * np.log10(np.mean(energia[-n_ruido:]))
+    ruido_db = 10 * np.log10(
+        np.mean(energia[-n_ruido:])
+    )
 
-    indice_trunc = int(0.5 * n)
-
-    m = 0.0
-    b = edc_db[0]
+    indice_anterior = -1
 
     # Iteraciones Lundeby
-    for _ in range(5):
+
+    for _ in range(30):
+
         nivel_corte = ruido_db + 10
 
-        idx = np.where(edc_db <= nivel_corte)[0]
+        idx = np.where(edc_media <= nivel_corte)[0]
 
         if len(idx) == 0:
             break
 
         indice_trunc = idx[0]
 
-        if indice_trunc < 5:
+        if indice_trunc < 2:
             break
 
-        # regresión hasta el punto de cruce
-        m, b, _ = regresion_lineal(t[:indice_trunc], edc_db[:indice_trunc])
+        # regresión lineal
 
-        # estimación de la curva
-        fit = m * t + b
+        m, b, _ = regresion_lineal(
+            t_media[:indice_trunc],
+            edc_media[:indice_trunc]
+        )
 
-        residuo = edc_db - fit
+        # Tiempo donde la recta corta el ruido
 
-        ruido_db = np.mean(residuo[-n_ruido:])
+        if m >= 0:
+            break
 
-    # Cruce final con el nivel de ruido
+        tiempo_cruce = (ruido_db - b) / m
 
-    fit_final = m * t + b
+        indice = int(round(tiempo_cruce * fs))
 
-    diff = fit_final - ruido_db
+        indice = np.clip(indice, 0, len(ri) - 1)
 
-    cruces = np.where(diff <= 0)[0]
+        # Convergencia
 
-    if len(cruces) == 0:
-        return len(ri) - 1, float(ruido_db)
+        if abs(indice - indice_anterior) <= 1:
+            return indice, float(ruido_db)
 
-    return int(cruces[0]), float(ruido_db)
+        indice_anterior = indice
+
+        # Recalcular ruido utilizando las muestras
+        # posteriores al nuevo punto de corte
+
+        if indice >= len(ri) - 10:
+            break
+
+        ruido_db = 10 * np.log10(
+            max(np.mean(energia[indice:]), np.finfo(float).eps)
+        )
+
+    if indice_anterior < 0:
+        indice_anterior = len(ri) - 1
+
+    return indice_anterior, float(ruido_db)
