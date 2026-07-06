@@ -51,19 +51,81 @@ Endpoints
 
 
 ### 4.3 Funciones
-Generación de señales
-Reproducción y grabación
-Cargar audio
-Sintetizar RI
-Obtener RI desde sweep
-Filtro de octava
-Convertir a escala logarítmica
-Suavizar señal
-Integral de Schroeder
-Regresión lineal
-Calcular parámetros acústicos
-RIR_API
+#### Generación de señales: 
+
+#### Reproducción y grabación: 
+La función de reproducción y grabación permite reproducir una señal de audio a través del sistema de salida seleccionado mientras registra simultáneamente la respuesta capturada por un dispositivo de entrada. Su objetivo es obtener una grabación sincronizada de la señal emitida para posteriormente analizar la respuesta impulsiva (RIR) del recinto.
+
+Internamente se encarga de configurar los dispositivos de audio, establecer la frecuencia de muestreo, controlar la duración de la adquisición y devolver la señal registrada en un arreglo numérico apto para su procesamiento posterior. Esta función constituye el punto de partida del flujo completo de medición acústica.
+
+#### Cargar audio: 
+La función de carga de audio permite importar un archivo de sonido almacenado en disco para incorporarlo al flujo de procesamiento del sistema.
+
+Su propósito es obtener la señal digital y su frecuencia de muestreo, independientemente del origen del archivo, permitiendo trabajar posteriormente con filtros, cálculos energéticos y parámetros acústicos. Además, valida que el archivo exista y que el formato sea compatible con el procesamiento.
+
+#### Sintetizar RI: 
+
+#### Obtener RI desde sweep:
+
+#### Filtro de octava:
+
+#### Convertir a escala logarítmica: 
+La función de conversión a escala logarítmica transforma una señal expresada en escala lineal hacia decibeles (dB), utilizando una escala logarítmica.
+
+Esta conversión resulta indispensable en acústica, ya que la percepción humana del sonido y la mayoría de los parámetros acústicos se expresan en decibeles. Además del cálculo logarítmico, la función contempla el tratamiento de valores cercanos a cero para evitar errores numéricos durante la operación.
+
+#### Suavizar señal:
+
+#### Integral de Schroeder:
+
+#### Regresión lineal:
+La función de regresión lineal calcula la recta que mejor aproxima un conjunto de datos mediante el método de mínimos cuadrados. Dentro del proyecto se utiliza principalmente para estimar los tiempos de reverberación (EDT, T10, T20 y T30) a partir de la curva de decaimiento energético obtenida mediante la integral de Schroeder.
+
+Como resultado devuelve la pendiente, la ordenada al origen y el coeficiente de determinación (R²), el cual permite evaluar la calidad del ajuste realizado.
+
+#### Calcular parámetros acústicos:
+
+#### RIR_API:
+La API desarrollada expone mediante servicios HTTP las principales funcionalidades implementadas durante el proyecto, permitiendo ejecutar los algoritmos de procesamiento acústico sin necesidad de acceder directamente al código fuente.
+
+Cada endpoint recibe los parámetros necesarios, ejecuta el procesamiento correspondiente y devuelve los resultados en formato JSON, facilitando la integración con otras aplicaciones o interfaces gráficas.
+
+Entre los servicios disponibles se encuentran operaciones sobre señales, filtros, generación de curvas en escala logarítmica, suavizado, regresión lineal y cálculo de parámetros acústicos.
+
 ### 4.4 Tests
+
+#### Generación de señales: 
+
+#### Reproducción y grabación: 
+Los tests verifican que la función complete correctamente el proceso de reproducción y grabación; la señal obtenida tenga la longitud esperada; la frecuencia de muestreo utilizada sea la indicada; el tipo de dato devuelto sea el correcto;
+la función responda adecuadamente ante parámetros inválidos.
+
+#### Cargar audio: 
+Los tests verifican que el archivo pueda abrirse correctamente; la señal cargada tenga dimensiones válidas; la frecuencia de muestreo corresponda con la almacenada en el archivo; se detecten archivos inexistentes; se manejen correctamente errores de lectura.
+
+#### Sintetizar RI: 
+
+#### Obtener RI desde sweep:
+
+#### Filtro de octava:
+
+#### Convertir a escala logarítmica: 
+Los tests verifican que la conversión produzca los valores esperados; la salida conserve la longitud de la señal original; no aparezcan valores indefinidos (NaN o infinito);
+se manejen correctamente señales con energía muy baja o nula.
+
+#### Suavizar señal:
+
+#### Integral de Schroeder:
+
+#### Regresión lineal:
+Los tests verifican que la pendiente calculada sea correcta; la ordenada al origen corresponda con los datos utilizados; el coeficiente R² tenga el valor esperado; la función responda correctamente ante conjuntos de datos pequeños;
+se detecten correctamente casos degenerados o inválidos.
+
+#### Calcular parámetros acústicos:
+
+#### RIR_API:
+Los tests de la API verifican que cada endpoint responda correctamente a solicitudes válidas; los códigos de estado HTTP sean los esperados; las respuestas contengan la estructura JSON correcta; se validen adecuadamente los parámetros recibidos; se gestionen correctamente solicitudes inválidas o incompletas; los resultados devueltos coincidan con los obtenidos por las funciones internas del sistema.
+
             
 ## 5. Resultados
 ### 5.1 Gráficos
