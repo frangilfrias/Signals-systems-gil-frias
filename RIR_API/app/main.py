@@ -27,7 +27,10 @@ from app.services.sine_sweep import generar_sine_sweep
 
 app = FastAPI(
     title="RIR-API",
-    description="API para procesamiento y analisis de respuestas al impulso segun ISO 3382.",
+    description=(
+        "API para procesamiento y analisis de respuestas al impulso "
+        "segun ISO 3382."
+    ),
     version="0.1.0",
 )
 
@@ -207,7 +210,12 @@ async def synthetic_ir(
     return StreamingResponse(
         buffer,
         media_type="audio/wav",
-        headers={"Content-Disposition": "attachment; filename=synthetic_ir.wav"},
+        headers={
+            "Content-Disposition": (
+                "attachment; "
+                "filename=synthetic_ir.wav"
+            ),
+        },
     )
 
 
@@ -255,7 +263,11 @@ async def filtro_banda(
     return StreamingResponse(
         salida,
         media_type="audio/wav",
-        headers={"Content-Disposition": f"attachment; filename=band_{int(fc)}Hz.wav"},
+        headers={
+            "Content-Disposition": (
+                f"attachment; filename=band_{int(fc)}Hz.wav"
+            )
+        },
     )
 
 
@@ -467,7 +479,10 @@ async def smoothing(
         else:
             raise HTTPException(
                 status_code=400,
-                detail="Método inválido. Opciones: 'hilbert' o 'moving_average'.",
+                detail=(
+                    "Método inválido. "
+                    "Opciones: 'hilbert' o 'moving_average'."
+                ),
             )
 
         return {
