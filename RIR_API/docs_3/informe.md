@@ -58,11 +58,21 @@ En la figura 1 se observa el esquema del diseño de arquitectura del proyecto.
  ![Imagen 1 Diagrama de arquitectura](IMAGENES/ARQUITECTURA.png)
 
 ### 4.2 Diseño
-Cliente
-Routers
-Schemas
-Servirces
-Endpoints
+La API fue desarrollada siguiendo una arquitectura modular basada en el framework FastAPI, separando claramente las responsabilidades de cada componente para facilitar el mantenimiento, la reutilización del código y la escalabilidad del proyecto.
+
+El usuario interactúa con la aplicación mediante solicitudes HTTP dirigidas a los distintos endpoints. Cada endpoint pertenece a un router, encargado de definir las rutas disponibles y recibir los parámetros enviados por el cliente.
+
+Antes de ejecutar cualquier procesamiento, los datos de entrada y salida son validados mediante schemas implementados con Pydantic. Esto asegura que la información recibida tenga el formato esperado y permite generar respuestas consistentes.
+
+Una vez validados los datos, los routers delegan la lógica de procesamiento a los services, donde se implementan los distintos algoritmos de generación, procesamiento y análisis de señales acústicas. Esta separación permite mantener desacoplada la lógica de negocio de la capa de comunicación HTTP.
+
+Los resultados obtenidos por los servicios son devueltos al router, que construye la respuesta utilizando los schemas correspondientes y la envía nuevamente al cliente en formato JSON.
+
+De esta forma, el flujo general de la aplicación puede resumirse como:
+
+Cliente → Endpoints → Routers → Schemas → Services → Respuesta JSON
+
+Esta organización favorece la claridad del código, simplifica la incorporación de nuevas funcionalidades y facilita el desarrollo colaborativo al mantener cada componente con una responsabilidad específica.
 
 
 ### 4.3 Funciones
