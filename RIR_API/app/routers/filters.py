@@ -12,6 +12,8 @@ router = APIRouter(
     prefix="/api/v1/filters",
     tags=["Filters"],
 )
+
+
 @router.post("/band")
 async def filtro_banda(
     archivo: UploadFile = File(...),

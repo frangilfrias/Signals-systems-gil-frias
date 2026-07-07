@@ -11,6 +11,7 @@ router = APIRouter(
     tags=["Acoustics"],
 )
 
+
 @router.post("/parameters")
 async def acoustic_parameters(file: UploadFile = File(...)):
     """

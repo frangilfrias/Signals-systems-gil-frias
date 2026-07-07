@@ -6,23 +6,13 @@ Uso:
     uvicorn app.main:app --reload
 """
 
-import io
 from datetime import UTC, datetime
 
-import numpy as np
-import soundfile as sf
-from fastapi import FastAPI, File, HTTPException, Query, UploadFile
-from fastapi.responses import HTMLResponse, StreamingResponse
-from app.routers import signals, filters, acoustics, analysis, utils
+from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 
-from app.routers import health
-from app.services.acoustic_parameters import (
-    calcular_parametros_acusticos,
-    integral_schroeder,
-    suavizar_signal,
-)
-from app.services.filter import filtro_octava
-from app.services.signal_utils import a_escala_log
+from app.routers import signals, filters, acoustics, analysis, utils, health
+
 
 app = FastAPI(
     title="RIR-API",
@@ -40,6 +30,7 @@ app.include_router(filters.router)
 app.include_router(acoustics.router)
 app.include_router(analysis.router)
 app.include_router(utils.router)
+
 
 @app.get("/", response_class=HTMLResponse)
 async def root():

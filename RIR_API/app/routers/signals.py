@@ -1,16 +1,16 @@
 from fastapi import APIRouter
+import io
+import soundfile as sf
+
+from fastapi.responses import StreamingResponse
+from app.services.pink_noise import generar_ruido_rosa
+from app.services.sine_sweep import generar_sine_sweep
+from app.services.signal_utils import sintetizar_ri
 
 router = APIRouter(
     prefix="/api/v1/signals",
     tags=["Signals"],
 )
-import io
-import soundfile as sf
-from fastapi import APIRouter
-from fastapi.responses import StreamingResponse
-from app.services.pink_noise import generar_ruido_rosa
-from app.services.sine_sweep import generar_sine_sweep
-from app.services.signal_utils import sintetizar_ri
 
 
 @router.post("/pink-noise")
@@ -46,6 +46,7 @@ async def sine_sweep(
         media_type="audio/wav",
         headers={"Content-Disposition": "attachment; filename=sine_sweep.wav"},
     )
+
 
 @router.post("/synthetic-ir")
 async def synthetic_ir(

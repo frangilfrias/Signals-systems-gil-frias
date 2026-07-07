@@ -2,7 +2,10 @@ import soundfile as sf
 
 from fastapi import APIRouter, File, HTTPException, UploadFile, Query
 
-from app.services.acoustic_parameters import integral_schroeder, suavizar_signal
+from app.services.acoustic_parameters import (
+    integral_schroeder,
+    suavizar_signal
+)
 from app.services.signal_utils import a_escala_log
 
 router = APIRouter(
