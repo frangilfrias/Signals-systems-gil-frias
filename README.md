@@ -1,6 +1,6 @@
 # RIR-API
 
-API REST para procesamiento y analisis de respuestas al impulso según la norma ISO 3382.
+API REST para procesamiento y análisis de respuestas al impulso según la norma ISO 3382.
 
 <!-- Badges -->
 ![CI](../../actions/workflows/ci.yml/badge.svg)
@@ -9,18 +9,22 @@ API REST para procesamiento y analisis de respuestas al impulso según la norma 
 
 ## Descripción
 
-RIR-API es una API RESTful desarrollada en Python utilizando el framework **FastAPI**. Su objetivo principal es el cálculo de parámetros acústicos (EDT, T20, T30, T60, D50, C80) de salas a partir de Respuestas al Impulso (RI), siguiendo estrictamente los lineamientos de la norma internacional ISO 3382-1.
+RIR-API es una API RESTful desarrollada en Python utilizando el framework **FastAPI**. Su objetivo principal es el cálculo de parámetros acústicos (EDT, T20, T30, T60, D50, C80) de salas a partir de Respuestas al Impulso (RI), siguiendo los lineamientos de la norma internacional ISO 3382-1.
 
 ## Integrantes del equipo
-* Mora Sawczyk - Legajo 79832 (Procesamiento de señales)
-* Matias Moreira - Legajo 29222 (Generación de señales/Docs)
-* Francisco Gil Frias - Legajo 50070 (Testing/CI) 
+* Mora Sawczyk - Legajo 79832
+* Matias Moreira - Legajo 29222
+* Francisco Gil Frias - Legajo 50070
+
+Todos los integranes participaron tanto en el diseño, implementación del código, testing, como en la documentación del proyecto.
 
 ## Branching strategy 
 Para el presente proyecto se adopta una estrategia de ramas en la cual el desarrollo se integra principalmente en la rama develop, que actúa como entorno de integración y pruebas. Esta rama concentra las modificaciones de las distintas funcionalidades en desarrollo, permitiendo su validación conjunta antes de ser incorporadas a producción.
 La rama main se reserva exclusivamente para versiones estables y listas para despliegue en entorno productivo.
-A partir de develop se crean ramas de tipo feature/*, las cuales representan funcionalidades específicas asociadas a los distintos milestones del proyecto. Cada feature se desarrolla de forma aislada y, una vez completada y validada, se integra nuevamente a develop mediante un merge request o pull request.
 
+A partir de `develop` se crean ramas de trabajo según la tarea a realizar. La mayoría corresponden a ramas de tipo `feature/*`, destinadas al desarrollo de funcionalidades específicas asociadas a los distintos *milestones* del proyecto. Además, se utilizaron ramas específicas para la integración de **FastAPI**, la incorporación y actualización de la **documentación**, y la realización de **correcciones y refactorizaciones** del código.
+
+Cada rama se desarrolla de forma aislada y, una vez finalizada y validada, se integra nuevamente a `develop` mediante un *pull request*, permitiendo revisar los cambios antes de su incorporación.
 
 ## Requisitos previos
 
@@ -42,20 +46,22 @@ uv pip install -e ".[dev]"
 
 ## Ejecución
 
+Para ejecutar la API utilizando el entorno virtual creado con `uv`, se recomienda utilizar `uv run`:
+
 ```bash
 # Iniciar la API con hot-reload
-uvicorn app.main:app --reload
+uv run uvicorn app.main:app --reload
 
 # O usando el modulo directamente
-python -m app.main
+uv run python -m app.main
 ```
-Para no tener problemas levantando la api, los comandos que sean con uvicorn hay que forzarlos a trabajar con el entorno virtual (venv) escribiendo:
 
-"uv run uvicorn [...]"
+Una vez iniciada, la API estará disponible en: 
+- `http://127.0.0.1:8000` 
 
-La API estará disponible en `http://127.0.0.1:8000`. Documentación interactiva en:
-- Swagger UI: `http://127.0.0.1:8000/docs`
-- ReDoc: `http://127.0.0.1:8000/redoc`
+La documentación interactiva puede  consultarse en:
+- **Swagger UI:** <http://127.0.0.1:8000/docs>
+- **ReDoc:** <http://127.0.0.1:8000/redoc>
 
 ## Estructura del proyecto
 
@@ -66,26 +72,40 @@ RIR_API/
 │   ├── main.py                    # Punto de entrada FastAPI
 │   ├── routers/
 │   │   ├── health.py              # GET /health
-│   │   ├── signals.py             # Endpoints de generacion (M1 → M3)
-│   │   ├── filters.py             # Endpoints de filtrado (M2 → M3)
-│   │   ├── acoustics.py           # Endpoints de analisis (M3)
-│   │   └── utils.py               # Endpoints de utilidades (M3)
+│   │   ├── acoustics.py           # Cálculo de parámetros acústicos
+│   │   ├── analysis.py            # Análisis de respuestas al impulso
+│   │   ├── filters.py             # Filtrado y procesamiento de señales
+│   │   ├── signals.py             # Generación de señales de excitación
+│   │   ├── utils.py               # Funciones auxiliares de procesamiento
+│   │   └── __init__.py 
 │   ├── schemas/
-│   │   └── ...                    # Modelos Pydantic de request/response
+│   │   └── __init__.py            # Modelos Pydantic de request/response
 │   └── services/
-│       ├── pink_noise.py          # Generacion de ruido rosa (M1)
-│       ├── sine_sweep.py          # Generacion de sine sweep (M1)
-│       ├── signal_utils.py        # Utilidades de procesamiento (M2)
-│       ├── filter.py              # Filtros de banda de octava (M2)
-│       └── acoustic_parameters.py # Parametros acusticos ISO 3382 (M3)
+|   │   ├── __init__.py 
+│   │   ├── pink_noise.py          # Generacion de ruido rosa (M1)
+│   │   ├── sine_sweep.py          # Generacion de sine sweep (M1)
+│   │   ├── signal_utils.py        # Utilidades de procesamiento (M2)
+│   │   ├── filter.py              # Filtros de banda de octava (M2)
+│   │   ├── acoustic_parameters.py # Parametros acusticos ISO 3382 (M3)
+│   │   └── reproducir_grabar.py   # Grabación y reproducción (M2)
+│   └── web/
+│       ├── __init__.py 
+│       └── home.py                # Código para la web de la API     
 ├── tests/
+│   ├── data_tests/                # Audio para los tests de a API
 │   ├── test_generacion.py         # Tests de generacion (M1)
 │   ├── test_procesamiento.py      # Tests de procesamiento (M2)
 │   ├── test_analisis.py           # Tests de analisis (M3)
-│   └── test_api.py                # Tests de endpoints (M3)
-├── docs/                          # Documentacion
-├── .github/workflows/ci.yml       # Integracion continua
+│   ├── test_api.py                # Tests de endpoints (M3)
+│   └── test_reproducir_grabar.py  # Tests de reproducir grabar (M2)
+├── docs/                          # Documentación de Milestone
+├── docs_2/                          # Documentación de Milestone 2
+├── docs_3/                          # Informe
+├── .github/workflows/
+│   └── ci.yml                     # Integracion continua
 ├── pyproject.toml                 # Configuracion del proyecto
+├── uv.lock
+├── AI_LOG.md
 └── README.md
 ```
 
@@ -154,68 +174,38 @@ flowchart TD
         SERVICES --> SA
     end
 ```
+## Funcionalidades
+
+La API permite:
+
+- Generar ruido rosa.
+- Generar barridos senoidales.
+- Reproducir y grabar audio.
+- Obtener la respuesta al impulso.
+- Filtrar por bandas de octava.
+- Calcular EDT, T20, T30, T60, D50 y C80.
+- Acceder a todas las funcionalidades mediante una API REST documentada con Swagger.
 ## Milestones
 
-### M0 — Setup del entorno
-**Fecha:** Semana 5
+El proyecto se desarrolló en cuatro *milestones*, cada uno enfocado en un conjunto de funcionalidades. A continuación se describen las tareas realizadas en cada etapa.
 
-- [ ] Hacer fork del repositorio template.
-- [ ] Clonar el fork y verificar que el entorno se instala correctamente.
-- [ ] Ejecutar la API: `uvicorn app.main:app --reload`.
-- [ ] Verificar que `/health` responde correctamente.
-- [ ] Ejecutar los tests (todos deben fallar con `NotImplementedError` excepto los de API).
-- [ ] Verificar que el CI funciona en GitHub Actions.
+#### M0 — Setup del entorno
 
-### M1 — Generacion de senales
-**Fecha:** Semana 8
+En este milestone se preparó la infraestructura inicial del proyecto. Se configuró el entorno de desarrollo utilizando `uv`, se creó la estructura base de la API con FastAPI, se incorporó el endpoint `/health` para verificar el funcionamiento del servicio y se configuró la integración continua (CI) mediante GitHub Actions.
 
-- [ ] Implementar `generar_ruido_rosa()` en `app/services/pink_noise.py`.
-- [ ] Implementar `generar_sine_sweep()` en `app/services/sine_sweep.py`.
-- [ ] Implementar `reproducir_y_grabar()`.
-- [ ] Todos los tests de `test_generacion.py` deben pasar.
+#### M1 — Generación de señales
 
-```bash
-# Para probar reproducir y grabar (una vez instaladas las dependencias) ejecutar: 
-cd RIR_API 
-uv run app/services/prueba_reproducir_grabar.py 
-```
-Esto abrirá el micrófono por defecto del usuario para que una vez que escuche el tono pueda empezar a grabar. Para conocer el micrófono por default, el usuario puede utilizar: 
+En esta etapa se desarrollaron las funcionalidades de generación de señales, implementando los algoritmos de generación de ruido rosa y barrido senoidal (`sine sweep`), junto con el módulo de reproducción y grabación de audio. Estas implementaciones se realizaron en `app/services/` y fueron validadas mediante los tests correspondientes.
 
-```bash
-# Para probar conocer el dispositivo por default: 
-uv run app/services/listar_dispositivos.py
-```
+#### M2 — Procesamiento de señales
 
-Pasados los 4 segundos el archivo se reproducirá y se guardará en RIR_API/ como un .wav. El usuario puede optar por modificar su dispositivo por default dentro de *listar_dispositivos* de la siguiente manera: 
+En este milestone se implementaron las herramientas de procesamiento de señales, incluyendo la carga de archivos de audio, la obtención de la respuesta al impulso a partir de un barrido senoidal, el filtrado por bandas de octava, la conversión a escala logarítmica y la síntesis de respuestas al impulso para validación. Todas estas funcionalidades se desarrollaron en `app/services/` y fueron verificadas mediante pruebas unitarias.
 
-```bash
-# Para cambiar su dispositivo por default:  
-import sounddevice as sd
-print(sd.query_devices())
-sd.default.device = (input_id, output_id)  
-```
+#### M3 — API REST y análisis de parámetros acústicos
 
-### M2 — Procesamiento de senales
-**Fecha:** Semana 12
+Durante este milestone se desarrollaron los algoritmos para el cálculo de parámetros acústicos, incluyendo la integral de Schroeder, la regresión lineal y el cálculo automático de los distintos parámetros. Además, se integraron todas las funcionalidades dentro de una API REST mediante FastAPI, incorporando los routers, esquemas de validación y la documentación automática de la API.
 
-- [ ] Implementar `cargar_audio()` en `app/services/signal_utils.py`.
-- [ ] Implementar `obtener_ri_desde_sweep()` en `app/services/signal_utils.py`.
-- [ ] Implementar `filtro_octava()` en `app/services/filter.py`.
-- [ ] Implementar `a_escala_log()` en `app/services/signal_utils.py`.
-- [ ] Implementar `sintetizar_ri()` para validacion.
-- [ ] Todos los tests de `test_procesamiento.py` deben pasar.
-
-### M3 — API REST y analisis de parametros acusticos
-**Fecha:** Semana 15
-
-- [ ] Implementar `integral_schroeder()` en `app/services/acoustic_parameters.py`.
-- [ ] Implementar `regresion_lineal()` en `app/services/acoustic_parameters.py`.
-- [ ] Implementar `calcular_parametros_acusticos()` en `app/services/acoustic_parameters.py`.
-- [ ] Crear routers y schemas para exponer toda la funcionalidad como API REST.
-- [ ] Todos los tests de `test_analisis.py` y `test_api.py` deben pasar.
-- [ ] (Opcional) Implementar `metodo_lundeby()`.
-
-## Como correr los tests
+## Ejecución de los tests
 
 ```bash
 # Ejecutar todos los tests
@@ -231,7 +221,7 @@ uv run pytest tests/test_api.py -v
 uv run pytest --tb=short
 ```
 
-## Como correr el linter
+## Verificación del linter
 
 ```bash
 # Verificar estilo de codigo
@@ -246,4 +236,4 @@ uv run ruff format app/ tests/
 
 ## Licencia
 
-Este proyecto esta licenciado bajo la Licencia MIT. Ver el archivo `LICENSE` para mas detalles.
+Este proyecto está licenciado bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.

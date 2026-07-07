@@ -39,22 +39,41 @@ def generar_ruido_rosa(duracion: float, fs: int) -> np.ndarray:
         ``int(duracion * fs)``.
     """
     # Definición de constantes
-    fs_validas = {44100, 48000, 88200, 96000, 176400, 192000, 352800, 384000, 705600, 768000}
+    fs_validas = {
+        44100,
+        48000,
+        88200,
+        96000,
+        176400,
+        192000,
+        352800,
+        384000,
+        705600,
+        768000
+    }
     n_min = 1024
     n_max = 92_160_000
 
     # Validación de tipo (runtime) de las variables de entrada
     if not isinstance(duracion, float):
         raise TypeError(
-            f"duracion debe ser float.Tipo recibido: {type(duracion).__name__},valor: {duracion}"
+            f"duracion debe ser float."
+            f"Tipo recibido: {type(duracion).__name__}"
+            f"Valor: {duracion}"
         )
     if not isinstance(fs, int):
-        raise TypeError(f"fs debe ser int.Tipo recibido: {type(fs).__name__}, valor: {fs}")
+        raise TypeError(
+            f"fs debe ser int."
+            f"Tipo recibido: {type(fs).__name__}"
+            f"Valor: {fs}"
+        )
 
     # Validación de los valores correspondientes a las variables de entrada
 
     if fs not in fs_validas:
-        raise ValueError(f"fs invalida: {fs}. Valores permitidos: {fs_validas}")
+        raise ValueError(
+            f"fs invalida: {fs}. Valores permitidos: {fs_validas}"
+        )
     if duracion <= 0:
         raise ValueError("La duracion debe ser mayor que 0.0 segundos.")
 
@@ -62,10 +81,12 @@ def generar_ruido_rosa(duracion: float, fs: int) -> np.ndarray:
     n_muestras = int(round(fs * duracion))
 
     # Validación de valores extremos según la cantidad de muestras
-    # (duración mínima para fs=44100 Hz=23.30 ms; duración máxima para fs=768000=120.0 s)
+    # duración min para fs=44100 Hz=23.30 ms;
+    # duración max para fs=768000=120.0 s
     if n_muestras < n_min or n_muestras > n_max:
         raise ValueError(
-            "La cantidad de muestras se ubica fuera del rango(1024 <= n <= 92_160_000)."
+            "La cantidad de muestras se ubica fuera del rango"
+            "(1024 <= n <= 92_160_000)."
         )
 
     # Generar ruido blanco (distribución normal) de la duración deseada

@@ -134,8 +134,8 @@ El barrido de frecuencias de referencia utilizado fue el generado por REW, con l
 
 Al graficar el sine sweep generado por nuestro algoritmo, pudimos verificar que cubre el rango de frecuencias especificado, presenta un barrido logarítmico continuo, con la distribución de energía no uniforme. Al convolucionar nuestra señal con el filtro inverso, la respuesta obtenida es una aproximación discreta del impulso de Dirac, es decir un pico temporal predominante acompañado de pequeños lóbulos
 
-![Sine_sweep + Convolución](RIR_API/docs/IMÁGENES/Figure_1.png)
-![Lóbulo principal](RIR_API/docs/IMÁGENES/Figure_2.png)
+![Sine_sweep + Convolución](IMÁGENES/Figure_1.png)
+![Lóbulo principal](IMÁGENES/Figure_2.png)
 
 Al comparar la señal generada con la obtenida mediante el algoritmo comercial de referencia, puede observarse una distribución de energía espectral similar en todo el rango de frecuencias analizado.
 

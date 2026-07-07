@@ -64,8 +64,12 @@ Thumbs.db
 
 # Datos de medicion
 data/
+!tests/data_tests/grabacion.wav
 
 # Gráficos y borradores
 AUXILIAR/
-# Validacion_pipeline
+# Validacion_pipeline + audios
 scripts/
+
+# Desarrollo local
+local/

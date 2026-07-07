@@ -7,35 +7,38 @@ Uso:
 """
 
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 
-from app.routers import health
+from app.routers import signals, filters, acoustics, analysis, utils, health
+from app.web.home import HOME_PAGE
+
 
 app = FastAPI(
     title="RIR-API",
-    description="API para procesamiento y analisis de respuestas al impulso segun ISO 3382.",
+    description=(
+        "API para procesamiento y analisis de respuestas al impulso "
+        "segun ISO 3382."
+    ),
     version="0.1.0",
 )
 
 # Routers
 app.include_router(health.router)
-
-# TODO (M3): Agregar routers de signals, filters, acoustics, analysis, utils
-# app.include_router(signals.router, prefix="/api/v1/signals", tags=["signals"])
-# app.include_router(filters.router, prefix="/api/v1/filters", tags=["filters"])
-# app.include_router(acoustics.router, prefix="/api/v1/acoustics", tags=["acoustics"])
-# app.include_router(analysis.router, prefix="/api/v1/analysis", tags=["analysis"])
-# app.include_router(utils.router, prefix="/api/v1/utils", tags=["utils"])
+app.include_router(signals.router)
+app.include_router(filters.router)
+app.include_router(acoustics.router)
+app.include_router(analysis.router)
+app.include_router(utils.router)
 
 
-@app.get("/")
+@app.get("/", response_class=HTMLResponse, include_in_schema=False)
 async def root():
-    """Informacion basica de la API."""
-    return {
-        "name": "RIR-API",
-        "version": "0.1.0",
-        "description": "Room Impulse Response API",
-        "docs": "/docs",
-    }
+    """Página de inicio de la API."""
+    return HOME_PAGE
+
+
+API_VERSION = "0.1.0"
+API_URL_VERSION = "v1"
 
 
 if __name__ == "__main__":
