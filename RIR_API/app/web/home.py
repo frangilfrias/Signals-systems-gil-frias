@@ -18,9 +18,22 @@ HOME_PAGE = """
     --border:rgba(57,245,255,0.25);
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;background:var(--bg);color:#eaf6ff;font-family:'Consolas','Segoe UI',monospace;overflow-x:hidden;}
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--bg);
+    color:#eaf6ff;
+    font-family:'Consolas','Segoe UI',monospace;
+    overflow-x:hidden;
+  }
   canvas#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;}
-  .wrap{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:4rem 1.5rem 5rem;}
+  .wrap{
+    position:relative;
+    z-index:1;
+    max-width:980px;
+    margin:0 auto;
+    padding:4rem 1.5rem 5rem;
+  }
 
   header{text-align:center;margin-bottom:3.5rem;}
   h1.logo{
@@ -66,8 +79,25 @@ HOME_PAGE = """
     font-size:0.75rem;color:var(--cyan);
     background:rgba(57,245,255,0.05);
   }
-  .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 1.6s ease-in-out infinite;}
-  @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.7);}}
+  .dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:var(--green);
+    box-shadow:0 0 8px var(--green);
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,
+    100%{
+      opacity:1;
+      transform:scale(1);
+    }
+    50%{
+      opacity:0.4;
+      transform:scale(0.7);
+    }
+  }
 
   .tabs-bar{
     display:flex;flex-wrap:wrap;gap:1.6rem;
@@ -80,9 +110,15 @@ HOME_PAGE = """
   }
   .tab-buttons-row{display:flex;flex-wrap:wrap;gap:0.5rem;}
   .tab-btn{
-    font-family:inherit;font-size:0.78rem;letter-spacing:0.02em;
-    padding:0.5rem 0.9rem;border-radius:999px;cursor:pointer;
-    border:1px solid var(--border);background:rgba(57,245,255,0.05);color:#9fb4c2;
+    font-family:inherit;
+    font-size:0.78rem;
+    letter-spacing:0.02em;
+    padding:0.5rem 0.9rem;
+    border-radius:999px;
+    cursor:pointer;
+    border:1px solid var(--border);
+    background:rgba(57,245,255,0.05);
+    color:#9fb4c2;
     transition:all 0.2s ease;
   }
   .tab-btn:hover{color:#eaf6ff;border-color:var(--cyan);}
@@ -94,7 +130,16 @@ HOME_PAGE = """
 
   .tab-panel{display:none;}
   .tab-panel.active{display:block;animation:fadein 0.25s ease;}
-  @keyframes fadein{ from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }
+  @keyframes fadein{
+    from{
+      opacity:0;
+      transform:translateY(6px);
+    }
+    to{
+      opacity:1;
+      transform:translateY(0);
+    }
+  }
 
   .panel{
     background:var(--panel);
@@ -108,72 +153,162 @@ HOME_PAGE = """
     margin-bottom:1.6rem;
   }
   .panel::before{
-    content:'';position:absolute;inset:-2px;border-radius:18px;padding:1px;
-    background:linear-gradient(120deg,var(--cyan),transparent 30%,transparent 70%,var(--magenta));
-    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite:xor;mask-composite:exclude;
-    opacity:0.5;pointer-events:none;
+    content:'';
+    position:absolute;
+    inset:-2px;
+    border-radius:18px;
+    padding:1px;
+    background:linear-gradient(
+      120deg,
+      var(--cyan),
+      transparent 30%,
+      transparent 70%,
+      var(--magenta)
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+    mask-composite:exclude;
+    opacity:0.5;
+    pointer-events:none;
   }
 
   .endpoint-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.8rem;margin-bottom:0.4rem;}
   .method{
     background:linear-gradient(90deg,var(--magenta),var(--violet));
-    padding:0.2rem 0.7rem;border-radius:6px;font-size:0.75rem;font-weight:700;letter-spacing:0.05em;
+    padding:0.2rem 0.7rem;
+    border-radius:6px;
+    font-size:0.75rem;
+    font-weight:700;
+    letter-spacing:0.05em;
     color:#fff;
   }
   .method.get{background:linear-gradient(90deg,var(--green),var(--cyan));color:#04060c;}
   .path{font-size:1.05rem;color:#fff;}
   .desc{color:#9fb4c2;font-size:0.9rem;margin:0.6rem 0 1.6rem;line-height:1.5;}
 
-  .controls{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-bottom:1.6rem;}
+  .controls{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1.4rem;
+    margin-bottom:1.6rem;
+  }
   @media(max-width:640px){.controls{grid-template-columns:1fr;}}
   .param.full{grid-column:1 / -1;}
 
-  label{display:block;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--cyan);margin-bottom:0.5rem;}
-  .value-tag{float:right;color:#fff;background:rgba(124,77,255,0.25);padding:0 0.5rem;border-radius:4px;font-size:0.72rem;}
+  label{
+    display:block;
+    font-size:0.72rem;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:var(--cyan);
+    margin-bottom:0.5rem;
+  }
+  .value-tag{
+    float:right;
+    color:#fff;
+    background:rgba(124,77,255,0.25);
+    padding:0 0.5rem;
+    border-radius:4px;
+    font-size:0.72rem;
+  }
 
   input[type=range]{
     -webkit-appearance:none;width:100%;height:6px;border-radius:4px;
     background:linear-gradient(90deg,var(--cyan),var(--violet));outline:none;
   }
   input[type=range]::-webkit-slider-thumb{
-    -webkit-appearance:none;width:18px;height:18px;border-radius:50%;
-    background:#fff;box-shadow:0 0 10px var(--cyan),0 0 0 4px rgba(57,245,255,0.25);cursor:pointer;
+    -webkit-appearance:none;
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    background:#fff;
+    box-shadow:0 0 10px var(--cyan),0 0 0 4px rgba(57,245,255,0.25);
+    cursor:pointer;
   }
 
   select, input[type=file]{
-    width:100%;padding:0.6rem 0.7rem;border-radius:8px;
-    background:#0c1420;border:1px solid var(--border);color:#eaf6ff;font-family:inherit;font-size:0.9rem;
+    width:100%;
+    padding:0.6rem 0.7rem;
+    border-radius:8px;
+    background:#0c1420;
+    border:1px solid var(--border);
+    color:#eaf6ff;font-family:inherit;
+    font-size:0.9rem;
   }
   input[type=file]{border-style:dashed;color:#9fb4c2;font-size:0.82rem;}
 
   .generate-btn{
-    position:relative;width:100%;padding:1rem;border:none;border-radius:12px;cursor:pointer;
-    font-family:inherit;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;font-size:0.85rem;
-    color:#04060c;background:linear-gradient(90deg,var(--cyan),var(--magenta));
+    position:relative;
+    width:100%;
+    padding:1rem;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    font-family:inherit;
+    font-weight:700;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    font-size:0.85rem;
+    color:#04060c;
+    background:linear-gradient(90deg,var(--cyan),var(--magenta));
     background-size:220% 100%;
     box-shadow:0 0 25px rgba(57,245,255,0.35);
-    transition:transform 0.15s ease, box-shadow 0.15s ease, background-position 0.4s ease;
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease,
+      background-position 0.4s ease;
     overflow:hidden;
   }
-  .generate-btn:hover{transform:translateY(-2px);box-shadow:0 6px 30px rgba(255,46,224,0.45);background-position:100% 0;}
+  .generate-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 6px 30px rgba(255,46,224,0.45);
+    background-position:100% 0;
+  }
   .generate-btn:active{transform:translateY(0);}
   .generate-btn:disabled{opacity:0.55;cursor:progress;transform:none;}
 
-  .viz-wrap{margin-top:1.8rem;border-radius:12px;border:1px solid var(--border);background:#020409;overflow:hidden;}
+  .viz-wrap{
+    margin-top:1.8rem;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:#020409;
+    overflow:hidden;
+  }
   canvas.viz{display:block;width:100%;height:150px;}
 
   .player-row{display:flex;align-items:center;gap:0.9rem;margin-top:1rem;flex-wrap:wrap;}
   .icon-btn{
-    width:44px;height:44px;border-radius:50%;border:1px solid var(--border);
-    background:rgba(57,245,255,0.08);color:var(--cyan);font-size:1.1rem;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;transition:all 0.2s ease;flex:none;
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    border:1px solid var(--border);
+    background:rgba(57,245,255,0.08);
+    color:var(--cyan);
+    font-size:1.1rem;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:all 0.2s ease;
+    flex:none;
   }
-  .icon-btn:hover{background:var(--cyan);color:#04060c;box-shadow:0 0 15px var(--cyan);}
+  .icon-btn:hover{
+    background:var(--cyan);
+    color:#04060c;
+    box-shadow:0 0 15px var(--cyan);
+  }
   .icon-btn:disabled{opacity:0.35;cursor:not-allowed;}
   .dl-link{
-    color:var(--violet);text-decoration:none;font-size:0.8rem;letter-spacing:0.08em;
-    border:1px solid var(--border);padding:0.6rem 1rem;border-radius:8px;transition:all 0.2s ease;
+    color:var(--violet);
+    text-decoration:none;
+    font-size:0.8rem;
+    letter-spacing:0.08em;
+    border:1px solid var(--border);
+    padding:0.6rem 1rem;
+    border-radius:8px;
+    transition:all 0.2s ease;
   }
   .dl-link:hover{background:rgba(124,77,255,0.15);color:#fff;}
   .meta{font-size:0.75rem;color:#7fb8c9;margin-left:auto;}
@@ -183,15 +318,37 @@ HOME_PAGE = """
   .status-line.ok{color:var(--green);}
 
   .result-box:not(:empty){margin-top:1.4rem;}
-  .result-sub-title{font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--cyan);margin:1rem 0 0.4rem;}
+  .result-sub-title{
+    font-size:0.72rem;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:var(--cyan);
+    margin:1rem 0 0.4rem;
+  }
   .tag-row{display:flex;flex-wrap:wrap;gap:0.5rem;margin:0.6rem 0;}
   .tag-row .value-tag{float:none;}
   canvas.sparkline{width:100%;height:60px;display:block;margin-bottom:0.4rem;}
-  .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px;}
+  .table-wrap{
+    overflow-x:auto;
+    border:1px solid var(--border);
+    border-radius:8px;
+  }
   table{width:100%;border-collapse:collapse;font-size:0.78rem;}
-  th,td{padding:0.45rem 0.7rem;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06);white-space:nowrap;}
+  th,
+  td{
+    padding:0.45rem 0.7rem;
+    text-align:right;
+    border-bottom:1px solid rgba(255,255,255,0.06);
+    white-space:nowrap;
+  }
   th:first-child, td:first-child{text-align:left;color:var(--cyan);}
-  thead th{color:#9fb4c2;font-weight:600;text-transform:uppercase;font-size:0.68rem;letter-spacing:0.05em;}
+  thead th{
+    color:#9fb4c2;
+    font-weight:600;
+    text-transform:uppercase;
+    font-size:0.68rem;
+    letter-spacing:0.05em;
+  }
 
   footer{margin-top:4rem;text-align:center;color:#5a7180;font-size:0.75rem;letter-spacing:0.05em;}
   footer a{color:var(--cyan);text-decoration:none;}
@@ -213,7 +370,12 @@ HOME_PAGE = """
     <div class="tab-group">
       <span class="tab-group-label">Señales</span>
       <div class="tab-buttons-row">
-        <button class="tab-btn active" data-tab="pink-noise">Ruido rosa</button>
+        <button
+          class="tab-btn active"
+          data-tab="pink-noise"
+        >
+          Ruido rosa
+        </button>
         <button class="tab-btn" data-tab="sine-sweep">Sine sweep</button>
         <button class="tab-btn" data-tab="synthetic-ir">RI sintética</button>
       </div>
@@ -228,7 +390,12 @@ HOME_PAGE = """
     <div class="tab-group">
       <span class="tab-group-label">Análisis y utilidades</span>
       <div class="tab-buttons-row">
-        <button class="tab-btn" data-tab="acoustic-parameters">Parámetros</button>
+        <button
+          class="tab-btn"
+          data-tab="acoustic-parameters"
+        >
+          Parámetros
+        </button>
         <button class="tab-btn" data-tab="acoustic-by-bands">Por banda</button>
         <button class="tab-btn" data-tab="analysis-ir">Análisis IR</button>
         <button class="tab-btn" data-tab="utils-schroeder">Schroeder</button>
@@ -238,15 +405,31 @@ HOME_PAGE = """
     </div>
   </div>
 
-  <div class="panel audio-card tab-panel active" data-tab-panel="pink-noise" data-endpoint="/api/v1/signals/pink-noise" data-filename="pink_noise.wav">
+  <div
+    class="panel audio-card tab-panel active"
+    data-tab-panel="pink-noise"
+    data-endpoint="/api/v1/signals/pink-noise"
+    data-filename="pink_noise.wav"
+  >
     <div class="endpoint-head">
-      <div><span class="method">POST</span> <span class="path">/api/v1/signals/pink-noise</span></div>
+      <div>
+        <span class="method">POST</span>
+        <span class="path">/api/v1/signals/pink-noise</span>
+      </div>
       <span class="value-tag">audio/wav</span>
     </div>
-    <p class="desc">Ruido rosa (densidad espectral 1/f): cada octava contiene la misma energía. Útil como
-      excitación para mediciones acústicas.</p>
+    <p class="desc">
+      Ruido rosa (densidad espectral 1/f): cada octava contiene la misma
+      energía. Útil como excitación para mediciones acústicas.
+    </p>
     <div class="controls">
-      <div class="param" data-param="duracion" data-type="range" data-unit="s" data-decimals="1">
+      <div
+        class="param"
+        data-param="duracion"
+        data-type="range"
+        data-unit="s"
+        data-decimals="1"
+      >
         <label>Duración <span class="value-tag param-value"></span></label>
         <input type="range" min="0.1" max="30" step="0.1" value="5">
       </div>
@@ -270,29 +453,56 @@ HOME_PAGE = """
     <div class="viz-wrap"><canvas class="viz"></canvas></div>
     <div class="player-row">
       <button class="icon-btn play-btn" disabled>▶</button>
-      <a class="dl-link" style="pointer-events:none;opacity:0.4;">⭳ Descargar WAV</a>
+      <a
+        class="dl-link"
+        style="pointer-events:none;opacity:0.4;"
+      >
+        ⭳ Descargar WAV
+      </a>
       <span class="meta"></span>
     </div>
     <div class="status-line">Esperando parámetros...</div>
   </div>
 
-  <div class="panel audio-card tab-panel" data-tab-panel="sine-sweep" data-endpoint="/api/v1/signals/sine-sweep" data-filename="sine_sweep.wav">
+  <div
+    class="panel audio-card tab-panel"
+    data-tab-panel="sine-sweep"
+    data-endpoint="/api/v1/signals/sine-sweep"
+    data-filename="sine_sweep.wav"
+  >
     <div class="endpoint-head">
-      <div><span class="method">POST</span> <span class="path">/api/v1/signals/sine-sweep</span></div>
+      <div>
+        <span class="method">POST</span>
+        <span class="path">/api/v1/signals/sine-sweep</span>
+      </div>
       <span class="value-tag">audio/wav</span>
     </div>
-    <p class="desc">Barrido senoidal (sine sweep) logarítmico entre dos frecuencias, usado para excitar
-      recintos y luego derivar la respuesta al impulso.</p>
+    <p class="desc">
+      Barrido senoidal (sine sweep) logarítmico entre dos frecuencias,
+      usado para excitar recintos y luego derivar la respuesta al impulso.
+    </p>
     <div class="controls">
       <div class="param" data-param="f1" data-type="range" data-unit="Hz">
-        <label>Frecuencia inicial <span class="value-tag param-value"></span></label>
+        <label>
+          Frecuencia inicial
+          <span class="value-tag param-value"></span>
+        </label>
         <input type="range" min="10" max="1000" step="1" value="20">
       </div>
       <div class="param" data-param="f2" data-type="range" data-unit="Hz">
-        <label>Frecuencia final <span class="value-tag param-value"></span></label>
+        <label>
+          Frecuencia final
+          <span class="value-tag param-value"></span>
+        </label>
         <input type="range" min="1000" max="22000" step="100" value="20000">
       </div>
-      <div class="param" data-param="duracion" data-type="range" data-unit="s" data-decimals="1">
+      <div
+        class="param"
+        data-param="duracion"
+        data-type="range"
+        data-unit="s"
+        data-decimals="1"
+      >
         <label>Duración <span class="value-tag param-value"></span></label>
         <input type="range" min="0.5" max="20" step="0.5" value="5">
       </div>
@@ -309,21 +519,42 @@ HOME_PAGE = """
     <div class="viz-wrap"><canvas class="viz"></canvas></div>
     <div class="player-row">
       <button class="icon-btn play-btn" disabled>▶</button>
-      <a class="dl-link" style="pointer-events:none;opacity:0.4;">⭳ Descargar WAV</a>
+      <a
+        class="dl-link"
+        style="pointer-events:none;opacity:0.4;"
+      >
+        ⭳ Descargar WAV
+      </a>
       <span class="meta"></span>
     </div>
     <div class="status-line">Esperando parámetros...</div>
   </div>
 
-  <div class="panel audio-card tab-panel" data-tab-panel="synthetic-ir" data-endpoint="/api/v1/signals/synthetic-ir" data-filename="synthetic_ir.wav">
+  <div
+    class="panel audio-card tab-panel"
+    data-tab-panel="synthetic-ir"
+    data-endpoint="/api/v1/signals/synthetic-ir"
+    data-filename="synthetic_ir.wav"
+  >
     <div class="endpoint-head">
-      <div><span class="method">POST</span> <span class="path">/api/v1/signals/synthetic-ir</span></div>
+      <div>
+        <span class="method">POST</span>
+        <span class="path">/api/v1/signals/synthetic-ir</span>
+      </div>
       <span class="value-tag">audio/wav</span>
     </div>
-    <p class="desc">Respuesta al impulso sintética generada a partir de tiempos de reverberación
-      predefinidos por banda de octava (125 Hz a 4 kHz).</p>
+    <p class="desc">
+      Respuesta al impulso sintética generada a partir de tiempos de
+      reverberación predefinidos por banda de octava (125 Hz a 4 kHz).
+    </p>
     <div class="controls">
-      <div class="param" data-param="duracion" data-type="range" data-unit="s" data-decimals="1">
+      <div
+        class="param"
+        data-param="duracion"
+        data-type="range"
+        data-unit="s"
+        data-decimals="1"
+      >
         <label>Duración <span class="value-tag param-value"></span></label>
         <input type="range" min="0.5" max="10" step="0.5" value="3">
       </div>
@@ -340,19 +571,34 @@ HOME_PAGE = """
     <div class="viz-wrap"><canvas class="viz"></canvas></div>
     <div class="player-row">
       <button class="icon-btn play-btn" disabled>▶</button>
-      <a class="dl-link" style="pointer-events:none;opacity:0.4;">⭳ Descargar WAV</a>
+      <a
+        class="dl-link"
+        style="pointer-events:none;opacity:0.4;"
+      >
+        ⭳ Descargar WAV
+      </a>
       <span class="meta"></span>
     </div>
     <div class="status-line">Esperando parámetros...</div>
   </div>
 
-  <div class="panel audio-card tab-panel" data-tab-panel="filter-band" data-endpoint="/api/v1/filters/band" data-filename="band_filtered.wav">
+  <div
+    class="panel audio-card tab-panel"
+    data-tab-panel="filter-band"
+    data-endpoint="/api/v1/filters/band"
+    data-filename="band_filtered.wav"
+  >
     <div class="endpoint-head">
-      <div><span class="method">POST</span> <span class="path">/api/v1/filters/band</span></div>
+      <div>
+        <span class="method">POST</span>
+        <span class="path">/api/v1/filters/band</span>
+      </div>
       <span class="value-tag">audio/wav</span>
     </div>
-    <p class="desc">Filtro pasabanda Butterworth de una octava (IEC 61260), aplicado sobre un archivo de
-      audio propio.</p>
+    <p class="desc">
+      Filtro pasabanda Butterworth de una octava (IEC 61260),
+      aplicado sobre un archivo de audio propio.
+    </p>
     <div class="controls">
       <div class="param full" data-param="__file" data-type="file">
         <label>Archivo de audio (WAV / FLAC)</label>
@@ -373,7 +619,10 @@ HOME_PAGE = """
         </select>
       </div>
       <div class="param" data-param="orden" data-type="range">
-        <label>Orden del filtro <span class="value-tag param-value"></span></label>
+        <label>
+          Orden del filtro
+          <span class="value-tag param-value"></span>
+        </label>
         <input type="range" min="2" max="8" step="2" value="4">
       </div>
     </div>
@@ -381,30 +630,56 @@ HOME_PAGE = """
     <div class="viz-wrap"><canvas class="viz"></canvas></div>
     <div class="player-row">
       <button class="icon-btn play-btn" disabled>▶</button>
-      <a class="dl-link" style="pointer-events:none;opacity:0.4;">⭳ Descargar WAV</a>
+      <a
+        class="dl-link"
+        style="pointer-events:none;opacity:0.4;"
+      >
+        ⭳ Descargar WAV
+      </a>
       <span class="meta"></span>
     </div>
     <div class="status-line">Subí un archivo para empezar.</div>
   </div>
 
-  <div class="panel json-card tab-panel" data-tab-panel="filter-frequencies" data-endpoint="/api/v1/filters/frequencies" data-method="GET">
+  <div
+    class="panel json-card tab-panel"
+    data-tab-panel="filter-frequencies"
+    data-endpoint="/api/v1/filters/frequencies"
+    data-method="GET"
+  >
     <div class="endpoint-head">
-      <div><span class="method get">GET</span> <span class="path">/api/v1/filters/frequencies</span></div>
+      <div>
+        <span class="method get">GET</span>
+        <span class="path">/api/v1/filters/frequencies</span>
+      </div>
       <span class="value-tag">json</span>
     </div>
-    <p class="desc">Frecuencias centrales de las bandas de octava soportadas por el filtro pasabanda.</p>
+    <p class="desc">
+      Frecuencias centrales de las bandas de octava soportadas por el
+      filtro pasabanda.
+    </p>
     <button class="generate-btn">▶ Consultar bandas</button>
     <div class="result-box"></div>
     <div class="status-line">Esperando consulta...</div>
   </div>
 
-  <div class="panel json-card tab-panel" data-tab-panel="acoustic-parameters" data-endpoint="/api/v1/acoustics/parameters" data-method="POST">
+  <div
+    class="panel json-card tab-panel"
+    data-tab-panel="acoustic-parameters"
+    data-endpoint="/api/v1/acoustics/parameters"
+    data-method="POST"
+  >
     <div class="endpoint-head">
-      <div><span class="method">POST</span> <span class="path">/api/v1/acoustics/parameters</span></div>
+      <div>
+        <span class="method">POST</span>
+        <span class="path">/api/v1/acoustics/parameters</span>
+      </div>
       <span class="value-tag">json</span>
     </div>
-    <p class="desc">Calcula los parámetros acústicos (T20, T30, EDT, C50, C80, etc.) de una respuesta al
-      impulso, por banda de octava.</p>
+    <p class="desc">
+      Calcula los parámetros acústicos (T20, T30, EDT, C50, C80, etc.) de
+      una respuesta al impulso, por banda de octava.
+    </p>
     <div class="controls">
       <div class="param full" data-param="__file" data-type="file">
         <label>Respuesta al impulso (WAV / FLAC)</label>
@@ -416,13 +691,23 @@ HOME_PAGE = """
     <div class="status-line">Subí un archivo para empezar.</div>
   </div>
 
-  <div class="panel json-card tab-panel" data-tab-panel="acoustic-by-bands" data-endpoint="/api/v1/acoustics/by-bands" data-method="POST">
+  <div
+    class="panel json-card tab-panel"
+    data-tab-panel="acoustic-by-bands"
+    data-endpoint="/api/v1/acoustics/by-bands"
+    data-method="POST"
+  >
     <div class="endpoint-head">
-      <div><span class="method">POST</span> <span class="path">/api/v1/acoustics/by-bands</span></div>
+      <div>
+        <span class="method">POST</span>
+        <span class="path">/api/v1/acoustics/by-bands</span>
+      </div>
       <span class="value-tag">json</span>
     </div>
-    <p class="desc">Misma métrica que el endpoint anterior, pero agrupada por banda de octava en lugar de
-      por parámetro.</p>
+    <p class="desc">
+      Misma métrica que el endpoint anterior, pero agrupada por banda
+      de octava en lugar de por parámetro.
+    </p>
     <div class="controls">
       <div class="param full" data-param="__file" data-type="file">
         <label>Respuesta al impulso (WAV / FLAC)</label>
@@ -434,13 +719,23 @@ HOME_PAGE = """
     <div class="status-line">Subí un archivo para empezar.</div>
   </div>
 
-  <div class="panel json-card tab-panel" data-tab-panel="analysis-ir" data-endpoint="/api/v1/analysis/impulse-response" data-method="POST">
+  <div
+    class="panel json-card tab-panel"
+    data-tab-panel="analysis-ir"
+    data-endpoint="/api/v1/analysis/impulse-response"
+    data-method="POST"
+  >
     <div class="endpoint-head">
-      <div><span class="method">POST</span> <span class="path">/api/v1/analysis/impulse-response</span></div>
+      <div>
+        <span class="method">POST</span>
+        <span class="path">/api/v1/analysis/impulse-response</span>
+      </div>
       <span class="value-tag">json</span>
     </div>
-    <p class="desc">Análisis completo: curva de Schroeder en dB y parámetros acústicos, en una sola
-      llamada.</p>
+    <p class="desc">
+      Análisis completo: curva de Schroeder en dB y parámetros acústicos,
+      en una sola llamada.
+    </p>
     <div class="controls">
       <div class="param full" data-param="__file" data-type="file">
         <label>Respuesta al impulso (WAV / FLAC)</label>
@@ -452,12 +747,23 @@ HOME_PAGE = """
     <div class="status-line">Subí un archivo para empezar.</div>
   </div>
 
-  <div class="panel json-card tab-panel" data-tab-panel="utils-schroeder" data-endpoint="/api/v1/utils/schroeder" data-method="POST">
+  <div
+    class="panel json-card tab-panel"
+    data-tab-panel="utils-schroeder"
+    data-endpoint="/api/v1/utils/schroeder"
+    data-method="POST"
+  >
     <div class="endpoint-head">
-      <div><span class="method">POST</span> <span class="path">/api/v1/utils/schroeder</span></div>
+      <div>
+        <span class="method">POST</span>
+        <span class="path">/api/v1/utils/schroeder</span>
+      </div>
       <span class="value-tag">json</span>
     </div>
-    <p class="desc">Integral de Schroeder de una respuesta al impulso (curva de decaimiento energético).</p>
+    <p class="desc">
+      Integral de Schroeder de una respuesta al impulso
+      (curva de decaimiento energético).
+    </p>
     <div class="controls">
       <div class="param full" data-param="__file" data-type="file">
         <label>Respuesta al impulso (WAV / FLAC)</label>
@@ -469,13 +775,23 @@ HOME_PAGE = """
     <div class="status-line">Subí un archivo para empezar.</div>
   </div>
 
-  <div class="panel json-card tab-panel" data-tab-panel="utils-smoothing" data-endpoint="/api/v1/utils/smoothing" data-method="POST">
+  <div
+    class="panel json-card tab-panel"
+    data-tab-panel="utils-smoothing"
+    data-endpoint="/api/v1/utils/smoothing"
+    data-method="POST"
+  >
     <div class="endpoint-head">
-      <div><span class="method">POST</span> <span class="path">/api/v1/utils/smoothing</span></div>
+      <div>
+        <span class="method">POST</span>
+        <span class="path">/api/v1/utils/smoothing</span>
+      </div>
       <span class="value-tag">json</span>
     </div>
-    <p class="desc">Suaviza una señal mediante la envolvente de Hilbert o una media móvil de ventana
-      configurable.</p>
+    <p class="desc">
+      Suaviza una señal mediante la envolvente de Hilbert o una media móvil
+      de ventana configurable.
+    </p>
     <div class="controls">
       <div class="param full" data-param="__file" data-type="file">
         <label>Señal de audio (WAV / FLAC)</label>
@@ -488,7 +804,12 @@ HOME_PAGE = """
           <option value="moving_average">Media móvil</option>
         </select>
       </div>
-      <div class="param" data-param="window_ms" data-type="range" data-unit="ms">
+      <div
+        class="param"
+        data-param="window_ms"
+        data-type="range"
+        data-unit="ms"
+      >
         <label>Ventana <span class="value-tag param-value"></span></label>
         <input type="range" min="1" max="100" step="1" value="10">
       </div>
@@ -498,13 +819,23 @@ HOME_PAGE = """
     <div class="status-line">Subí un archivo para empezar.</div>
   </div>
 
-  <div class="panel json-card tab-panel" data-tab-panel="utils-log-scale" data-endpoint="/api/v1/utils/log-scale" data-method="POST">
+  <div
+    class="panel json-card tab-panel"
+    data-tab-panel="utils-log-scale"
+    data-endpoint="/api/v1/utils/log-scale"
+    data-method="POST"
+  >
     <div class="endpoint-head">
-      <div><span class="method">POST</span> <span class="path">/api/v1/utils/log-scale</span></div>
+      <div>
+        <span class="method">POST</span>
+        <span class="path">/api/v1/utils/log-scale</span>
+      </div>
       <span class="value-tag">json</span>
     </div>
-    <p class="desc">Convierte una señal a escala logarítmica (dB), útil para visualizar decaimientos y
-      espectros.</p>
+    <p class="desc">
+      Convierte una señal a escala logarítmica (dB), útil para visualizar
+      decaimientos y espectros.
+    </p>
     <div class="controls">
       <div class="param full" data-param="__file" data-type="file">
         <label>Señal de audio (WAV / FLAC)</label>
@@ -519,9 +850,15 @@ HOME_PAGE = """
   <footer>
     Trabajo Práctico · Señales y Sistemas · Grupo 1
     <div class="crew">
-      <span>Mora Sawczyk</span><span>·</span><span>Matias Moreira</span><span>·</span><span>Francisco Gil Frias</span>
+      <span>Mora Sawczyk</span>
+      <span>·</span><span>Matias Moreira</span>
+      <span>·</span><span>Francisco Gil Frias</span>
     </div>
-    <div style="margin-top:1rem;"><a href="/docs">Documentación completa de la API →</a></div>
+    <div style="margin-top:1rem;">
+      <a href="/docs">
+        Documentación completa de la API →
+      </a>
+    </div>
   </footer>
 </div>
 
@@ -561,7 +898,10 @@ function drawBg(){
       if(d<130){
         bctx.strokeStyle = `rgba(57,245,255,${0.12*(1-d/130)})`;
         bctx.lineWidth=1;
-        bctx.beginPath(); bctx.moveTo(a.x,a.y); bctx.lineTo(b.x,b.y); bctx.stroke();
+        bctx.beginPath();
+        bctx.moveTo(a.x,a.y);
+        bctx.lineTo(b.x,b.y);
+        bctx.stroke();
       }
     }
   }
@@ -584,7 +924,10 @@ function bindParamLabels(paramEls){
     const unit = p.dataset.unit || '';
     const decimals = p.dataset.decimals ? parseInt(p.dataset.decimals) : 0;
     const update = () => {
-      const val = decimals > 0 ? parseFloat(input.value).toFixed(decimals) : input.value;
+      const val =
+        decimals > 0
+          ? parseFloat(input.value).toFixed(decimals)
+          : input.value;
       label.textContent = val + (unit ? ' ' + unit : '');
     };
     input.addEventListener('input', update);
@@ -643,7 +986,9 @@ function sparkline(canvas, values){
 
 function isScalarDict(obj){
   return obj && typeof obj === 'object' && !Array.isArray(obj) &&
-    Object.values(obj).every(v => typeof v === 'number' || typeof v === 'string');
+    Object.values(obj).every(
+      (v) => typeof v === 'number' || typeof v === 'string'
+    );
 }
 function isNestedScalarDict(obj){
   return obj && typeof obj === 'object' && !Array.isArray(obj) &&
@@ -659,7 +1004,12 @@ function renderTable(obj){
     innerKeys.map(k => `<th>${k}</th>`).join('') + '</tr></thead><tbody>';
   for(const ok of outerKeys){
     html += `<tr><th>${ok}</th>` +
-      innerKeys.map(ik => `<td>${formatNumber(obj[ok][ik] ?? '—')}</td>`).join('') +
+      innerKeys
+        .map(
+          (ik) =>
+            `<td>${formatNumber(obj[ok][ik] ?? '—')}</td>`
+          )
+          .join('') +
       '</tr>';
   }
   html += '</tbody></table></div>';
@@ -667,7 +1017,10 @@ function renderTable(obj){
 }
 
 function renderJsonResult(resultBox, json){
-  const scalarEntries = [], previewEntries = [], tableEntries = [], arrayEntries = [];
+  const scalarEntries = [];
+  previewEntries = [];
+  tableEntries = [];
+  arrayEntries = [];
   for(const [k,v] of Object.entries(json)){
     if(Array.isArray(v) && k.endsWith('_preview')) previewEntries.push([k,v]);
     else if(Array.isArray(v)) arrayEntries.push([k,v]);
@@ -677,8 +1030,13 @@ function renderJsonResult(resultBox, json){
   let html = '';
   if(scalarEntries.length){
     html += '<div class="tag-row">' +
-      scalarEntries.map(([k,v]) => `<span class="value-tag">${k}: ${formatNumber(v)}</span>`).join('') +
-      '</div>';
+      scalarEntries
+        .map(
+          ([k,v]) =>
+            `<span class="value-tag">${k}: ${formatNumber(v)}</span>`
+        )
+        .join('') +
+        '</div>';
   }
   for(const [k,v] of arrayEntries){
     html += `<div class="result-sub-title">${k}</div><div class="tag-row">` +
@@ -688,7 +1046,12 @@ function renderJsonResult(resultBox, json){
     html += `<div class="result-sub-title">${k}</div>` + renderTable(v);
   }
   for(const [k,v] of previewEntries){
-    html += `<div class="result-sub-title">${k} (${v.length} muestras)</div><canvas class="sparkline"></canvas>`;
+    html += `
+      <div class="result-sub-title">
+        ${k} (${v.length} muestras)
+      </div>
+      <canvas class="sparkline"></canvas>
+    `;
   }
   resultBox.innerHTML = html;
   resultBox.querySelectorAll('canvas.sparkline').forEach((canvas, i) => {
@@ -710,7 +1073,10 @@ class AudioGenCard{
     this.metaInfo = panel.querySelector('.meta');
     this.vizCanvas = panel.querySelector('.viz');
     this.vctx = this.vizCanvas.getContext('2d');
-    this.audioCtx = null; this.analyser = null; this.sourceNode = null; this.audioEl = null;
+    this.audioCtx = null;
+    this.analyser = null;
+    this.sourceNode = null;
+    this.audioEl = null;
     this.vizRunning = false; this.idleTimer = Math.random()*10;
 
     bindParamLabels(this.paramEls);
@@ -755,7 +1121,12 @@ class AudioGenCard{
       let x = 0;
       for(let i=0;i<bufferLength;i++){
         const v = data[i]/255, barH = v*canvas.height;
-        const grad = vctx.createLinearGradient(0,canvas.height-barH,0,canvas.height);
+        const grad = vctx.createLinearGradient(
+          0,
+          canvas.height-barH,
+          0,
+          canvas.height
+        );
         grad.addColorStop(0,'#ff2ee0'); grad.addColorStop(1,'#39f5ff');
         vctx.fillStyle = grad;
         vctx.fillRect(x, canvas.height-barH, barW, barH);
@@ -799,7 +1170,11 @@ class AudioGenCard{
       if(this.audioEl){ this.audioEl.pause(); this.vizRunning = false; }
       this.audioEl = new Audio(objUrl);
 
-      if(!this.audioCtx) this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if(!this.audioCtx) {
+        this.audioCtx = new (
+          window.AudioContext || window.webkitAudioContext
+          )();
+        }
       if(this.sourceNode) this.sourceNode.disconnect();
       this.sourceNode = this.audioCtx.createMediaElementSource(this.audioEl);
       this.analyser = this.audioCtx.createAnalyser();
@@ -814,14 +1189,21 @@ class AudioGenCard{
       this.playBtn.disabled = false;
       this.playBtn.textContent = '▶';
       this.metaInfo.textContent = `${(blob.size/1024).toFixed(1)} KB`;
-      setStatus(this.statusLine, 'Listo. Reproducí o descargá el resultado.', 'ok');
+      setStatus(
+        this.statusLine, 'Listo. Reproducí o descargá el resultado.',
+        'ok'
+      );
 
       this.audioEl.addEventListener('ended', () => {
         this.vizRunning = false;
         this.playBtn.textContent = '▶';
       });
     }catch(e){
-      setStatus(this.statusLine, e.message || 'Ocurrió un error al procesar la solicitud.', 'error');
+      setStatus(
+        this.statusLine,
+        e.message || 'Ocurrió un error al procesar la solicitud.',
+        'error'
+      );
     }finally{
       this.genBtn.disabled = false;
       this.genBtn.textContent = originalText;
@@ -879,11 +1261,19 @@ class JsonCard{
       }
       const res = await fetch(url, opts);
       const data = await res.json();
-      if(!res.ok) throw new Error(data.detail || 'Error procesando la solicitud.');
+      if(!res.ok) {
+        throw new Error(
+          data.detail || 'Error procesando la solicitud.'
+          );
+      }
       renderJsonResult(this.resultBox, data);
       setStatus(this.statusLine, 'Análisis completado con éxito.', 'ok');
     }catch(e){
-      setStatus(this.statusLine, e.message || 'Ocurrió un error al procesar la solicitud.', 'error');
+      setStatus(
+        this.statusLine,
+        e.message || 'Ocurrió un error al procesar la solicitud.',
+        'error'
+      );
     }finally{
       this.genBtn.disabled = false;
       this.genBtn.textContent = original;
@@ -898,7 +1288,9 @@ document.querySelectorAll('.json-card').forEach(el => new JsonCard(el));
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const name = btn.dataset.tab;
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+    document.querySelectorAll('.tab-btn').forEach((b) =>
+      b.classList.toggle('active', b === btn)
+    );
     document.querySelectorAll('.tab-panel').forEach(panel => {
       const isActive = panel.dataset.tabPanel === name;
       panel.classList.toggle('active', isActive);
