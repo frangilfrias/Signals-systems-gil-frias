@@ -99,7 +99,7 @@ def test_filter_band():
     y devuelva un WAV válido.
     """
 
-    audio_path = Path("grabacion.wav")
+    audio_path = Path(__file__).parent / "data_tests" / "grabacion.wav"
 
     with open(audio_path, "rb") as audio:
         response = client.post(
@@ -156,7 +156,7 @@ def test_acoustic_parameters():
     los parámetros acústicos.
     """
 
-    audio_path = Path("grabacion.wav")
+    audio_path = Path(__file__).parent / "data_tests" / "grabacion.wav"
 
     with open(audio_path, "rb") as audio:
         response = client.post(
@@ -190,11 +190,11 @@ def test_acoustic_parameters_by_bands():
     acústicos agrupados por banda.
     """
 
-    audio_path = Path("grabacion.wav")
+    audio_path = Path(__file__).parent / "data_tests" / "grabacion.wav"
 
     with open(audio_path, "rb") as audio:
         response = client.post(
-            "/api/v1/acoustics/parameters/by-bands",
+            "/api/v1/acoustics/by-bands",
             files={
                 "file": ("grabacion.wav", audio, "audio/wav"),
             },
@@ -230,7 +230,7 @@ def test_analysis_impulse_response():
     de una respuesta al impulso.
     """
 
-    audio_path = Path("grabacion.wav")
+    audio_path = Path(__file__).parent / "data_tests" / "grabacion.wav"
 
     with open(audio_path, "rb") as audio:
         response = client.post(
@@ -273,7 +273,7 @@ def test_schroeder():
     Verifica que el endpoint calcule la integral de Schroeder.
     """
 
-    audio_path = Path("grabacion.wav")
+    audio_path = Path(__file__).parent / "data_tests" / "grabacion.wav"
 
     with open(audio_path, "rb") as audio:
         response = client.post(
@@ -303,7 +303,7 @@ def test_smoothing():
     una respuesta al impulso.
     """
 
-    audio_path = Path("grabacion.wav")
+    audio_path = Path(__file__).parent / "data_tests" / "grabacion.wav"
 
     with open(audio_path, "rb") as audio:
         response = client.post(
@@ -335,7 +335,7 @@ def test_log_scale():
     a escala logarítmica (dB).
     """
 
-    audio_path = Path("grabacion.wav")
+    audio_path = Path(__file__).parent / "data_tests" / "grabacion.wav"
 
     with open(audio_path, "rb") as audio:
         response = client.post(
