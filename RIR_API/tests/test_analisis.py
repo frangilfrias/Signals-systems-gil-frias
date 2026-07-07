@@ -310,10 +310,11 @@ class TestMetodoLundeby:
 
         ri = 0.0001 * np.random.randn(fs)
 
-        idx = metodo_lundeby(ri, fs)
+        idx, ruido = metodo_lundeby(ri, fs)
 
         # debería devolver algo válido (no romperse)
         assert isinstance(idx, int)
+        assert isinstance(ruido, float)
         assert 0 <= idx < len(ri)
 
     def test_lundeby_estabilidad(self):
