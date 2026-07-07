@@ -190,28 +190,84 @@ Los tests verifican que la función estime correctamente el punto de truncamient
 Los tests de la API verifican que cada endpoint responda correctamente a solicitudes válidas; los códigos de estado HTTP sean los esperados; las respuestas contengan la estructura JSON correcta; se validen adecuadamente los parámetros recibidos; se gestionen correctamente solicitudes inválidas o incompletas; los resultados devueltos coincidan con los obtenidos por las funciones internas del sistema.
             
 ## 5. Resultados
-### 5.1 Gráficos
-### 5.2 Tablas
-### 5.3 Validación
-## 6. Conclusiones
+### 5.1 Filtros
+En la figura 2, se observa el banco de filtros de octava implementado.
+
+![Imagen 1 Diagrama de arquitectura](IMAGENES/BANCO_DE_FILTROS.png)
+
+### 5.2 Suavizado
+En la figura 3, se muestra la aplicación del suavizado de la respuesta impulsiva del recinto Maes Howe [3] aplicando la transformada de Hilbert.
+
+![Imagen 1 Diagrama de arquitectura](IMAGENES/HILBERT_MAES_HOWE.png)
+
+### 5.3 Schroeder y regresión lineal
+En la figura 4, se observa el pipeline filtro de octava --> transformada de Hilbert --> método Lundeby --> integración de Schroeder --> regresión lineal, para la respuesta al impulso de la sala Eleveden Hall [4], aplicando el filtro de banda de octava centrado en fo = 1.00 KHz.
+
+![Imagen 1 Diagrama de arquitectura](IMAGENES/PIPELINE.jpeg)
+
+##  6 Validación
+Se realizó la validación de los parámetros EDT, T10, T20, T30, D50, y C80. 
+### 6.1 Procedimiento
+Se utilizaron dos respuestas al impulso:
+1) Una señal sintetizada.
+
+    Se aplicó la eñal diseñada en la RIR API descrita en el ítem 4.3.
+
+2) La correspondiente al recinto Maes Hawe [3].
+
+    Para obtener la respuesta impulsiva se ha empleado como señal de excitación un barrido senoidal. Se ha usado el micrófono Soundfield SPS422B. La señal de tensión obtenida se encuentra en formato B, y  luego de procesarla, se obtuvo una señal estéreo [5]
+
+Ambas se procesaron en tres programas diferentes: 1)   RIR API diseñada por el grupo 1, 2) RIR API diseñada por la cátedra [6], 3) Room EQ Wizard Room Acoustics Software (REW)[7]. Se obtuvieron los resultados asociados a los parámetros mencionados para las frecuencias centrales de octava de 125 , 250, 500, 1000, 2000, y 4000 Hz.
+
+Luego se realizó la  comparación de los resultados obtenidos, y se obtuvo la precisión para cada uno los parámetros mencionados.
+
+### 6.2 Limitaciones
+1) El software REW no otorga los valores vinculados al parámetro T10, mientras que la API de la cátedra no entrega los valores de los parámetros D50 y C80. Debido a ello, la validación de dichos parámetros se realizó solamente con uno de los software descritos.
+
+
+### 6.3 Resultados
+1) Respuesta al impulso sintetizada.
+
+    En las figuras   , se muestran los resultados derivados del procesamiento de la señal sintetizada en cada uno de los programas mencionados.
+
+2) Respuesta al impulso del recinto Maes Hawe.
+
+    En las figuras   , se muestran los resultados derivados del procesamiento de la respuesta impulsiva en cada uno de los programas mencionados.
+
+    Debido a las características de la respuesta impulsiva
+    los valores de EDT no han podido determinarse de manera consistente. Por este motivo, para dicho parámetro, se muestran las señales de ambos canales procesados en el software REW.
+
+### 6.4 Análisis
+
+## 7. Conclusiones
 Se ha desarrollado el software RIR-API en lenguaje python capaz de generar la señal de excitación, registrar la respuesta del recinto, procesarla y otorgar los parámetros acústicos EDT, T20, T30, D50 y C80 por bandas de octava cumpliendo con las recomendaciones dadas en las normas ISO 3381-1 e IEC 60621-1.
 
-## 7. Adversidades, confesiones y desafíos
+## 8. Adversidades, confesiones y desafíos
 
-### 7.1 Adversidades
+### 8.1 Adversidades
 El escaso o nulo conocimiento previo tanto del lenguaje de programación utilizado como de los sistemas asociados configuraron la mayor proporción de tiempo destinado al desarrollo del proyecto, restando una pequeña parte para el cumplimiento de los objetivos técnicos vinculados al análisis conceptual del procesamiento de señales.
         
-### 7.2 Confesiones
+### 8.2 Confesiones
 Debido a las razones expuestas en 7.1, se ha recurrido sistemáticamente al vivecoding. 
 
-### 7.3 Desafíos
+### 8.3 Desafíos
 Comprender en profundidad y adquirir agilidad en la implementación de las buenas prácticas vinculadas a la programación y al procesamiento digital de señales.
 
 
 ## Referencias
 
-[1] ISO 3382-1:2009: Acoustics — Measurement of room acoustic       parametersPart 1: Spaces for music, speech and communication. (2009).
+[1] ISO 3382-1:2009: Acoustics — Measurement of room acoustic       parametersPart 1: Spaces for music, speech and communication. (2009)
 
-[2]IEC 60621-1:2014: Electroacoustics – Octave-band and fractional-octave-band filters –Part 1: Specifications. (2014).
+[2] IEC 60621-1:2014: Electroacoustics – Octave-band and fractional-octave-band filters –Part 1: Specifications. (2014)
 
-[3]Fariña, A. . Simultaneous measurement of impulse response and distortion with a swept-sine technique. 108th AES Convention.(2000).
+[3] https://www.openair.hosted.york.ac.uk/?page_id=602
+
+[4] https://www.openair.hosted.york.ac.uk/?s=Elveden+Hall
+
+[5] https://webfiles.york.ac.uk/OPENAIR/IRs/maes-howe/Read%20Me.txt
+
+[6] https://rir-api-frontend.onrender.com/
+
+[7] https://www.roomeqwizard.com/
+
+[3] Fariña, A. . Simultaneous measurement of impulse response and distortion with a swept-sine technique. 108th AES Convention.(2000).
