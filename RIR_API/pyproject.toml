@@ -1,3 +1,8 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+
 [project]
 name = "rir-api"
 version = "1.0.0"
@@ -5,11 +10,13 @@ description = "API REST para procesamiento y analisis de respuestas al impulso s
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.12"
+
 authors = [
     { name = "Francisco Gil Frias", email = "gil50070@estudiantes.untref.edu.ar" },
     { name = "Matias Moreira", email = "matmore83@hotmail.com" },
     { name = "Mora Sawczyk", email = "morasawczyk@gmail.com" },
 ]
+
 dependencies = [
     "fastapi",
     "uvicorn[standard]",
@@ -25,16 +32,29 @@ dependencies = [
     "pytest",
 ]
 
+
 [project.optional-dependencies]
 dev = [
     "pytest",
     "httpx",
     "ruff",
+    "pytest-cov",
 ]
+
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+exclude = [
+    "tests*",
+    "docs*",
+    "docs_*",
+]
+
 
 [tool.ruff]
 line-length = 100
 target-version = "py312"
+
 
 [tool.ruff.lint]
 select = [
@@ -48,9 +68,11 @@ select = [
     "SIM", # flake8-simplify
 ]
 
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+
 
 [dependency-groups]
 dev = [
