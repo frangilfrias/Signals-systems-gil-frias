@@ -69,9 +69,14 @@ La documentación interactiva puede  consultarse en:
 RIR_API/
 ├── app/
 │   ├── __init__.py
-│   ├── main.py                    # Punto de entrada FastAPI, endpoints (M1, M2, M3)
+│   ├── main.py                    # Punto de entrada FastAPI
 │   ├── routers/
 │   │   ├── health.py              # GET /health
+│   │   ├── acoustics.py           # Cálculo de parámetros acústicos
+│   │   ├── analysis.py            # Análisis de respuestas al impulso
+│   │   ├── filters.py             # Filtrado y procesamiento de señales
+│   │   ├── signals.py             # Generación de señales de excitación
+│   │   ├── utils.py               # Funciones auxiliares de procesamiento
 │   │   └── __init__.py 
 │   ├── schemas/
 │   │   └── __init__.py            # Modelos Pydantic de request/response
