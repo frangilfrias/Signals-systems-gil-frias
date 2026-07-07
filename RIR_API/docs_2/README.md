@@ -4,7 +4,7 @@ exponencial abarcando las frecuencias centrales desde 31.5 Hz hasta 31.5 KHz, lo
 emulación de la respuesta al impulso de un campo sonoro difuso.
 - En la figura se muestra la síntesis descrita y su validación mediante el procesamiento con un filtro 
 de octava normalizado según IEC 61260:2014.
-![SINTESIS_RI](IMÁGENES/SINTESIS.png)
+![SINTESIS_RI](IMAGENES/SINTESIS.png)
 
 # Filtros de octava
 - Se encuentran diseñados de acorde a la norma IEC 61260:2014. El banco de filtros está formado por filtros
@@ -20,4 +20,4 @@ desde la cual se han extraido los audios de las RI (https://www.openair.hosted.y
 Para los casos de las RI correspondientes a los recintos "ELEVEDEN HALL" y "HAMILTON MAUSSULEUM", 
 no se han podido obtener los datos del T30 desde la RIR-API CÁTEDRA, ya que se han arrojado 
 los errores "Request failed with status code 500" y "timeout of 60000ms exceeded" respectivamente.
-![FILTROS_DE_OCTAVA](IMÁGENES/RI.png)
+![FILTROS_DE_OCTAVA](IMAGENES/RI.png)
