@@ -228,21 +228,54 @@ Luego se realizó la  comparación de los resultados obtenidos, y se obtuvo la p
 ### 6.3 Resultados
 1) Respuesta al impulso sintetizada.
 
-    En las figuras   , se muestran los resultados derivados del procesamiento de la señal sintetizada en cada uno de los programas mencionados.
+    En la figura 5, se muestran los resultados derivados del procesamiento de la señal sintetizada en cada uno de los programas mencionados.
+    ![Imagen 1 Diagrama de arquitectura](IMAGENES/RI_SINTETICA_GRAFICOS.jpg)
+
+    En la tabla 1, se disponen los resultados obtenidos con sus respectivos valores de precisión.
+
+    ![Imagen 1 Diagrama de arquitectura](IMAGENES/RI_SINTETICA_TABLAS.jpg)
 
 2) Respuesta al impulso del recinto Maes Hawe.
 
-    En las figuras   , se muestran los resultados derivados del procesamiento de la respuesta impulsiva en cada uno de los programas mencionados.
+    En la figura 6 se muestran los resultados derivados del procesamiento de la respuesta impulsiva en cada uno de los programas mencionados.
 
     Debido a las características de la respuesta impulsiva
     los valores de EDT no han podido determinarse de manera consistente. Por este motivo, para dicho parámetro, se muestran las señales de ambos canales procesados en el software REW.
 
-    ![Imagen 1 Diagrama de arquitectura](IMAGENES/RIHM.jpg)
+    ![Imagen 1 Diagrama de arquitectura](IMAGENES/RI_HM.jpg)
 
+    En la tabla 2, se disponen los resultados obtenidos con sus respectivos valores de precisión.
+
+    ![Imagen 1 Diagrama de arquitectura](IMAGENES/RI_HM_TABLAS.jpg)
+    
 ### 6.4 Análisis
+1)  RI sintetizada
+    Para el caso del software REW, el máximo error absoluto, tanto para el EDT, T10, T20 como T30 es inferior a 50 ms. En tanto que para C80 ha sido inferior a 0,207 dB, y para D50 menor al 3,68 %.
+
+    Tomando como referencia la RIR API de la cátedra el máximo error absoluto, tanto para el EDT, T10, T20 como T30 es inferior a 116 ms, valor obtenido en la frecuencia central de 250 Hz en el parámetro EDT. 
+2)  RI Maes Howe
+    Los valores de EDT han resultado con error absoluto máximo elevado con respecto a los obtenidos en tanto en el software REW como en la RIR API de la cátedra. También se observan diferencias significativas entre los valores otorgados por el software REW y la RIR API de la cátedra. En la figura 7, se observa la respuesta al impulso suavizada extraida del software REW, tanto para la RI sin filtrar y filtrada en la banda de octava con frecuencia central en fo = 4.00 KHz.
+
+    ![Imagen 1 Diagrama de arquitectura](IMAGENES/RI_REW_MH.jpg)
+    
+    La variación de amplitud dada en los primeros 20 dB de decaimiento explican la dispersión de los valores obtenidos tanto en el EDT como en el T10.  La dispersión es menor para el resto de los parámetros.
+
+    Por otra parte, los valores de D50 y C80 no se aprecian notablemente afectados, siendo la precisión superior al 94 % para ambos parámetros teniendo en cuenta las frecuencias centrales de octava bajo análisis.
 
 ## 7. Conclusiones
-Se ha desarrollado el software RIR-API en lenguaje python capaz de generar la señal de excitación, registrar la respuesta del recinto, procesarla y otorgar los parámetros acústicos EDT, T20, T30, D50 y C80 por bandas de octava cumpliendo con las recomendaciones dadas en las normas ISO 3381-1 e IEC 60621-1.
+
+1)  Particulares
+
+    Para el caso de la respuesta al impulso sintetizada, la cual representa un decaimiento exponencial de la energía, situación dada en un campo sonoro difuso, la validación ha sido satisfactoria.
+
+    Con respecto a la respuesta al impulso analizada en el ítem 6.4.2, se observa que el apartamiento notorio con respecto a la respuesta impulsiva correspondiente a un campo sonoro difuso puede producir errores significativos en los valores de los parámetros analizados, en este caso a los vinculados a los primeros 15 dB de decaimiento.
+
+    
+2)  Generales
+
+    Se ha desarrollado el software RIR-API en lenguaje python capaz de generar la señal de excitación, registrar la respuesta del recinto, procesarla y otorgar los parámetros acústicos EDT, T20, T30, D50 y C80 por bandas de octava cumpliendo con las recomendaciones dadas en las normas ISO 3381-1 e IEC 60621-1. 
+    
+    Es parte de un trabajo futuro, diseñar respuestas al impulso sintéticas que representen la respuesta al impulso de campos sonoros no ideales, con el objetivo de investigar y corregir las causas que producen las desviaciones en los resultados bajo casos de respuestas al impulso asociadas con campos sonoros con características apartadas de situaciones ideales.
 
 ## 8. Adversidades, confesiones y desafíos
 
