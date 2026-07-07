@@ -81,13 +81,16 @@ RIR_API/
 │   ├── schemas/
 │   │   └── __init__.py            # Modelos Pydantic de request/response
 │   └── services/
-|       ├── __init__.py 
-│       ├── pink_noise.py          # Generacion de ruido rosa (M1)
-│       ├── sine_sweep.py          # Generacion de sine sweep (M1)
-│       ├── signal_utils.py        # Utilidades de procesamiento (M2)
-│       ├── filter.py              # Filtros de banda de octava (M2)
-│       ├── acoustic_parameters.py # Parametros acusticos ISO 3382 (M3)
-│       └── reproducir_grabar.py   # Grabación y reproducción (M2)
+|   │   ├── __init__.py 
+│   │   ├── pink_noise.py          # Generacion de ruido rosa (M1)
+│   │   ├── sine_sweep.py          # Generacion de sine sweep (M1)
+│   │   ├── signal_utils.py        # Utilidades de procesamiento (M2)
+│   │   ├── filter.py              # Filtros de banda de octava (M2)
+│   │   ├── acoustic_parameters.py # Parametros acusticos ISO 3382 (M3)
+│   │   └── reproducir_grabar.py   # Grabación y reproducción (M2)
+│   └── web/
+│       ├── __init__.py 
+│       └── home.py                # Código para la web de la API     
 ├── tests/
 │   ├── data_tests/                # Audio para los tests de a API
 │   ├── test_generacion.py         # Tests de generacion (M1)
@@ -102,6 +105,7 @@ RIR_API/
 │   └── ci.yml                     # Integracion continua
 ├── pyproject.toml                 # Configuracion del proyecto
 ├── uv.lock
+├── AI_LOG.md
 └── README.md
 ```
 
