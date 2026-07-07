@@ -77,9 +77,11 @@ Esta organización favorece la claridad del código, simplifica la incorporació
 
 ### 4.3 Funciones
 #### Generación de señales: 
-*Pink noise*: 
+*Pink noise*: Con el objetivo de disponer de una señal de referencia para ensayos y calibraciones acústicas, la API implementa la generación de ruido rosa. A diferencia del sine sweep, esta señal no se utiliza para obtener la respuesta al impulso ni para el cálculo de los parámetros acústicos, sino que constituye un estándar ampliamente utilizado en mediciones electroacústicas y de audio debido a su distribución espectral de energía.
 
-*Sine sweep*: Con el objetivo de caracterizar completamente un sistema, la API implementa la generación de un barrido de senoidal logarítmico (sine sweep). Esta función genera tanto la señal de excitación como su filtro invers, necesario para su procesamiento posterior para recuperar la respuesta al impulso, a partir de la cual es posible calcular los distintos parámetros acústicos implementados en la API.
+La función genera una señal de ruido rosa de duración y frecuencia de muestreo configurables, normalizada para facilitar su reproducción y utilización en distintas aplicaciones, como la verificación de sistemas de sonido, pruebas de equipos y mediciones acústicas generales.
+
+*Sine sweep*: Con el objetivo de caracterizar completamente un sistema, la API implementa la generación de un barrido de senoidal logarítmico (sine sweep). Esta función permite configurar la frecuencia inicial, la frecuencia final y la duración del barrido, generando tanto la señal de excitación como su filtro inverso, necesario para su procesamiento posterior para recuperar la respuesta al impulso, a partir de la cual es posible calcular los distintos parámetros acústicos implementados en la API.
 
 #### Reproducción y grabación: 
 La función de reproducción y grabación permite reproducir una señal de audio a través del sistema de salida seleccionado mientras registra simultáneamente la respuesta capturada por un dispositivo de entrada. Su objetivo es obtener una grabación sincronizada de la señal emitida para posteriormente analizar la respuesta impulsiva (RIR) del recinto.
@@ -91,12 +93,20 @@ La función de carga de audio permite importar un archivo de sonido almacenado e
 
 Su propósito es obtener la señal digital y su frecuencia de muestreo, independientemente del origen del archivo, permitiendo trabajar posteriormente con filtros, cálculos energéticos y parámetros acústicos. Además, valida que el archivo exista y que el formato sea compatible con el procesamiento.
 
+#### Sintetizar RI:
+Con el objetivo de generar respuestas al impulso artificiales para ensayos y validación de la API, se implementa una función que sintetiza una respuesta al impulso a partir de valores de T60 definidos para distintas bandas de octava. Esto permite disponer de señales con un comportamiento acústico controlado, útiles para verificar el correcto funcionamiento de los algoritmos de análisis.
+
+La función genera ruido blanco, lo filtra en cada banda de octava especificada y aplica una envolvente exponencial de acuerdo con el tiempo de reverberación indicado para cada banda. Finalmente, combina todas las contribuciones y normaliza la respuesta al impulso resultante.
+
 #### Obtener RI desde sweep:
 La función de obtención de la respuesta al impulso permite recuperar la caracterización de un sistema a partir de la "deconvolusión" de la grabación de la respuesta del sistema al sine sweep y su filtro inverso, de esta manera elimina el efecto de la señal de excitación. 
 
 Esta respuesta constituye la entrada para las etapas posteriores de procesamiento, permitiendo calcular los parámetros acústicos de acuerdo con la metodología implementada en la API.
 
 #### Filtro de octava:
+Con el objetivo de analizar el comportamiento acústico en función de la frecuencia, la API implementa un filtro pasabanda de una octava basado en filtros Butterworth. Esta función permite aislar el contenido de una banda de octava determinada, definida a partir de una frecuencia central configurable, de acuerdo con los límites establecidos por la norma IEC 61260.
+
+A partir de la señal de entrada, diseña y aplica el filtro correspondiente, devolviendo una señal filtrada que puede utilizarse para el cálculo de los distintos parámetros acústicos por banda de frecuencia.
 
 #### Convertir a escala logarítmica: 
 La función de conversión a escala logarítmica transforma una señal expresada en escala lineal hacia decibeles (dB), utilizando una escala logarítmica.
@@ -104,8 +114,14 @@ La función de conversión a escala logarítmica transforma una señal expresada
 Esta conversión resulta indispensable en acústica, ya que la percepción humana del sonido y la mayoría de los parámetros acústicos se expresan en decibeles. Además del cálculo logarítmico, la función contempla el tratamiento de valores cercanos a cero para evitar errores numéricos durante la operación.
 
 #### Suavizar señal:
+Con el objetivo de reducir las fluctuaciones producidas por el ruido y facilitar el análisis de la respuesta al impulso, la API implementa una función de suavizado de señales. Esta permite obtener una representación más estable de la envolvente de la señal antes de realizar distintos análisis acústicos.
+
+La función ofrece dos métodos de suavizado configurables: mediante la transformada de Hilbert, que obtiene la envolvente de la señal, o mediante un filtro de media móvil, cuyo tamaño de ventana puede definirse según las necesidades del análisis. La salida conserva la misma longitud que la señal de entrada, permitiendo su utilización en las etapas posteriores del procesamiento.
 
 #### Integral de Schroeder:
+Con el objetivo de analizar el decaimiento energético de una respuesta al impulso, la API implementa el cálculo de la integral de Schroeder. Esta función obtiene la Energy Decay Curve (EDC), fundamental para la estimación de los tiempos de reverberación y otros parámetros acústicos definidos por la norma ISO 3382.
+
+A partir de la respuesta al impulso, calcula la energía acumulada desde el final de la señal hacia el comienzo y la normaliza respecto de la energía total, generando una curva de decaimiento energético apta para las etapas posteriores del análisis acústico.
 
 #### Regresión lineal:
 La función de regresión lineal calcula la recta que mejor aproxima un conjunto de datos mediante el método de mínimos cuadrados. Dentro del proyecto se utiliza principalmente para estimar los tiempos de reverberación (EDT, T10, T20 y T30) a partir de la curva de decaimiento energético obtenida mediante la integral de Schroeder.
@@ -130,7 +146,7 @@ Entre los servicios disponibles se encuentran operaciones sobre señales, filtro
 ### 4.4 Tests
 
 #### Generación de señales: 
-***Pink noise***:
+***Pink noise***: Los tests verifican que la señal generada tenga la duración esperada; el tipo de dato devuelto sea un arreglo de NumPy; la amplitud se encuentre correctamente normalizada entre -1 y 1; y que su contenido espectral presente una pendiente cercana a −3 dB por octava, característica propia del ruido rosa.
 
 ***Sine sweep***: Los tests verifican que la función genere correctamente el sine sweep y su filtro inverso; ambas señales tengan la longitud esperada; el barrido cubra el rango de frecuencias especificado; la frecuencia instantánea aumente de forma monótona; la convolución entre el sine sweep y su filtro inverso produzca una aproximación a un impulso; y se manejen correctamente parámetros inválidos, tanto de tipo como de valor.
 
@@ -141,20 +157,24 @@ la función responda adecuadamente ante parámetros inválidos.
 #### Cargar audio: 
 Los tests verifican que el archivo pueda abrirse correctamente; la señal cargada tenga dimensiones válidas; la frecuencia de muestreo corresponda con la almacenada en el archivo; se detecten archivos inexistentes; se manejen correctamente errores de lectura.
 
-#### Sintetizar RI: 
+#### Sintetizar RI:
+Los tests verifican que la respuesta al impulso sintetizada tenga la duración esperada; el tipo y las dimensiones de la señal generada sean correctos; y que el decaimiento energético de cada banda de octava reproduzca, con una tolerancia establecida, el T60 especificado para su síntesis.
 
 #### Obtener RI desde sweep:
 Los tests verifican que la deconvolución entre la grabación del sine sweep y su filtro inverso permita recuperar correctamente la respuesta al impulso; el pico principal de la respuesta obtenida sea claramente identificable; la respuesta recuperada conserve una alta similitud con una respuesta al impulso sintetizada; y el proceso de obtención de la RI produzca resultados consistentes para su posterior análisis acústico.
 
 #### Filtro de octava:
+Los tests verifican que el filtro presente una ganancia cercana a 0 dB en la frecuencia central de la banda; atenúe adecuadamente las componentes ubicadas fuera de la banda de paso; y que la respuesta en frecuencia alcance aproximadamente −3 dB en las frecuencias de corte, de acuerdo con el comportamiento esperado de un filtro Butterworth pasabanda de una octava.
 
 #### Convertir a escala logarítmica: 
 Los tests verifican que la conversión produzca los valores esperados; la salida conserve la longitud de la señal original; no aparezcan valores indefinidos (NaN o infinito);
 se manejen correctamente señales con energía muy baja o nula.
 
 #### Suavizar señal:
+Los tests verifican que el suavizado mediante la transformada de Hilbert genere una envolvente con valores no negativos y conserve la longitud de la señal original. Asimismo, comprueban que el suavizado mediante media móvil mantenga la misma cantidad de muestras que la señal de entrada, garantizando su compatibilidad con las etapas posteriores del procesamiento.
 
 #### Integral de Schroeder:
+Los tests verifican que la curva de decaimiento energético conserve la misma longitud que la respuesta al impulso original; presente un comportamiento monótonamente decreciente; reproduzca el decaimiento esperado para una respuesta al impulso sintetizada con un tiempo de reverberación conocido; y se encuentre correctamente normalizada, comenzando en 0 dB.
 
 #### Regresión lineal:
 Los tests verifican que la pendiente calculada sea correcta; la ordenada al origen corresponda con los datos utilizados; el coeficiente R² tenga el valor esperado; la función responda correctamente ante conjuntos de datos pequeños;
