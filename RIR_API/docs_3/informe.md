@@ -29,11 +29,26 @@ El software desarrollado automatiza el flujo completo de análisis acústico, de
 
 ## 2 Objetivos
 ### 2.1 Generales
+Desarrollar una biblioteca en Python para el procesamiento y análisis de señales acústicas, complementada con una API REST que permita acceder a sus funcionalidades de manera organizada, modular y reutilizable, aplicando buenas prácticas de ingeniería de software, validación mediante pruebas automatizadas y documentación técnica.
 
 ### 2.2 Particulares
-
+Implementar funciones para la generación, adquisición y procesamiento de señales de audio.
+Desarrollar algoritmos de análisis acústico basados en la norma ISO 3382 para la estimación de parámetros de reverberación.
+Implementar filtros en bandas de octava y herramientas para el cálculo de la curva de decaimiento energético (EDC).
+Exponer las funcionalidades de la biblioteca mediante una API REST utilizando FastAPI.
+Verificar el correcto funcionamiento de cada módulo mediante pruebas unitarias y de integración.
+Documentar el proyecto y mantener un flujo de desarrollo colaborativo utilizando Git y GitHub.
 
 ## 3. Marco teórico
+
+La respuesta al impulso de un recinto (Room Impulse Response, RIR) describe el comportamiento acústico de un ambiente frente a una excitación impulsiva. A partir de ella es posible caracterizar objetivamente las propiedades acústicas del recinto mediante diferentes parámetros normalizados.
+
+Para el análisis de la RIR, la señal se divide en bandas de octava utilizando filtros digitales, permitiendo evaluar el comportamiento en distintas frecuencias. Posteriormente, la envolvente energética de la respuesta se obtiene mediante la transformada de Hilbert y se aplica el método de Lundeby para estimar el punto donde la energía de la señal alcanza el nivel de ruido de fondo, evitando que éste afecte el cálculo de los parámetros.
+
+La energía acumulada se determina mediante la integral de Schroeder, que genera la Energy Decay Curve (EDC). Sobre esta curva se realizan regresiones lineales en distintos intervalos de decaimiento para obtener parámetros como EDT, T10, T20, T30 y T60, representativos del tiempo de reverberación del recinto.
+
+Además de los tiempos de reverberación, la API calcula parámetros relacionados con la inteligibilidad y la claridad del sonido, como D50 y C80, ampliamente utilizados en acústica arquitectónica y definidos por la norma ISO 3382. Estos indicadores permiten evaluar objetivamente la calidad acústica de un espacio a partir de su respuesta al impulso.
+
 ## 4. Desarrollo 
 
 ### 4.1 Arquitecura
@@ -161,16 +176,6 @@ Debido a las razones expuestas en 7.1, se ha recurrido sistemáticamente al vive
 
 ### 7.3 Desafíos
 Comprender en profundidad y adquirir agilidad en la implementación de las buenas prácticas vinculadas a la programación y al procesamiento digital de señales.
-
-
-
-
-## 8. Trabajo futuro
-### 8.1 RI sintética
-
-### 8.2 Filtros
-### 8.3 Parámetros
-### 8.4 Front end
 
 
 ## Referencias
