@@ -237,6 +237,8 @@ Luego se realizó la  comparación de los resultados obtenidos, y se obtuvo la p
     Debido a las características de la respuesta impulsiva
     los valores de EDT no han podido determinarse de manera consistente. Por este motivo, para dicho parámetro, se muestran las señales de ambos canales procesados en el software REW.
 
+    ![Imagen 1 Diagrama de arquitectura](IMAGENES/RIHM.jpg)
+
 ### 6.4 Análisis
 
 ## 7. Conclusiones
