@@ -32,7 +32,7 @@ app.include_router(analysis.router)
 app.include_router(utils.router)
 
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse, include_in_schema=False)
 async def root():
     """Página de inicio de la API."""
     return """
@@ -119,15 +119,6 @@ async def root():
 
 API_VERSION = "0.1.0"
 API_URL_VERSION = "v1"
-
-
-@app.get("/health")
-async def health():
-    return {
-        "status": "ok",
-        "version": API_VERSION,
-        "timestamp": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
-    }
 
 
 if __name__ == "__main__":
