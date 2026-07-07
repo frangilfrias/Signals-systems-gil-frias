@@ -13,7 +13,7 @@ import numpy as np
 import soundfile as sf
 from fastapi import FastAPI, File, HTTPException, Query, UploadFile
 from fastapi.responses import HTMLResponse, StreamingResponse
-from app.routers import signals
+from app.routers import signals, filters, acoustics, analysis, utils
 
 from app.routers import health
 from app.services.acoustic_parameters import (
@@ -36,6 +36,7 @@ app = FastAPI(
 # Routers
 app.include_router(health.router)
 app.include_router(signals.router)
+app.include_router(filters.router)
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
@@ -132,80 +133,6 @@ async def health():
         "status": "ok",
         "version": API_VERSION,
         "timestamp": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
-    }
-
-
-@app.post("/api/v1/filters/band")
-async def filtro_banda(
-    archivo: UploadFile = File(...),
-    fc: float = 1000.0,
-    orden: int = 4,
-):
-    """
-    Filtra un archivo de audio mediante un filtro pasabanda de octava.
-    """
-
-    # Leer el archivo recibido
-    datos = await archivo.read()
-
-    buffer = io.BytesIO(datos)
-
-    signal, fs = sf.read(buffer, dtype="float64")
-
-    # Si es estéreo -> convertir a mono
-    if signal.ndim > 1:
-        signal = np.mean(signal, axis=1)
-
-    # Aplicar filtro
-    filtrada = filtro_octava(
-        signal=signal,
-        fc=fc,
-        fs=fs,
-        orden=orden,
-    )
-
-    # Guardar resultado en memoria
-    salida = io.BytesIO()
-
-    sf.write(
-        salida,
-        filtrada,
-        fs,
-        format="WAV",
-    )
-
-    salida.seek(0)
-
-    return StreamingResponse(
-        salida,
-        media_type="audio/wav",
-        headers={
-            "Content-Disposition": (
-                f"attachment; filename=band_{int(fc)}Hz.wav"
-            )
-        },
-    )
-
-
-@app.get("/api/v1/filters/frequencies")
-async def frecuencias_centrales():
-    """
-    Devuelve las frecuencias centrales de las bandas de octava soportadas.
-    """
-
-    return {
-        "frequencies_hz": [
-            31.5,
-            63,
-            125,
-            250,
-            500,
-            1000,
-            2000,
-            4000,
-            8000,
-            16000,
-        ]
     }
 
 
