@@ -41,13 +41,16 @@ Documentar el proyecto y mantener un flujo de desarrollo colaborativo utilizando
 
 ## 3. Marco teórico
 
-La respuesta al impulso de un recinto (Room Impulse Response, RIR) describe el comportamiento acústico de un ambiente frente a una excitación impulsiva. A partir de ella es posible caracterizar objetivamente las propiedades acústicas del recinto mediante diferentes parámetros normalizados.
+## Marco teórico
 
-Para el análisis de la RIR, la señal se divide en bandas de octava utilizando filtros digitales, permitiendo evaluar el comportamiento en distintas frecuencias. Posteriormente, la envolvente energética de la respuesta se obtiene mediante la transformada de Hilbert y se aplica el método de Lundeby para estimar el punto donde la energía de la señal alcanza el nivel de ruido de fondo, evitando que éste afecte el cálculo de los parámetros.
+El tiempo de reverberación constituye uno de los principales parámetros para la caracterización acústica de recintos. Fue introducido por Wallace Clement Sabine, quien estableció la relación entre el volumen del recinto, la absorción acústica y la persistencia del sonido, sentando las bases de la acústica arquitectónica moderna [3]. Desde entonces, el tiempo de reverberación se considera uno de los principales indicadores de la calidad acústica de un recinto [4],[5].
 
-La energía acumulada se determina mediante la integral de Schroeder, que genera la Energy Decay Curve (EDC). Sobre esta curva se realizan regresiones lineales en distintos intervalos de decaimiento para obtener parámetros como EDT, T10, T20, T30 y T60, representativos del tiempo de reverberación del recinto.
+Actualmente, la medición del tiempo de reverberación se realiza a partir de la respuesta impulsiva de la sala, conforme a los procedimientos establecidos en la norma ISO 3382 [1]. Entre los métodos de excitación, el barrido senoidal exponencial es el más utilizado debido a su elevada relación señal-ruido. Este método, desarrollado por Angelo Farina, obtiene la respuesta impulsiva mediante la convolución de la señal registrada con el filtro inverso del barrido, permitiendo además separar las componentes de distorsión armónica y mejorando el desempeño respecto de técnicas anteriores, como MLS [6]. A partir de la respuesta impulsiva, el tiempo de reverberación se determina mediante la integración inversa propuesta por Manfred R. Schroeder en el año 1965 [7].
 
-Además de los tiempos de reverberación, la API calcula parámetros relacionados con la inteligibilidad y la claridad del sonido, como D50 y C80, ampliamente utilizados en acústica arquitectónica y definidos por la norma ISO 3382. Estos indicadores permiten evaluar objetivamente la calidad acústica de un espacio a partir de su respuesta al impulso.
+En el ámbito del desarrollo de software, las Interfaces de Programación de Aplicaciones (API) permiten integrar aplicaciones mediante servicios estandarizados. En particular, el estilo arquitectónico Representational State Transfer (REST), propuesto por Roy Thomas Fielding [8], favorece la interoperabilidad, la escalabilidad y la modularidad de los sistemas distribuidos.
+
+En este contexto, el presente trabajo propone el diseño de RIR API, una API REST para el procesamiento de respuestas impulsivas y el cálculo automático del tiempo de reverberación conforme a la norma ISO 3382. La arquitectura desarrollada integra técnicas modernas de procesamiento digital de señales con principios de ingeniería de software, proporcionando una herramienta modular que facilita la automatización de las mediciones acústicas y la integración de sus funcionalidades con aplicaciones cliente mediante servicios web estandarizados.
+
 
 ## 4. Desarrollo 
 
@@ -213,11 +216,11 @@ Se utilizaron dos respuestas al impulso:
 
     Se aplicó la eñal diseñada en la RIR API descrita en el ítem 4.3.
 
-2) La correspondiente al recinto Maes Hawe [3].
+2) La correspondiente al recinto Maes Hawe [9].
 
-    Para obtener la respuesta impulsiva se ha empleado como señal de excitación un barrido senoidal. Se ha usado el micrófono Soundfield SPS422B. La señal de tensión obtenida se encuentra en formato B, y  luego de procesarla, se obtuvo una señal estéreo [5]
+    Para obtener la respuesta impulsiva se ha empleado como señal de excitación un barrido senoidal. Se ha usado el micrófono Soundfield SPS422B. La señal de tensión obtenida se encuentra en formato B, y  luego de procesarla, se obtuvo una señal estéreo [10]
 
-Ambas se procesaron en tres programas diferentes: 1)   RIR API diseñada por el grupo 1, 2) RIR API diseñada por la cátedra [6], 3) Room EQ Wizard Room Acoustics Software (REW)[7]. Se obtuvieron los resultados asociados a los parámetros mencionados para las frecuencias centrales de octava de 125 , 250, 500, 1000, 2000, y 4000 Hz.
+Ambas se procesaron en tres programas diferentes: 1)   RIR API diseñada por el grupo 1, 2) RIR API diseñada por la cátedra [11], 3) Room EQ Wizard Room Acoustics Software (REW)[12]. Se obtuvieron los resultados asociados a los parámetros mencionados para las frecuencias centrales de octava de 125 , 250, 500, 1000, 2000, y 4000 Hz.
 
 Luego se realizó la  comparación de los resultados obtenidos, y se obtuvo la precisión para cada uno los parámetros mencionados.
 
@@ -291,18 +294,37 @@ Comprender en profundidad y adquirir agilidad en la implementación de las buena
 
 ## Referencias
 
-[1] ISO 3382-1:2009: Acoustics — Measurement of room acoustic       parametersPart 1: Spaces for music, speech and communication. (2009)
+[1] ISO 3382-1:2009 (2009): Acoustics — Measurement of room acoustic parameters. Part 1: Spaces for music, speech and communication. 
 
-[2] IEC 60621-1:2014: Electroacoustics – Octave-band and fractional-octave-band filters –Part 1: Specifications. (2014)
+[2] IEC 60621-1:2014 (2014): Electroacoustics – Octave-band and fractional-octave-band filters –Part 1: Specifications. 
 
-[3] https://www.openair.hosted.york.ac.uk/?page_id=602
+[3] Sabine, W. C. (1922). Collected Papers on Acoustics.
+Harvard University Press.
 
-[4] https://www.openair.hosted.york.ac.uk/?s=Elveden+Hall
+[4] Beranek, L. L. (1954). Acoustics. McGraw-Hill.
 
-[5] https://webfiles.york.ac.uk/OPENAIR/IRs/maes-howe/Read%20Me.txt
+[5] Kuttruff, H. (2017). Room Acoustics (6th ed.). CRC Press.
 
-[6] https://rir-api-frontend.onrender.com/
+[6] Farina, A. (2000). Simultaneous Measurement of 
+Impulse Response and Distortion with a Swept-Sine 
+Technique. Proceedings of the 108th AES Convention
+, Paris, France.
 
-[7] https://www.roomeqwizard.com/
+[7] Schroeder, M. R. (1965). New Method 
+of Measuring Reverberation Time. 
+The Journal of the Acoustical Society of America,
+37(3), 409–412.
 
-[3] Fariña, A. . Simultaneous measurement of impulse response and distortion with a swept-sine technique. 108th AES Convention.(2000).
+[8] Fielding, R. T. (2000). 
+Architectural Styles and the Design of Network-based 
+Software Architectures 
+(Doctoral dissertation, University of California, Irvine).
+
+[9] https://www.openair.hosted.york.ac.uk/?page_id=602
+
+[10] https://webfiles.york.ac.uk/OPENAIR/IRs/maes-howe/Read%20Me.txt
+
+[11] https://rir-api-frontend.onrender.com/
+
+[12] https://www.roomeqwizard.com/
+
