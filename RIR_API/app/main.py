@@ -6,8 +6,6 @@ Uso:
     uvicorn app.main:app --reload
 """
 
-from datetime import UTC, datetime
-
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 

@@ -64,6 +64,7 @@ Thumbs.db
 
 # Datos de medicion
 data/
+!tests/data_tests/grabacion.wav
 
 # Gráficos y borradores
 AUXILIAR/

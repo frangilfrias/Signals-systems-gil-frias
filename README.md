@@ -89,13 +89,15 @@ RIR_API/
 │       ├── acoustic_parameters.py # Parametros acusticos ISO 3382 (M3)
 │       └── reproducir_grabar.py   # Grabación y reproducción (M2)
 ├── tests/
+│   ├── data_tests/                # Audio para los tests de a API
 │   ├── test_generacion.py         # Tests de generacion (M1)
 │   ├── test_procesamiento.py      # Tests de procesamiento (M2)
 │   ├── test_analisis.py           # Tests de analisis (M3)
 │   ├── test_api.py                # Tests de endpoints (M3)
 │   └── test_reproducir_grabar.py  # Tests de reproducir grabar (M2)
-├── docs/                          # Documentación de cada Milestone
-│   ├── 
+├── docs/                          # Documentación de Milestone
+├── docs_2/                          # Documentación de Milestone 2
+├── docs_3/                          # Informe
 ├── .github/workflows/
 │   └── ci.yml                     # Integracion continua
 ├── pyproject.toml                 # Configuracion del proyecto
